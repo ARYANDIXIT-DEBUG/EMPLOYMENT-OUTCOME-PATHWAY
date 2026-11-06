@@ -1,0 +1,51 @@
+{
+  "name": "data_summary",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "is_synthetic": true,
+    "data_plan": "synthetic",
+    "n_persons_in_panel": 2000,
+    "n_trainees_analysed": 1912,
+    "n_time_points": 4,
+    "time_labels": [
+      "visit_1",
+      "visit_2",
+      "visit_3",
+      "visit_4"
+    ],
+    "state_names": [
+      "wage_employment",
+      "self_employment",
+      "unpaid_family_work",
+      "unemployed_seeking",
+      "out_of_labour_force",
+      "education_training"
+    ],
+    "weights_attached": true,
+    "min_time_points": 3,
+    "trainee_definition": "ever_trained",
+    "timing_support": "coarse_flag",
+    "missing_policy": "pairwise_available",
+    "distance": "dynamic_hamming",
+    "eligibility": {
+      "min_time_points": 3,
+      "rule": "observed states only; MISSING and LOST do not count; nothing is imputed to reach the threshold",
+      "n_before": 2000,
+      "n_after": 1912,
+      "n_removed": 88,
+      "observed_points_histogram_before": {
+        "0": 1,
+        "1": 11,
+        "2": 76,
+        "3": 566,
+        "4": 1346
+      }
+    },
+    "records_by_kind": {
+      "state": 7245,
+      "missing_or_unknown": 211,
+      "lost": 163
+    }
+  }
+}

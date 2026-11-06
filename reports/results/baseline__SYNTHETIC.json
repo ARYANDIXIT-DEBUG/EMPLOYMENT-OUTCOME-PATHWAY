@@ -1,0 +1,486 @@
+{
+  "name": "baseline",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "definition": {
+      "rule": "state at visit_4 (CWS) in [wage_employment, self_employment, unpaid_family_work] -> employed (1); any other observed state -> not employed (0); no observed state (MISSING, LOST or an 'unobserved' policy state) -> excluded (-1)",
+      "reference_visit": 3,
+      "reference_label": "visit_4",
+      "reference_period": "CWS",
+      "employed_states": [
+        "wage_employment",
+        "self_employment",
+        "unpaid_family_work"
+      ],
+      "not_employed_states": [
+        "unemployed_seeking",
+        "out_of_labour_force",
+        "education_training"
+      ],
+      "unknown_treatment": "exclude",
+      "sample_rule": "same_as_clustering",
+      "label_codes": {
+        "-1": "excluded",
+        "0": "not_employed",
+        "1": "employed",
+        "2": "unknown"
+      }
+    },
+    "counts": {
+      "n_total": 1912,
+      "n_employed": 1262,
+      "n_not_employed": 530,
+      "n_unknown": 120,
+      "n_unknown_missing": 94,
+      "n_unknown_lost": 26,
+      "n_unknown_policy_state": 0,
+      "n_excluded": 120,
+      "n_eligible": 1792
+    },
+    "comparison": {
+      "label": "primary",
+      "is_sensitivity": false,
+      "is_synthetic": true,
+      "definition": {
+        "rule": "state at visit_4 (CWS) in [wage_employment, self_employment, unpaid_family_work] -> employed (1); any other observed state -> not employed (0); no observed state (MISSING, LOST or an 'unobserved' policy state) -> excluded (-1)",
+        "reference_visit": 3,
+        "reference_label": "visit_4",
+        "reference_period": "CWS",
+        "employed_states": [
+          "wage_employment",
+          "self_employment",
+          "unpaid_family_work"
+        ],
+        "not_employed_states": [
+          "unemployed_seeking",
+          "out_of_labour_force",
+          "education_training"
+        ],
+        "unknown_treatment": "exclude",
+        "sample_rule": "same_as_clustering",
+        "label_codes": {
+          "-1": "excluded",
+          "0": "not_employed",
+          "1": "employed",
+          "2": "unknown"
+        }
+      },
+      "counts": {
+        "n_total": 1912,
+        "n_employed": 1262,
+        "n_not_employed": 530,
+        "n_unknown": 120,
+        "n_unknown_missing": 94,
+        "n_unknown_lost": 26,
+        "n_unknown_policy_state": 0,
+        "n_excluded": 120,
+        "n_eligible": 1792
+      },
+      "n_compared": 1792,
+      "n_excluded": 120,
+      "weights_used": false,
+      "contingency": {
+        "rows": [
+          "not_employed",
+          "employed"
+        ],
+        "row_codes": [
+          0,
+          1
+        ],
+        "cols": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "counts": [
+          [
+            16,
+            7,
+            310,
+            3,
+            6,
+            188
+          ],
+          [
+            486,
+            312,
+            10,
+            248,
+            202,
+            4
+          ]
+        ]
+      },
+      "ari": 0.2454450530851342,
+      "nmi": 0.4173540124623354,
+      "nmi_normalisation": "arithmetic mean of the two entropies",
+      "entropy": {
+        "unit": "nats",
+        "h_baseline": 0.607227909459468,
+        "h_pathways": 1.7359359974093698,
+        "h_joint": 1.8541994776745223,
+        "h_pathways_given_baseline": 1.2469715682150544,
+        "h_baseline_given_pathways": 0.11826348026515254,
+        "mutual_information": 0.4889644291943157
+      },
+      "unexplained_pathway_entropy_share": 0.7183280778070026,
+      "hidden_min_share": 0.05,
+      "n_pathways": 6,
+      "n_pathways_spanning_classes": 0,
+      "by_class": {
+        "not_employed": {
+          "code": 0,
+          "n": 530,
+          "share_of_compared": 0.29575892857142855,
+          "pathway_counts": {
+            "0": 16,
+            "1": 7,
+            "2": 310,
+            "3": 3,
+            "4": 6,
+            "5": 188
+          },
+          "pathway_shares": {
+            "0": 0.03018867924528302,
+            "1": 0.013207547169811321,
+            "2": 0.5849056603773585,
+            "3": 0.005660377358490566,
+            "4": 0.011320754716981131,
+            "5": 0.35471698113207545
+          },
+          "entropy_nats": 0.9241643923741368,
+          "entropy_normalised": 0.5157859680642822,
+          "effective_n_pathways": 2.519761848197968,
+          "hidden_pathways": [
+            2,
+            5
+          ],
+          "n_hidden_pathways": 2
+        },
+        "employed": {
+          "code": 1,
+          "n": 1262,
+          "share_of_compared": 0.7042410714285714,
+          "pathway_counts": {
+            "0": 486,
+            "1": 312,
+            "2": 10,
+            "3": 248,
+            "4": 202,
+            "5": 4
+          },
+          "pathway_shares": {
+            "0": 0.38510301109350237,
+            "1": 0.24722662440570523,
+            "2": 0.00792393026941363,
+            "3": 0.196513470681458,
+            "4": 0.1600633914421553,
+            "5": 0.003169572107765452
+          },
+          "entropy_nats": 1.3825403504620322,
+          "entropy_normalised": 0.7716104612287458,
+          "effective_n_pathways": 3.98501210732451,
+          "hidden_pathways": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "n_hidden_pathways": 4
+        }
+      },
+      "by_pathway": {
+        "0": {
+          "n": 502,
+          "class_counts": {
+            "not_employed": 16,
+            "employed": 486
+          },
+          "class_shares": {
+            "not_employed": 0.03187250996015936,
+            "employed": 0.9681274900398407
+          },
+          "dominant_class": "employed",
+          "purity": 0.9681274900398407,
+          "spans_classes": false
+        },
+        "1": {
+          "n": 319,
+          "class_counts": {
+            "not_employed": 7,
+            "employed": 312
+          },
+          "class_shares": {
+            "not_employed": 0.0219435736677116,
+            "employed": 0.9780564263322884
+          },
+          "dominant_class": "employed",
+          "purity": 0.9780564263322884,
+          "spans_classes": false
+        },
+        "2": {
+          "n": 320,
+          "class_counts": {
+            "not_employed": 310,
+            "employed": 10
+          },
+          "class_shares": {
+            "not_employed": 0.96875,
+            "employed": 0.03125
+          },
+          "dominant_class": "not_employed",
+          "purity": 0.96875,
+          "spans_classes": false
+        },
+        "3": {
+          "n": 251,
+          "class_counts": {
+            "not_employed": 3,
+            "employed": 248
+          },
+          "class_shares": {
+            "not_employed": 0.01195219123505976,
+            "employed": 0.9880478087649402
+          },
+          "dominant_class": "employed",
+          "purity": 0.9880478087649402,
+          "spans_classes": false
+        },
+        "4": {
+          "n": 208,
+          "class_counts": {
+            "not_employed": 6,
+            "employed": 202
+          },
+          "class_shares": {
+            "not_employed": 0.028846153846153848,
+            "employed": 0.9711538461538461
+          },
+          "dominant_class": "employed",
+          "purity": 0.9711538461538461,
+          "spans_classes": false
+        },
+        "5": {
+          "n": 192,
+          "class_counts": {
+            "not_employed": 188,
+            "employed": 4
+          },
+          "class_shares": {
+            "not_employed": 0.9791666666666666,
+            "employed": 0.020833333333333332
+          },
+          "dominant_class": "not_employed",
+          "purity": 0.9791666666666666,
+          "spans_classes": false
+        }
+      },
+      "notes": [
+        "Agreement counts individuals; survey weights are not used here.",
+        "The baseline is defined from the same trajectories that are clustered, so agreement is not independent validation.",
+        "The reference visit is the last visit: the baseline label is the final state of the trajectory, so part of the agreement is by construction. The informative numbers are the ones about what the baseline hides.",
+        "120 individuals are excluded (unknown at the reference visit); clustering metrics must be recomputed on the same compared individuals for a like-for-like comparison."
+      ]
+    },
+    "n_units_compared": 225,
+    "like_for_like": {
+      "baseline": {
+        "evaluated_on": "fit_sample",
+        "n_units": 225,
+        "n_individuals": 1792,
+        "n_clusters": 2,
+        "silhouette": {
+          "overall": 0.4104436932405485,
+          "status": "ok",
+          "reason": null,
+          "per_cluster": [
+            {
+              "cluster": 0,
+              "n_units": 83,
+              "n_individuals": 530,
+              "share_of_individuals": 0.29575892857142855,
+              "mean_silhouette": 0.49782758012861666,
+              "share_negative": 0.04905660377358491
+            },
+            {
+              "cluster": 1,
+              "n_units": 142,
+              "n_individuals": 1262,
+              "share_of_individuals": 0.7042410714285714,
+              "mean_silhouette": 0.37374523044286545,
+              "share_negative": 0.011093502377179081
+            }
+          ],
+          "negative_share": 0.022321428571428572
+        },
+        "separation": {
+          "n_clusters": 2,
+          "mean_between_medoid": 1.9340069669223192,
+          "min_inter_medoid": 1.9340069669223192,
+          "n_zero_distance_medoid_pairs": 0,
+          "mean_within": 1.025644643093198,
+          "separation_ratio": 1.8856501420312886,
+          "status": "ok",
+          "reason": null
+        },
+        "feature_indices": {
+          "status": "not_applicable",
+          "reason": "evaluation.feature_representation is null (no justified feature representation): no feature representation of the trajectories was supplied: Davies-Bouldin and Calinski-Harabasz assume points in a Euclidean feature space and are not defined for sequences compared by a sequence distance"
+        },
+        "sizes": {
+          "0": 530,
+          "1": 1262
+        },
+        "min_cluster_share": 0.29575892857142855,
+        "min_cluster_frac": 0.02,
+        "small_clusters": []
+      },
+      "pathways_same_units": {
+        "evaluated_on": "fit_sample",
+        "n_units": 225,
+        "n_individuals": 1792,
+        "n_clusters": 6,
+        "silhouette": {
+          "overall": 0.7842989378201844,
+          "status": "ok",
+          "reason": null,
+          "per_cluster": [
+            {
+              "cluster": 0,
+              "n_units": 56,
+              "n_individuals": 502,
+              "share_of_individuals": 0.28013392857142855,
+              "mean_silhouette": 0.6770382718595741,
+              "share_negative": 0.0796812749003984
+            },
+            {
+              "cluster": 1,
+              "n_units": 34,
+              "n_individuals": 319,
+              "share_of_individuals": 0.17801339285714285,
+              "mean_silhouette": 0.893227719255053,
+              "share_negative": 0.0
+            },
+            {
+              "cluster": 2,
+              "n_units": 39,
+              "n_individuals": 320,
+              "share_of_individuals": 0.17857142857142858,
+              "mean_silhouette": 0.8433613778589043,
+              "share_negative": 0.0
+            },
+            {
+              "cluster": 3,
+              "n_units": 36,
+              "n_individuals": 251,
+              "share_of_individuals": 0.14006696428571427,
+              "mean_silhouette": 0.7799708463420403,
+              "share_negative": 0.00398406374501992
+            },
+            {
+              "cluster": 4,
+              "n_units": 28,
+              "n_individuals": 208,
+              "share_of_individuals": 0.11607142857142858,
+              "mean_silhouette": 0.7868385006509772,
+              "share_negative": 0.004807692307692308
+            },
+            {
+              "cluster": 5,
+              "n_units": 32,
+              "n_individuals": 192,
+              "share_of_individuals": 0.10714285714285714,
+              "mean_silhouette": 0.7882297404989468,
+              "share_negative": 0.005208333333333333
+            }
+          ],
+          "negative_share": 0.023995535714285716
+        },
+        "separation": {
+          "n_clusters": 6,
+          "mean_between_medoid": 1.5644011842646344,
+          "min_inter_medoid": 0.7421025511481507,
+          "n_zero_distance_medoid_pairs": 0,
+          "mean_within": 0.20992278912695153,
+          "separation_ratio": 7.452269430921849,
+          "status": "ok",
+          "reason": null
+        },
+        "feature_indices": {
+          "status": "not_applicable",
+          "reason": "evaluation.feature_representation is null (no justified feature representation): no feature representation of the trajectories was supplied: Davies-Bouldin and Calinski-Harabasz assume points in a Euclidean feature space and are not defined for sequences compared by a sequence distance"
+        },
+        "sizes": {
+          "0": 502,
+          "1": 319,
+          "2": 320,
+          "3": 251,
+          "4": 208,
+          "5": 192
+        },
+        "min_cluster_share": 0.10714285714285714,
+        "min_cluster_frac": 0.02,
+        "small_clusters": []
+      },
+      "clustering_same_k_as_baseline": {
+        "evaluated_on": "fit_sample",
+        "n_units": 225,
+        "n_individuals": 1792,
+        "n_clusters": 2,
+        "silhouette": {
+          "overall": 0.5000991273195835,
+          "status": "ok",
+          "reason": null,
+          "per_cluster": [
+            {
+              "cluster": 0,
+              "n_units": 183,
+              "n_individuals": 1459,
+              "share_of_individuals": 0.8141741071428571,
+              "mean_silhouette": 0.4213719831402942,
+              "share_negative": 0.0027416038382453737
+            },
+            {
+              "cluster": 1,
+              "n_units": 42,
+              "n_individuals": 333,
+              "share_of_individuals": 0.18582589285714285,
+              "mean_silhouette": 0.8450327710360486,
+              "share_negative": 0.0
+            }
+          ],
+          "negative_share": 0.002232142857142857
+        },
+        "separation": {
+          "n_clusters": 2,
+          "mean_between_medoid": 1.9418316045496817,
+          "min_inter_medoid": 1.9418316045496817,
+          "n_zero_distance_medoid_pairs": 0,
+          "mean_within": 1.0466254324310555,
+          "separation_ratio": 1.8553262173643923,
+          "status": "ok",
+          "reason": null
+        },
+        "feature_indices": {
+          "status": "not_applicable",
+          "reason": "evaluation.feature_representation is null (no justified feature representation): no feature representation of the trajectories was supplied: Davies-Bouldin and Calinski-Harabasz assume points in a Euclidean feature space and are not defined for sequences compared by a sequence distance"
+        },
+        "sizes": {
+          "0": 1459,
+          "1": 333
+        },
+        "min_cluster_share": 0.18582589285714285,
+        "min_cluster_frac": 0.02,
+        "small_clusters": []
+      },
+      "k_of_baseline": 2
+    },
+    "like_for_like_note": "baseline, pathways and a k-medoids clustering with the baseline's number of classes are all scored on the same units and the same distance matrix; silhouettes at different k are not directly comparable",
+    "sensitivity": {}
+  }
+}

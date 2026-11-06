@@ -1,0 +1,111 @@
+{
+  "name": "hierarchical_comparison",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "k": 6,
+    "linkage": "average",
+    "ari_vs_kmedoids_fit_sample": 0.5613686749681999,
+    "evaluation": {
+      "evaluated_on": "fit_sample",
+      "n_units": 251,
+      "n_individuals": 1912,
+      "n_clusters": 6,
+      "silhouette": {
+        "overall": 0.5868883883477692,
+        "status": "ok",
+        "reason": null,
+        "per_cluster": [
+          {
+            "cluster": 0,
+            "n_units": 129,
+            "n_individuals": 1022,
+            "share_of_individuals": 0.5345188284518828,
+            "mean_silhouette": 0.3616341621117594,
+            "share_negative": 0.10078277886497064
+          },
+          {
+            "cluster": 1,
+            "n_units": 47,
+            "n_individuals": 344,
+            "share_of_individuals": 0.1799163179916318,
+            "mean_silhouette": 0.8314414953463527,
+            "share_negative": 0.011627906976744186
+          },
+          {
+            "cluster": 2,
+            "n_units": 38,
+            "n_individuals": 341,
+            "share_of_individuals": 0.17834728033472802,
+            "mean_silhouette": 0.8745789546268572,
+            "share_negative": 0.005865102639296188
+          },
+          {
+            "cluster": 3,
+            "n_units": 31,
+            "n_individuals": 199,
+            "share_of_individuals": 0.10407949790794979,
+            "mean_silhouette": 0.8353934522292312,
+            "share_negative": 0.005025125628140704
+          },
+          {
+            "cluster": 4,
+            "n_units": 4,
+            "n_individuals": 4,
+            "share_of_individuals": 0.0020920502092050207,
+            "mean_silhouette": 0.33740199253415915,
+            "share_negative": 0.0
+          },
+          {
+            "cluster": 5,
+            "n_units": 2,
+            "n_individuals": 2,
+            "share_of_individuals": 0.0010460251046025104,
+            "mean_silhouette": 0.35014097602968774,
+            "share_negative": 0.0
+          }
+        ],
+        "negative_share": 0.05753138075313807
+      },
+      "separation": {
+        "n_clusters": 6,
+        "mean_between_medoid": 1.6106985064955355,
+        "min_inter_medoid": 0.8704648476798262,
+        "n_zero_distance_medoid_pairs": 0,
+        "mean_within": 0.5381625693997819,
+        "separation_ratio": 2.9929590017603114,
+        "status": "ok",
+        "reason": null
+      },
+      "feature_indices": {
+        "status": "not_applicable",
+        "reason": "evaluation.feature_representation is null (no justified feature representation): no feature representation of the trajectories was supplied: Davies-Bouldin and Calinski-Harabasz assume points in a Euclidean feature space and are not defined for sequences compared by a sequence distance"
+      },
+      "sizes": {
+        "0": 1022,
+        "1": 344,
+        "2": 341,
+        "3": 199,
+        "4": 4,
+        "5": 2
+      },
+      "min_cluster_share": 0.0010460251046025104,
+      "min_cluster_frac": 0.02,
+      "small_clusters": [
+        4,
+        5
+      ]
+    },
+    "sizes_individuals": {
+      "0": 1022,
+      "1": 344,
+      "2": 341,
+      "3": 199,
+      "4": 4,
+      "5": 2
+    },
+    "warning": "SYNTHETIC ONLY",
+    "ari_hierarchical_vs_planted": 0.5443286623339504,
+    "ari_kmedoids_vs_planted": 0.9456639190100123
+  }
+}

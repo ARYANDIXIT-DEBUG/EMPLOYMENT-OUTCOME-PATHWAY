@@ -1,0 +1,43 @@
+{
+  "name": "run_meta",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "is_synthetic": true,
+    "stages": [
+      "audit",
+      "build",
+      "benchmark",
+      "cluster",
+      "evaluate",
+      "stability",
+      "profile",
+      "report"
+    ],
+    "overrides": {
+      "report.results_tag": "SYNTHETIC"
+    },
+    "skipped": [],
+    "seed": 2026,
+    "warnings": {
+      "build": [],
+      "benchmark": [],
+      "baseline_lock": [
+        "UserWarning: baseline.locked is false: the baseline definition can still change. Lock it before the first real clustering run."
+      ],
+      "distance": [],
+      "cluster": [],
+      "evaluate": [],
+      "missing_sensitivity": [],
+      "stability": []
+    },
+    "versions": {
+      "python": "3.13.1",
+      "numpy": "2.5.4",
+      "pandas": "3.1.1",
+      "scipy": "1.18.1",
+      "scikit_learn": "1.9.1",
+      "matplotlib": "3.11.2"
+    }
+  }
+}

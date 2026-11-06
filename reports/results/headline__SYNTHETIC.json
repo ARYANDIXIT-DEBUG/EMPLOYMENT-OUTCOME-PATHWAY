@@ -1,0 +1,19 @@
+{
+  "name": "headline",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "is_synthetic": true,
+    "n_individuals": 1912,
+    "n_units_fit": 251,
+    "k": 6,
+    "reduction_mode": "collapse",
+    "silhouette": 0.7879588992695569,
+    "min_cluster_share": 0.10617154811715482,
+    "hierarchical_ari_vs_kmedoids": 0.5613686749681999,
+    "baseline_ari": 0.2454450530851342,
+    "baseline_nmi": 0.4173540124623354,
+    "stability_random_40pct_ari": 0.9994880236101172,
+    "stability_censoring_2visits_ari": 0.7649311232387827
+  }
+}

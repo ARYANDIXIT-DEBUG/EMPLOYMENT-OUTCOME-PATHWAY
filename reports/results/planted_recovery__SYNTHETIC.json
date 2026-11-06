@@ -1,0 +1,67 @@
+{
+  "name": "planted_recovery",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "warning": "SYNTHETIC ONLY: this checks that the pipeline can find structure it was given. It is not a result about trainees.",
+    "ari_kmedoids_vs_planted": 0.9456639190100123,
+    "planted_names": [
+      "stable_wage",
+      "stable_self_employment",
+      "unemployed_to_wage",
+      "wage_to_exit",
+      "stable_out_of_labour_force",
+      "education_to_wage"
+    ],
+    "contingency_planted_by_found": [
+      [
+        519,
+        0,
+        0,
+        3,
+        3,
+        10
+      ],
+      [
+        1,
+        341,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        8,
+        0,
+        0,
+        257,
+        1,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0,
+        190
+      ],
+      [
+        1,
+        0,
+        341,
+        0,
+        0,
+        3
+      ],
+      [
+        5,
+        0,
+        0,
+        5,
+        221,
+        0
+      ]
+    ]
+  }
+}

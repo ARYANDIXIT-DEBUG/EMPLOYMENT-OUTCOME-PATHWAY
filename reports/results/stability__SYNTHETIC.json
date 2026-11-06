@@ -1,0 +1,726 @@
+{
+  "name": "stability",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "curves": [
+      {
+        "scheme": "random",
+        "level": 0.1,
+        "level_kind": "share of individuals lost",
+        "n_repeats": 30,
+        "n_retained_mean": 1721.0,
+        "n_units_fit_mean": 239.06666666666666,
+        "ari_mean": 0.9999501766983483,
+        "ari_sd": 0.00027289346203996506,
+        "ari_median": 1.0,
+        "ari_p05": 1.0,
+        "ari_min": 0.9985053009504503,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0
+      },
+      {
+        "scheme": "random",
+        "level": 0.2,
+        "level_kind": "share of individuals lost",
+        "n_repeats": 30,
+        "n_retained_mean": 1530.0,
+        "n_units_fit_mean": 222.9,
+        "ari_mean": 0.9996086988532703,
+        "ari_sd": 0.0008463739798239763,
+        "ari_median": 1.0,
+        "ari_p05": 0.9983059635800015,
+        "ari_min": 0.9966298260703599,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0
+      },
+      {
+        "scheme": "random",
+        "level": 0.3,
+        "level_kind": "share of individuals lost",
+        "n_repeats": 30,
+        "n_retained_mean": 1338.0,
+        "n_units_fit_mean": 209.36666666666667,
+        "ari_mean": 0.9993018776870799,
+        "ari_sd": 0.001165407198799379,
+        "ari_median": 1.0,
+        "ari_p05": 0.9970490608848193,
+        "ari_min": 0.9962260578403865,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0
+      },
+      {
+        "scheme": "random",
+        "level": 0.4,
+        "level_kind": "share of individuals lost",
+        "n_repeats": 30,
+        "n_retained_mean": 1147.0,
+        "n_units_fit_mean": 194.53333333333333,
+        "ari_mean": 0.9994880236101172,
+        "ari_sd": 0.000944230124869629,
+        "ari_median": 1.0,
+        "ari_p05": 0.9977583783088938,
+        "ari_min": 0.9977317439133678,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0
+      },
+      {
+        "scheme": "informative",
+        "level": 0.1,
+        "level_kind": "share of individuals lost",
+        "n_repeats": 30,
+        "n_retained_mean": 1721.0,
+        "n_units_fit_mean": 237.76666666666668,
+        "ari_mean": 1.0,
+        "ari_sd": 0.0,
+        "ari_median": 1.0,
+        "ari_p05": 1.0,
+        "ari_min": 1.0,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0
+      },
+      {
+        "scheme": "informative",
+        "level": 0.2,
+        "level_kind": "share of individuals lost",
+        "n_repeats": 30,
+        "n_retained_mean": 1530.0,
+        "n_units_fit_mean": 223.26666666666668,
+        "ari_mean": 0.9999430961897536,
+        "ari_sd": 0.00031167500479906525,
+        "ari_median": 1.0,
+        "ari_p05": 1.0,
+        "ari_min": 0.9982928856926102,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0
+      },
+      {
+        "scheme": "informative",
+        "level": 0.3,
+        "level_kind": "share of individuals lost",
+        "n_repeats": 30,
+        "n_retained_mean": 1338.0,
+        "n_units_fit_mean": 208.46666666666667,
+        "ari_mean": 0.9998052738244362,
+        "ari_sd": 0.0005941712590788755,
+        "ari_median": 1.0,
+        "ari_p05": 0.9980562700371176,
+        "ari_min": 0.9980442560921514,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0
+      },
+      {
+        "scheme": "informative",
+        "level": 0.4,
+        "level_kind": "share of individuals lost",
+        "n_repeats": 30,
+        "n_retained_mean": 1147.0,
+        "n_units_fit_mean": 189.86666666666667,
+        "ari_mean": 0.9992367011239913,
+        "ari_sd": 0.0018058845549512943,
+        "ari_median": 1.0,
+        "ari_p05": 0.9958699960987274,
+        "ari_min": 0.9920794845845581,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0
+      },
+      {
+        "scheme": "censoring",
+        "level": 3.0,
+        "level_kind": "visits kept",
+        "n_repeats": 30,
+        "n_retained_mean": 1466.0,
+        "n_units_fit_mean": 93.0,
+        "ari_mean": 0.9508716444535134,
+        "ari_sd": 2.2584051416334807e-16,
+        "ari_median": 0.9508716444535131,
+        "ari_p05": 0.9508716444535131,
+        "ari_min": 0.9508716444535131,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0
+      },
+      {
+        "scheme": "censoring",
+        "level": 2.0,
+        "level_kind": "visits kept",
+        "n_repeats": 30,
+        "n_retained_mean": 1619.0,
+        "n_units_fit_mean": 35.0,
+        "ari_mean": 0.7649311232387827,
+        "ari_sd": 2.2584051416334807e-16,
+        "ari_median": 0.7649311232387829,
+        "ari_p05": 0.7649311232387829,
+        "ari_min": 0.7649311232387829,
+        "mean_pathway_survival": 0.8333333333333334,
+        "min_pathway_survival": 0.0
+      }
+    ],
+    "survival": [
+      {
+        "scheme": "random",
+        "level": 0.1,
+        "pathway": 0,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.1,
+        "pathway": 1,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.1,
+        "pathway": 2,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.1,
+        "pathway": 3,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.1,
+        "pathway": 4,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.1,
+        "pathway": 5,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.2,
+        "pathway": 0,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.2,
+        "pathway": 1,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.2,
+        "pathway": 2,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.2,
+        "pathway": 3,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.2,
+        "pathway": 4,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.2,
+        "pathway": 5,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.3,
+        "pathway": 0,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.3,
+        "pathway": 1,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.3,
+        "pathway": 2,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.3,
+        "pathway": 3,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.3,
+        "pathway": 4,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.3,
+        "pathway": 5,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.4,
+        "pathway": 0,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.4,
+        "pathway": 1,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.4,
+        "pathway": 2,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.4,
+        "pathway": 3,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.4,
+        "pathway": 4,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "random",
+        "level": 0.4,
+        "pathway": 5,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.1,
+        "pathway": 0,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.1,
+        "pathway": 1,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.1,
+        "pathway": 2,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.1,
+        "pathway": 3,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.1,
+        "pathway": 4,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.1,
+        "pathway": 5,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.2,
+        "pathway": 0,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.2,
+        "pathway": 1,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.2,
+        "pathway": 2,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.2,
+        "pathway": 3,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.2,
+        "pathway": 4,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.2,
+        "pathway": 5,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.3,
+        "pathway": 0,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.3,
+        "pathway": 1,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.3,
+        "pathway": 2,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.3,
+        "pathway": 3,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.3,
+        "pathway": 4,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.3,
+        "pathway": 5,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.4,
+        "pathway": 0,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.4,
+        "pathway": 1,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.4,
+        "pathway": 2,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.4,
+        "pathway": 3,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.4,
+        "pathway": 4,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "informative",
+        "level": 0.4,
+        "pathway": 5,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 3.0,
+        "pathway": 0,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 3.0,
+        "pathway": 1,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 3.0,
+        "pathway": 2,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 3.0,
+        "pathway": 3,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 3.0,
+        "pathway": 4,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 3.0,
+        "pathway": 5,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 2.0,
+        "pathway": 0,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 2.0,
+        "pathway": 1,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 2.0,
+        "pathway": 2,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 2.0,
+        "pathway": 3,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 2.0,
+        "pathway": 4,
+        "survival_rate": 1.0,
+        "mean_min_dist": 0.0,
+        "n_repeats": 30
+      },
+      {
+        "scheme": "censoring",
+        "level": 2.0,
+        "pathway": 5,
+        "survival_rate": 0.0,
+        "mean_min_dist": null,
+        "n_repeats": 30
+      }
+    ],
+    "by_setting": {
+      "random_10pct": {
+        "ari_mean": 0.9999501766983483,
+        "ari_p05": 1.0,
+        "ari_min": 0.9985053009504503,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0,
+        "n_retained_mean": 1721.0
+      },
+      "random_20pct": {
+        "ari_mean": 0.9996086988532703,
+        "ari_p05": 0.9983059635800015,
+        "ari_min": 0.9966298260703599,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0,
+        "n_retained_mean": 1530.0
+      },
+      "random_30pct": {
+        "ari_mean": 0.9993018776870799,
+        "ari_p05": 0.9970490608848193,
+        "ari_min": 0.9962260578403865,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0,
+        "n_retained_mean": 1338.0
+      },
+      "random_40pct": {
+        "ari_mean": 0.9994880236101172,
+        "ari_p05": 0.9977583783088938,
+        "ari_min": 0.9977317439133678,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0,
+        "n_retained_mean": 1147.0
+      },
+      "informative_10pct": {
+        "ari_mean": 1.0,
+        "ari_p05": 1.0,
+        "ari_min": 1.0,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0,
+        "n_retained_mean": 1721.0
+      },
+      "informative_20pct": {
+        "ari_mean": 0.9999430961897536,
+        "ari_p05": 1.0,
+        "ari_min": 0.9982928856926102,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0,
+        "n_retained_mean": 1530.0
+      },
+      "informative_30pct": {
+        "ari_mean": 0.9998052738244362,
+        "ari_p05": 0.9980562700371176,
+        "ari_min": 0.9980442560921514,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0,
+        "n_retained_mean": 1338.0
+      },
+      "informative_40pct": {
+        "ari_mean": 0.9992367011239913,
+        "ari_p05": 0.9958699960987274,
+        "ari_min": 0.9920794845845581,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0,
+        "n_retained_mean": 1147.0
+      },
+      "censoring_3visits": {
+        "ari_mean": 0.9508716444535134,
+        "ari_p05": 0.9508716444535131,
+        "ari_min": 0.9508716444535131,
+        "mean_pathway_survival": 1.0,
+        "min_pathway_survival": 1.0,
+        "n_retained_mean": 1466.0
+      },
+      "censoring_2visits": {
+        "ari_mean": 0.7649311232387827,
+        "ari_p05": 0.7649311232387829,
+        "ari_min": 0.7649311232387829,
+        "mean_pathway_survival": 0.8333333333333334,
+        "min_pathway_survival": 0.0,
+        "n_retained_mean": 1619.0
+      }
+    },
+    "n_repeats": 30,
+    "quick": false,
+    "survival_max_dist": 0.25
+  }
+}

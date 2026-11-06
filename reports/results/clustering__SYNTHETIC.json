@@ -1,0 +1,101 @@
+{
+  "name": "clustering",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "k": 6,
+    "n_individuals": 1912,
+    "reduction": {
+      "mode_requested": "collapse_then_subsample",
+      "mode_used": "collapse",
+      "n_units_all": 251,
+      "n_units_fit": 251,
+      "est_peak_mb": 0.9613189697265625,
+      "cap_mb": 512.0,
+      "max_n": 3000,
+      "reason": "collapse: 1912 individuals fit in 251 units (limit 3000); every pair shares at least 2 observed time points (fewest observed per unit: 3 of 4)"
+    },
+    "fit": {
+      "cost": 199.77554486525887,
+      "converged": true,
+      "n_iter": 0
+    },
+    "medoid_min_observed_used": 4,
+    "n_candidate_units": 126,
+    "all_medoids_fully_observed": true,
+    "medoids": [
+      {
+        "pathway": 0,
+        "states": [
+          "wage_employment",
+          "wage_employment",
+          "wage_employment",
+          "wage_employment"
+        ],
+        "n_observed": 4,
+        "size": 537,
+        "share": 0.28085774058577406
+      },
+      {
+        "pathway": 1,
+        "states": [
+          "self_employment",
+          "self_employment",
+          "self_employment",
+          "self_employment"
+        ],
+        "n_observed": 4,
+        "size": 341,
+        "share": 0.17834728033472802
+      },
+      {
+        "pathway": 2,
+        "states": [
+          "out_of_labour_force",
+          "out_of_labour_force",
+          "out_of_labour_force",
+          "out_of_labour_force"
+        ],
+        "n_observed": 4,
+        "size": 341,
+        "share": 0.17834728033472802
+      },
+      {
+        "pathway": 3,
+        "states": [
+          "unemployed_seeking",
+          "unemployed_seeking",
+          "wage_employment",
+          "wage_employment"
+        ],
+        "n_observed": 4,
+        "size": 265,
+        "share": 0.13859832635983263
+      },
+      {
+        "pathway": 4,
+        "states": [
+          "education_training",
+          "education_training",
+          "wage_employment",
+          "wage_employment"
+        ],
+        "n_observed": 4,
+        "size": 225,
+        "share": 0.11767782426778242
+      },
+      {
+        "pathway": 5,
+        "states": [
+          "wage_employment",
+          "wage_employment",
+          "unemployed_seeking",
+          "out_of_labour_force"
+        ],
+        "n_observed": 4,
+        "size": 203,
+        "share": 0.10617154811715482
+      }
+    ]
+  }
+}

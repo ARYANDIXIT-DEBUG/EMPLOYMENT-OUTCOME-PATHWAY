@@ -1,0 +1,424 @@
+project:
+  name: employment-pathways
+  group: G24
+  seed: 2026
+paths:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  results_dir: reports/results
+  figures_dir: reports/figures
+  report_template: reports/report_template.md
+  docs_dir: docs
+data:
+  plan: UNSET
+  scope_approved: false
+  period: July2023-June2024
+  sector_coverage: both
+  files:
+  - id: perv1
+    path: data/raw/perv1.csv
+    release_id: DDI-IND-CSO-PLFS-2023-24
+    design_id: PLFS-2023-24-rotational-panel
+    period: V1
+    sector: both
+    kind: person
+    role: primary
+  - id: perrv
+    path: data/raw/perrv.csv
+    release_id: DDI-IND-CSO-PLFS-2023-24
+    design_id: PLFS-2023-24-rotational-panel
+    period: V2-V4
+    sector: both
+    kind: person
+    role: primary
+  - id: hhv1
+    path: data/raw/hhv1.csv
+    release_id: DDI-IND-CSO-PLFS-2023-24
+    design_id: PLFS-2023-24-rotational-panel
+    period: V1
+    sector: both
+    kind: household
+    role: primary
+  - id: hhrv
+    path: data/raw/hhrv.csv
+    release_id: DDI-IND-CSO-PLFS-2023-24
+    design_id: PLFS-2023-24-rotational-panel
+    period: V2-V4
+    sector: both
+    kind: household
+    role: primary
+  layouts:
+    perv1:
+      format: csv
+      encoding: utf-8
+      sep: ','
+      columns:
+        state:
+          source: state_perv1
+          label: State/UT Code
+        fsu:
+          source: b1q1_perv1
+          label: FSU Serial Number
+        sg_sb:
+          source: b1q13_perv1
+          label: Sample Sg/Sb No.
+        stratum2:
+          source: b1q14_perv1
+          label: Second Stage Stratum No.
+        hh_no:
+          source: b1q15_perv1
+          label: Sample Household Number
+        person_no:
+          source: b4q1_perv1
+          label: Person Serial No.
+        qtr:
+          source: qtr_perv1
+          label: Quarter of survey (Q1=Jul-Sep 2023, Q2=Oct-Dec 2023, Q3=Jan-Mar 2024,
+            Q4=Apr-Jun 2024)
+        visit:
+          source: visit_perv1
+          label: 'Visit (values: V1)'
+        sex:
+          source: b4q5_perv1
+          label: Gender
+        age:
+          source: b4q6_perv1
+          label: Age
+          dtype: int
+        sector:
+          source: b1q3_perv1
+          label: Sector (1=Rural, 2=Urban)
+        cws:
+          source: b6q5_perv1
+          label: Current Weekly Status (CWS)
+        b4q12:
+          source: b4q12_perv1
+          label: Whether received any Vocational/Technical Training
+          codes:
+            '1': vocational/technical training
+            '2': non-vocational formal training
+            '3': training category 3
+            '4': training category 4
+            '5': training category 5
+            '6': training category 6
+          na_codes: []
+        b4pt1q3:
+          source: b4pt1q3_perv1
+          label: Whether Training completed during last 365 days
+          codes:
+            '1': completed last 365 days
+            '2': not completed last 365 days
+          na_codes: []
+        wt:
+          source: mult_perv1
+          label: Sub-sample wise Multiplier
+          dtype: float
+    perrv:
+      format: csv
+      encoding: utf-8
+      sep: ','
+      columns:
+        state:
+          source: state_perrv
+          label: State/UT Code
+        fsu:
+          source: b1q1_perrv
+          label: FSU Serial Number
+        sg_sb:
+          source: b1q13_perrv
+          label: Sample Sg/Sb No.
+        stratum2:
+          source: b1q14_perrv
+          label: Second Stage Stratum No.
+        hh_no:
+          source: b1q15_perrv
+          label: Sample Household Number
+        person_no:
+          source: b4q1_pervv
+          label: 'Person Serial No. (NB: source header is b4q1_pervv — double-v)'
+        qtr:
+          source: qtr_perrv
+          label: Quarter of survey (Q1=Jul-Sep 2023, Q2=Oct-Dec 2023, Q3=Jan-Mar 2024,
+            Q4=Apr-Jun 2024)
+        visit:
+          source: visit_perrv
+          label: 'Visit (values: V2, V3, V4)'
+        sex:
+          source: b4q5_perrv
+          label: Gender
+        age:
+          source: b4q6_perrv
+          label: Age
+          dtype: int
+        sector:
+          source: b1q3_perrv
+          label: Sector (1=Rural, 2=Urban)
+        cws:
+          source: b6q5_perrv
+          label: Current Weekly Status (CWS)
+        wt:
+          source: mult_perrv
+          label: Sub-sample wise Multiplier
+          dtype: float
+    hhv1:
+      format: csv
+      encoding: utf-8
+      sep: ','
+      columns:
+        state:
+          source: state_hhv1
+        fsu:
+          source: b1q1_hhv1
+        visit:
+          source: visit_hhv1
+    hhrv:
+      format: csv
+      encoding: utf-8
+      sep: ','
+      columns:
+        state:
+          source: state_hhrv
+        fsu:
+          source: b1q1_hhrv
+        visit:
+          source: visit_hhrv
+  design_mix_justification: null
+  schema:
+    household_id:
+    - state
+    - fsu
+    - sg_sb
+    - stratum2
+    - hh_no
+    person_id: person_no
+    visit: visit
+    quarter: qtr
+    month: null
+    sector: sector
+    age: age
+    sex: sex
+    social_group: null
+    religion: null
+    weight: null
+    status_col: cws
+    nonresponse_col: null
+    training_cols:
+    - b4q12
+    - b4pt1q3
+  verified: true
+  verified_note: 'Verified 2026-11-05 against NADA catalogue 213 (microdata.gov.in/NADA/index.php/catalog/213)
+    and actual CSV headers. Column names confirmed from CSV header check. CWS codes
+    11-97 confirmed from MoSPI PLFS annual report (OFFICIAL-DOC tier). b4q12 code
+    1 = vocational/technical training confirmed from full CSV scan: 13,031 records
+    with code 1; codes 2-6 are other/non-vocational training types. b4pt1q3 codes
+    1=completed/2=not-completed confirmed from cross-tab (non-blank only when b4q12=1).
+    Visit values are string labels V1/V2/V3/V4. Sector: 1=Rural, 2=Urban, both present
+    in both person files. Items left null: weight (panel validity unconfirmed), social_group,
+    religion (HH-level only), nonresponse_col (no such variable in person files).
+    b1q12 (b1q12_perv1 / b1q12_perrv) is FOD Sub-region code (PLFS Schedule 10.4 Block
+    1 field 12) — Field Operations Division administrative code, NOT an alternate
+    state identifier. NOT part of the person key. The first two digits of b1q12 represent
+    the state in FOD''s own coding scheme, which differs from the Census/NSS state
+    code (the ''state'' column). Known mismatches between Census state codes and FOD-prefix
+    digits are NSS administrative coding conventions, not data errors: state=04→FOD-prefix=06;
+    state=25→FOD-prefix=24; state=34→FOD-prefix=33/28/32; state=37→FOD-prefix=01;
+    state=31→FOD-prefix=32. These affect several thousand rows each but do not affect
+    any analysis variable — b1q12 is not used in trajectory construction. qtr (qtr_perv1
+    / qtr_perrv) is verified as a separate time coordinate and linked using visit-aware
+    cohort-quarter derivation in src.data_loader; it is not part of household_id.
+
+    '
+states:
+- name: wage_employment
+  raw_codes:
+  - '31'
+  - '41'
+  - '42'
+  - '51'
+  - '61'
+  - '62'
+  - '71'
+  - '72'
+- name: self_employment
+  raw_codes:
+  - '11'
+  - '12'
+- name: unpaid_family_work
+  raw_codes:
+  - '21'
+- name: unemployed_seeking
+  raw_codes:
+  - '81'
+  - '82'
+- name: out_of_labour_force
+  raw_codes:
+  - '92'
+  - '93'
+  - '94'
+  - '95'
+  - '97'
+- name: education_training
+  raw_codes:
+  - '91'
+unknown_codes:
+- '98'
+- '99'
+lost_codes: []
+time:
+  n_points: 4
+  labels:
+  - visit_1
+  - visit_2
+  - visit_3
+  - visit_4
+  reference_period: CWS
+trainee:
+  definition: ever_trained
+  rules:
+    ever_trained:
+      variable: b4q12
+      codes_yes:
+      - '1'
+    recent_completion:
+      variable: b4pt1q3
+      codes_yes:
+      - '1'
+  min_time_points: 3
+  timing_support: coarse_flag
+  timing_evidence:
+    source: 'NADA catalogue 213 perv1 variable b4pt1q3_perv1 label: ''Whether Training
+      completed during last 365 days'''
+    note: 'Code 1 (completed last 365 days) confirmed from CSV cross-tab on 2026-11-05.
+      Only non-blank when b4q12=1 (vocational/technical training), confirming it gates
+      correctly. 2,753 records with code 1 (completed) and 10,278 with code 2 (not
+      completed). Post-training wording remains BLOCKED because coarse_flag does not
+      date training within the panel window.
+
+      '
+missing:
+  policy: pairwise_available
+  min_overlap: 2
+  attr_handling:
+    numeric: median
+    categorical: unknown_category
+  sensitivity_policies:
+  - complete_cases_only
+  - forward_fill
+  - missing_as_state
+distance:
+  name: dynamic_hamming
+  substitution: trate
+  indel: 1.0
+  attribute_inputs: []
+  reduction: collapse_then_subsample
+  max_n: 3000
+  max_matrix_mb: 512
+  peak_factor: 2.0
+  block_rows: 256
+baseline:
+  reference_visit: 3
+  employed_states:
+  - wage_employment
+  - self_employment
+  - unpaid_family_work
+  unknown_treatment: exclude
+  sample_rule: same_as_clustering
+  locked: false
+  change_log: []
+  sensitivity_variants_def: []
+clustering:
+  k_candidates:
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  primary: kmedoids
+  comparison: hierarchical
+  linkage: average
+  n_init: 10
+  max_iter: 100
+  medoid_min_observed: all
+  min_cluster_frac: 0.02
+  k_rule:
+    min_stability_ari: 0.6
+    silhouette_margin: 0.02
+  k_stability_repeats: 10
+  feature_inputs: []
+evaluation:
+  feature_representation: null
+stability:
+  n_repeats: 30
+  random_loss:
+  - 0.1
+  - 0.2
+  - 0.3
+  - 0.4
+  informative:
+    attribute: age
+    strength: 1.0
+  censor_points:
+  - 3
+  - 2
+  survival_max_dist: 0.25
+profiling:
+  permitted_vars: []
+  weighted: false
+features: {}
+synthetic:
+  n: 2000
+  noise: 0.08
+  missing_rate: 0.1
+  planted:
+  - name: stable_wage
+    prevalence: 0.28
+    prototype:
+    - wage_employment
+    - wage_employment
+    - wage_employment
+    - wage_employment
+  - name: stable_self_employment
+    prevalence: 0.18
+    prototype:
+    - self_employment
+    - self_employment
+    - self_employment
+    - self_employment
+  - name: unemployed_to_wage
+    prevalence: 0.14
+    prototype:
+    - unemployed_seeking
+    - unemployed_seeking
+    - wage_employment
+    - wage_employment
+  - name: wage_to_exit
+    prevalence: 0.1
+    prototype:
+    - wage_employment
+    - wage_employment
+    - unemployed_seeking
+    - out_of_labour_force
+  - name: stable_out_of_labour_force
+    prevalence: 0.18
+    prototype:
+    - out_of_labour_force
+    - out_of_labour_force
+    - out_of_labour_force
+    - out_of_labour_force
+  - name: education_to_wage
+    prevalence: 0.12
+    prototype:
+    - education_training
+    - education_training
+    - wage_employment
+    - wage_employment
+dashboard:
+  title: Employment Outcome Pathways (INT396 CA-1, G24)
+  synthetic_banner: SYNTHETIC DEMONSTRATION - NOT PLFS RESULTS
+report:
+  template: null
+  results_tag: SYNTHETIC
+tier2:
+  enabled: false

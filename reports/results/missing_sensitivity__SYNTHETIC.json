@@ -1,0 +1,62 @@
+{
+  "name": "missing_sensitivity",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "table": [
+      {
+        "policy": "pairwise_available",
+        "is_primary": true,
+        "error": null,
+        "n_individuals": 1912,
+        "share_cells_unobserved": 0.07400627615062762,
+        "silhouette": 0.7879588992695569,
+        "min_cluster_share": 0.10617154811715482,
+        "ari_vs_primary_pathways": 1.0,
+        "delta_silhouette": 0.0,
+        "delta_min_cluster_share": 0.0,
+        "delta_ari_vs_primary_pathways": 0.0
+      },
+      {
+        "policy": "complete_cases_only",
+        "is_primary": false,
+        "error": null,
+        "n_individuals": 1346,
+        "share_cells_unobserved": 0.0,
+        "silhouette": 0.7829926132746681,
+        "min_cluster_share": 0.10698365527488855,
+        "ari_vs_primary_pathways": 1.0,
+        "delta_silhouette": -0.004966285994888797,
+        "delta_min_cluster_share": 0.0008121071577337352,
+        "delta_ari_vs_primary_pathways": 0.0
+      },
+      {
+        "policy": "forward_fill",
+        "is_primary": false,
+        "error": null,
+        "n_individuals": 1912,
+        "share_cells_unobserved": 0.01882845188284519,
+        "silhouette": 0.7683603102108391,
+        "min_cluster_share": 0.10617154811715482,
+        "ari_vs_primary_pathways": 0.9927652747527753,
+        "delta_silhouette": -0.019598589058717808,
+        "delta_min_cluster_share": 0.0,
+        "delta_ari_vs_primary_pathways": -0.007234725247224683
+      },
+      {
+        "policy": "missing_as_state",
+        "is_primary": false,
+        "error": null,
+        "n_individuals": 1912,
+        "share_cells_unobserved": 0.0,
+        "silhouette": 0.6316963680535724,
+        "min_cluster_share": 0.10564853556485355,
+        "ari_vs_primary_pathways": 0.9947001147078142,
+        "delta_silhouette": -0.15626253121598443,
+        "delta_min_cluster_share": -0.0005230125523012635,
+        "delta_ari_vs_primary_pathways": -0.005299885292185835
+      }
+    ],
+    "note": "each row repeats the whole analysis with the same k; the ARI compares with the primary pathways on the individuals both contain; a policy that cannot run keeps its error text"
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "name": "missingness",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "is_synthetic": true,
+    "n_individuals": 1912,
+    "n_time_points": 4,
+    "n_cells": 7648,
+    "cells": {
+      "observed": 7082,
+      "missing": 445,
+      "lost": 121,
+      "share_observed": 0.9259937238493724,
+      "share_missing": 0.05818514644351464,
+      "share_lost": 0.015821129707112972
+    },
+    "by_time": [
+      {
+        "time_label": "visit_1",
+        "n_observed": 1768,
+        "share_missing": 0.05700836820083682,
+        "share_lost": 0.018305439330543932
+      },
+      {
+        "time_label": "visit_2",
+        "n_observed": 1763,
+        "share_missing": 0.062238493723849375,
+        "share_lost": 0.015690376569037656
+      },
+      {
+        "time_label": "visit_3",
+        "n_observed": 1759,
+        "share_missing": 0.06433054393305439,
+        "share_lost": 0.015690376569037656
+      },
+      {
+        "time_label": "visit_4",
+        "n_observed": 1792,
+        "share_missing": 0.049163179916317995,
+        "share_lost": 0.013598326359832637
+      }
+    ],
+    "observed_points_histogram": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 566,
+      "4": 1346
+    },
+    "share_complete_cases": 0.7039748953974896,
+    "n_distinct_patterns": 9,
+    "patterns": [
+      {
+        "pattern": "oooo",
+        "n": 1346,
+        "share": 0.7039748953974896
+      },
+      {
+        "pattern": "oomo",
+        "n": 123,
+        "share": 0.06433054393305439
+      },
+      {
+        "pattern": "omoo",
+        "n": 119,
+        "share": 0.062238493723849375
+      },
+      {
+        "pattern": "mooo",
+        "n": 109,
+        "share": 0.05700836820083682
+      },
+      {
+        "pattern": "ooom",
+        "n": 94,
+        "share": 0.049163179916317995
+      },
+      {
+        "pattern": "looo",
+        "n": 35,
+        "share": 0.018305439330543932
+      },
+      {
+        "pattern": "oolo",
+        "n": 30,
+        "share": 0.015690376569037656
+      },
+      {
+        "pattern": "oloo",
+        "n": 30,
+        "share": 0.015690376569037656
+      },
+      {
+        "pattern": "oool",
+        "n": 26,
+        "share": 0.013598326359832637
+      }
+    ],
+    "dropout": {
+      "n_with_any_unobserved": 566,
+      "n_monotone_dropout": 120,
+      "n_intermittent": 446,
+      "n_unobserved_at_first_point": 144,
+      "n_never_observed": 0
+    },
+    "attribute_tests_note": "synthetic data: the MoSPI data-use rider does not apply, all attributes are used",
+    "tests": [
+      {
+        "test": "unobserved at visit_2 vs state at visit_1",
+        "kind": "state_dependence",
+        "method": "chi-square",
+        "n": 1768,
+        "statistic": 0.2731354655586682,
+        "p_value": 0.9981180231004653,
+        "effect_size": 0.012429335682046095,
+        "effect_name": "cramers_v",
+        "missing_rate_by_previous_state": {
+          "wage_employment": 0.08227848101265822,
+          "self_employment": 0.0877742946708464,
+          "unpaid_family_work": 0.07692307692307693,
+          "unemployed_seeking": 0.0823045267489712,
+          "out_of_labour_force": 0.08950617283950617,
+          "education_training": 0.08035714285714286
+        },
+        "p_bonferroni": 1.0,
+        "significant_after_bonferroni": false
+      },
+      {
+        "test": "unobserved at visit_3 vs state at visit_2",
+        "kind": "state_dependence",
+        "method": "chi-square",
+        "n": 1763,
+        "statistic": 6.355167556898973,
+        "p_value": 0.2731769463876207,
+        "effect_size": 0.06003953866888779,
+        "effect_name": "cramers_v",
+        "missing_rate_by_previous_state": {
+          "wage_employment": 0.0770440251572327,
+          "self_employment": 0.09287925696594428,
+          "unpaid_family_work": 0.14285714285714285,
+          "unemployed_seeking": 0.11740890688259109,
+          "out_of_labour_force": 0.09206349206349207,
+          "education_training": 0.06140350877192982
+        },
+        "p_bonferroni": 1.0,
+        "significant_after_bonferroni": false
+      },
+      {
+        "test": "unobserved at visit_4 vs state at visit_3",
+        "kind": "state_dependence",
+        "method": "chi-square",
+        "n": 1759,
+        "statistic": 0.3536158445280713,
+        "p_value": 0.9965114807656259,
+        "effect_size": 0.014178586544112845,
+        "effect_name": "cramers_v",
+        "missing_rate_by_previous_state": {
+          "wage_employment": 0.06950672645739911,
+          "self_employment": 0.0673076923076923,
+          "unpaid_family_work": 0.09523809523809523,
+          "unemployed_seeking": 0.06770833333333333,
+          "out_of_labour_force": 0.0641025641025641,
+          "education_training": 0.06666666666666667
+        },
+        "p_bonferroni": 1.0,
+        "significant_after_bonferroni": false
+      },
+      {
+        "test": "any unobserved point vs age",
+        "kind": "attribute",
+        "method": "Mann-Whitney U",
+        "n": 1912,
+        "statistic": 391896.0,
+        "p_value": 0.3183697217238681,
+        "effect_size": 0.04913728524828732,
+        "effect_name": "cohens_d",
+        "p_bonferroni": 1.0,
+        "significant_after_bonferroni": false
+      },
+      {
+        "test": "any unobserved point vs sex",
+        "kind": "attribute",
+        "method": "chi-square",
+        "n": 1912,
+        "statistic": 1.480908379803192,
+        "p_value": 0.22363245192960735,
+        "effect_size": 0.027830445045762098,
+        "effect_name": "cramers_v",
+        "p_bonferroni": 1.0,
+        "significant_after_bonferroni": false
+      },
+      {
+        "test": "any unobserved point vs sector",
+        "kind": "attribute",
+        "method": "chi-square",
+        "n": 1912,
+        "statistic": 1.0959635335902642,
+        "p_value": 0.29515364959689805,
+        "effect_size": 0.02394165167510685,
+        "effect_name": "cramers_v",
+        "p_bonferroni": 1.0,
+        "significant_after_bonferroni": false
+      }
+    ],
+    "n_tests": 6,
+    "alpha": 0.05,
+    "bonferroni_threshold": 0.008333333333333333,
+    "verdict": "no evidence against MCAR in the tests run. This does not prove MCAR, and MNAR cannot be tested from the observed data",
+    "limits": "Tests use observed information only. Large samples make small associations significant, so read the effect sizes. No test here can establish MCAR or rule out MNAR.",
+    "primary_policy": "pairwise_available"
+  }
+}

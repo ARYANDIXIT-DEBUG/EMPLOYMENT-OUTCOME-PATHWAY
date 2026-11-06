@@ -1,0 +1,944 @@
+{
+  "is_synthetic": false,
+  "config": {
+    "plan": "A",
+    "verified": true,
+    "trainee_definition": "ever_trained",
+    "timing_support": "coarse_flag",
+    "n_points": 4,
+    "reference_period": "CWS",
+    "min_time_points": 3
+  },
+  "environment": {
+    "python": "3.13.1",
+    "pandas": "3.1.1",
+    "numpy": "2.5.4"
+  },
+  "files": [
+    {
+      "id": "perv1",
+      "path": "data/raw/perv1.csv",
+      "n_rows": 418159
+    },
+    {
+      "id": "perrv",
+      "path": "data/raw/perrv.csv",
+      "n_rows": 504440
+    },
+    {
+      "id": "hhv1",
+      "path": "data/raw/hhv1.csv",
+      "n_rows": 101920
+    },
+    {
+      "id": "hhrv",
+      "path": "data/raw/hhrv.csv",
+      "n_rows": 132844
+    }
+  ],
+  "sha256": {
+    "perv1": "b852af28508a230270b2d371e5a975230dbc363982bad97d1dc8f2601c2664f6",
+    "perrv": "2a20a9d4ce8276c4b713494a126d54a8521596239d63e5d4a8dd4f7c5bc00963",
+    "hhv1": "abf63f803b7239f8f3f316ffc28ff44587d99c94362bfad7ab0989049d7c9b2e",
+    "hhrv": "244bdf31d3a4ef42ea2794f4c1f93db1e2a3569b252a563f6a2028182a7ae9b2"
+  },
+  "read_errors": {},
+  "design": {
+    "files": [
+      {
+        "id": "perv1",
+        "kind": "person",
+        "role": "primary",
+        "release_id": "DDI-IND-CSO-PLFS-2023-24",
+        "design_id": "PLFS-2023-24-rotational-panel",
+        "period": "V1",
+        "sector": "both"
+      },
+      {
+        "id": "perrv",
+        "kind": "person",
+        "role": "primary",
+        "release_id": "DDI-IND-CSO-PLFS-2023-24",
+        "design_id": "PLFS-2023-24-rotational-panel",
+        "period": "V2-V4",
+        "sector": "both"
+      },
+      {
+        "id": "hhv1",
+        "kind": "household",
+        "role": "primary",
+        "release_id": "DDI-IND-CSO-PLFS-2023-24",
+        "design_id": "PLFS-2023-24-rotational-panel",
+        "period": "V1",
+        "sector": "both"
+      },
+      {
+        "id": "hhrv",
+        "kind": "household",
+        "role": "primary",
+        "release_id": "DDI-IND-CSO-PLFS-2023-24",
+        "design_id": "PLFS-2023-24-rotational-panel",
+        "period": "V2-V4",
+        "sector": "both"
+      }
+    ],
+    "primary_designs": [
+      "PLFS-2023-24-rotational-panel"
+    ],
+    "mixed_designs": false,
+    "mix_justification_present": false,
+    "declared_period": "July2023-June2024",
+    "declared_sector_coverage": "both",
+    "notes": [],
+    "caveat": "declared in config.yaml by you; this audit does not verify them"
+  },
+  "schema_issues": [
+    "data.schema.weight is not set: prevalence will be unweighted only (set it only after you verify which multiplier applies to revisit records)",
+    "data.schema.nonresponse_col is not set: no record can be classified as lost to follow-up, so the LOST code will not be used"
+  ],
+  "linkage": {
+    "issues": [
+      "3390 (key, time) pairs occur more than once: the configured key is NOT unique within a time point, so it is not a valid person key"
+    ],
+    "expected_time_points": 4,
+    "min_time_points": 3,
+    "n_records": 922599,
+    "n_records_missing_key": 0,
+    "status": "ok",
+    "n_person_keys": 542755,
+    "time_points_per_person": {
+      "1": 332853,
+      "2": 85828,
+      "3": 81596,
+      "4": 42478
+    },
+    "n_linked_2plus": 209902,
+    "linkage_rate_2plus": 0.386734346067747,
+    "share_at_min_time_points": 0.22860038138755054,
+    "share_full_window": 0.07826367329642288,
+    "mean_time_points": 1.6935984007517204,
+    "duplicate_key_time_pairs": 3390,
+    "time_labels_sorted": [
+      "V1",
+      "V2",
+      "V3",
+      "V4"
+    ],
+    "time_label_order_rule": "numeric if every label is numeric, otherwise alphabetical: verify",
+    "retention_from_first_label": {
+      "V1": 1.0,
+      "V2": 0.3061658364402058,
+      "V3": 0.2035398018457094,
+      "V4": 0.1068660485604758
+    },
+    "link_validity": {
+      "n_linked_keys_checked": 209902,
+      "keys_with_changing_sex": 1448,
+      "keys_with_age_span_over_limit": 4057,
+      "age_span_limit_years": 1.0,
+      "keys_with_changing_sector": 0
+    },
+    "link_validity_note": "a high count of changing sex or large age spans means the key joins different people; sex is used here to validate links only",
+    "linkage_by_first_sector": {
+      "1": {
+        "n_keys": 242546,
+        "share_linked_2plus": 0.0
+      },
+      "2": {
+        "n_keys": 300209,
+        "share_linked_2plus": 0.6991862335905985
+      }
+    },
+    "design_id": "PLFS-2023-24-rotational-panel"
+  },
+  "coverage": {
+    "files": [
+      {
+        "file_id": "perv1",
+        "kind": "person",
+        "role": "primary",
+        "release_id": "DDI-IND-CSO-PLFS-2023-24",
+        "design_id": "PLFS-2023-24-rotational-panel",
+        "declared_period": "V1",
+        "declared_sector": "both",
+        "n_records": 418159,
+        "time_source": "column:visit",
+        "time_labels": {
+          "V1": 418159
+        },
+        "sector_codes": {
+          "1": 242546,
+          "2": 175613
+        }
+      },
+      {
+        "file_id": "perrv",
+        "kind": "person",
+        "role": "primary",
+        "release_id": "DDI-IND-CSO-PLFS-2023-24",
+        "design_id": "PLFS-2023-24-rotational-panel",
+        "declared_period": "V2-V4",
+        "declared_sector": "both",
+        "n_records": 504440,
+        "time_source": "column:visit",
+        "time_labels": {
+          "V2": 170054,
+          "V3": 167594,
+          "V4": 166792
+        },
+        "sector_codes": {
+          "2": 504440
+        }
+      },
+      {
+        "file_id": "hhv1",
+        "kind": "household",
+        "role": "primary",
+        "release_id": "DDI-IND-CSO-PLFS-2023-24",
+        "design_id": "PLFS-2023-24-rotational-panel",
+        "declared_period": "V1",
+        "declared_sector": "both",
+        "n_records": 101920,
+        "time_source": "column:visit",
+        "time_labels": {
+          "V1": 101920
+        }
+      },
+      {
+        "file_id": "hhrv",
+        "kind": "household",
+        "role": "primary",
+        "release_id": "DDI-IND-CSO-PLFS-2023-24",
+        "design_id": "PLFS-2023-24-rotational-panel",
+        "declared_period": "V2-V4",
+        "declared_sector": "both",
+        "n_records": 132844,
+        "time_source": "column:visit",
+        "time_labels": {
+          "V2": 44795,
+          "V3": 44170,
+          "V4": 43879
+        }
+      }
+    ],
+    "time_labels_overall": [
+      "V1",
+      "V2",
+      "V3",
+      "V4"
+    ],
+    "sector_codes_overall": [
+      "1",
+      "2"
+    ],
+    "declared_period": "July2023-June2024",
+    "declared_sector_coverage": "both",
+    "notes": [
+      "2 distinct sector code(s) observed ['1', '2']; declared sector_coverage is 'both': confirm the codes match it using the data dictionary"
+    ]
+  },
+  "training_variables": [
+    {
+      "file_id": "perv1",
+      "release_id": "DDI-IND-CSO-PLFS-2023-24",
+      "design_id": "PLFS-2023-24-rotational-panel",
+      "variable": "b4q12",
+      "present": true,
+      "label_text": "Whether received any Vocational/Technical Training",
+      "refers_to_from_label": [],
+      "refers_to_from_config": [],
+      "refers_to_ambiguous": true,
+      "ambiguity_reason": "no label text or refers_to declared: what this variable refers to cannot be established; read the questionnaire",
+      "n_total": 418159,
+      "n_blank": 121658,
+      "n_declared_na": 0,
+      "n_valid": 296501,
+      "share_valid": 0.7090628206017329,
+      "n_distinct_codes": 6,
+      "code_counts": {
+        "6": 199525,
+        "<blank>": 121658,
+        "4": 27015,
+        "2": 25657,
+        "3": 22814,
+        "1": 13031,
+        "5": 8459
+      },
+      "na_codes_declared": [],
+      "valid_by_age_band": {
+        "0-14": {
+          "n_records": 98386,
+          "n_valid": 23878
+        },
+        "15-29": {
+          "n_records": 109048,
+          "n_valid": 109048
+        },
+        "30-44": {
+          "n_records": 94781,
+          "n_valid": 94781
+        },
+        "45-59": {
+          "n_records": 68794,
+          "n_valid": 68794
+        },
+        "60+": {
+          "n_records": 47150,
+          "n_valid": 0
+        }
+      },
+      "code_by_age_band": {
+        "1": {
+          "0-14": 4,
+          "15-29": 5763,
+          "30-44": 5353,
+          "45-59": 1911,
+          "60+": 0
+        },
+        "2": {
+          "0-14": 114,
+          "15-29": 6514,
+          "30-44": 9796,
+          "45-59": 9233,
+          "60+": 0
+        },
+        "3": {
+          "0-14": 93,
+          "15-29": 6213,
+          "30-44": 9957,
+          "45-59": 6551,
+          "60+": 0
+        },
+        "4": {
+          "0-14": 19,
+          "15-29": 8019,
+          "30-44": 11888,
+          "45-59": 7089,
+          "60+": 0
+        },
+        "5": {
+          "0-14": 76,
+          "15-29": 2329,
+          "30-44": 3724,
+          "45-59": 2330,
+          "60+": 0
+        },
+        "6": {
+          "0-14": 23572,
+          "15-29": 80210,
+          "30-44": 54063,
+          "45-59": 41680,
+          "60+": 0
+        },
+        "<blank>": {
+          "0-14": 74508,
+          "15-29": 0,
+          "30-44": 0,
+          "45-59": 0,
+          "60+": 47150
+        }
+      },
+      "declared_code_meanings": {
+        "1": "vocational/technical training",
+        "2": "non-vocational formal training",
+        "3": "training category 3",
+        "4": "training category 4",
+        "5": "training category 5",
+        "6": "training category 6"
+      },
+      "not_applicable_note": "na_codes declared in the layout"
+    },
+    {
+      "file_id": "perv1",
+      "release_id": "DDI-IND-CSO-PLFS-2023-24",
+      "design_id": "PLFS-2023-24-rotational-panel",
+      "variable": "b4pt1q3",
+      "present": true,
+      "label_text": "Whether Training completed during last 365 days",
+      "refers_to_from_label": [],
+      "refers_to_from_config": [],
+      "refers_to_ambiguous": true,
+      "ambiguity_reason": "no label text or refers_to declared: what this variable refers to cannot be established; read the questionnaire",
+      "n_total": 418159,
+      "n_blank": 405128,
+      "n_declared_na": 0,
+      "n_valid": 13031,
+      "share_valid": 0.0311627873607886,
+      "n_distinct_codes": 2,
+      "code_counts": {
+        "<blank>": 405128,
+        "2": 10278,
+        "1": 2753
+      },
+      "na_codes_declared": [],
+      "valid_by_age_band": {
+        "0-14": {
+          "n_records": 98386,
+          "n_valid": 4
+        },
+        "15-29": {
+          "n_records": 109048,
+          "n_valid": 5763
+        },
+        "30-44": {
+          "n_records": 94781,
+          "n_valid": 5353
+        },
+        "45-59": {
+          "n_records": 68794,
+          "n_valid": 1911
+        },
+        "60+": {
+          "n_records": 47150,
+          "n_valid": 0
+        }
+      },
+      "code_by_age_band": {
+        "1": {
+          "0-14": 2,
+          "15-29": 1335,
+          "30-44": 1014,
+          "45-59": 402,
+          "60+": 0
+        },
+        "2": {
+          "0-14": 2,
+          "15-29": 4428,
+          "30-44": 4339,
+          "45-59": 1509,
+          "60+": 0
+        },
+        "<blank>": {
+          "0-14": 98382,
+          "15-29": 103285,
+          "30-44": 89428,
+          "45-59": 66883,
+          "60+": 47150
+        }
+      },
+      "declared_code_meanings": {
+        "1": "completed last 365 days",
+        "2": "not completed last 365 days"
+      },
+      "not_applicable_note": "na_codes declared in the layout"
+    },
+    {
+      "file_id": "perrv",
+      "release_id": "DDI-IND-CSO-PLFS-2023-24",
+      "design_id": "PLFS-2023-24-rotational-panel",
+      "variable": "b4q12",
+      "present": false,
+      "label_text": null,
+      "refers_to_from_label": [],
+      "refers_to_from_config": [],
+      "refers_to_ambiguous": true,
+      "ambiguity_reason": "no label text or refers_to declared: what this variable refers to cannot be established; read the questionnaire",
+      "n_total": null,
+      "n_blank": null,
+      "n_declared_na": null,
+      "n_valid": null,
+      "share_valid": null,
+      "n_distinct_codes": null,
+      "code_counts": null,
+      "na_codes_declared": null,
+      "valid_by_age_band": null,
+      "code_by_age_band": null,
+      "declared_code_meanings": null,
+      "not_applicable_note": "not_applicable coding NOT declared (layout column has no na_codes): the audit does not infer it; see code_by_age_band and the questionnaire"
+    },
+    {
+      "file_id": "perrv",
+      "release_id": "DDI-IND-CSO-PLFS-2023-24",
+      "design_id": "PLFS-2023-24-rotational-panel",
+      "variable": "b4pt1q3",
+      "present": false,
+      "label_text": null,
+      "refers_to_from_label": [],
+      "refers_to_from_config": [],
+      "refers_to_ambiguous": true,
+      "ambiguity_reason": "no label text or refers_to declared: what this variable refers to cannot be established; read the questionnaire",
+      "n_total": null,
+      "n_blank": null,
+      "n_declared_na": null,
+      "n_valid": null,
+      "share_valid": null,
+      "n_distinct_codes": null,
+      "code_counts": null,
+      "na_codes_declared": null,
+      "valid_by_age_band": null,
+      "code_by_age_band": null,
+      "declared_code_meanings": null,
+      "not_applicable_note": "not_applicable coding NOT declared (layout column has no na_codes): the audit does not infer it; see code_by_age_band and the questionnaire"
+    }
+  ],
+  "trainee": {
+    "declared_definition": "ever_trained",
+    "timing_support": "coarse_flag",
+    "post_training_wording_allowed": false,
+    "wording": "timing support declared in config: coarse_flag (a coarse flag is not a completion date; post-training wording stays blocked)",
+    "definitions": {
+      "ever_trained": {
+        "declared": true,
+        "variable": "b4q12",
+        "codes_yes": [
+          "1"
+        ],
+        "supported": true,
+        "n_person_keys_total": 542755,
+        "n_records_flagged": 13031,
+        "n_keys_flagged": 13031,
+        "share_of_keys": 0.024008991165442972,
+        "n_keys_yes_in_all_valid_records": 13031,
+        "n_keys_yes_in_some_but_not_all": 0,
+        "n_keys_flagged_linked_2plus": 5860,
+        "n_keys_flagged_at_min_time_points": 3867,
+        "n_keys_flagged_full_window": 1940,
+        "ambiguity": "UNCONFIRMED: no label text or refers_to declared: what this variable refers to cannot be established; read the questionnaire"
+      },
+      "recent_completion": {
+        "declared": false,
+        "variable": "b4pt1q3",
+        "codes_yes": [
+          "1"
+        ],
+        "supported": true,
+        "n_person_keys_total": 542755,
+        "n_records_flagged": 2753,
+        "n_keys_flagged": 2753,
+        "share_of_keys": 0.005072270177151754,
+        "n_keys_yes_in_all_valid_records": 2753,
+        "n_keys_yes_in_some_but_not_all": 0,
+        "n_keys_flagged_linked_2plus": 1280,
+        "n_keys_flagged_at_min_time_points": 885,
+        "n_keys_flagged_full_window": 439,
+        "ambiguity": "UNCONFIRMED: no label text or refers_to declared: what this variable refers to cannot be established; read the questionnaire",
+        "note": "unconfirmed: may include exam or entrance-course completion, not only vocational training"
+      }
+    },
+    "issues": [],
+    "min_time_points": 3,
+    "expected_time_points": 4,
+    "design_id": "PLFS-2023-24-rotational-panel"
+  },
+  "missingness": [
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "state",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "fsu",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "sg_sb",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "stratum2",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "hh_no",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "person_no",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "qtr",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "visit",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "sex",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "age",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "sector",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "cws",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": 30219,
+      "pct_unknown_code": 0.07226676933893567
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "b4q12",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 121658,
+      "pct_blank": 0.2909371793982672,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "b4pt1q3",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 405128,
+      "pct_blank": 0.9688372126392114,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "wt",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "status_by_time",
+      "column": "cws",
+      "time_label": "V1",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": 30219,
+      "pct_unknown_code": 0.07226676933893567
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "state",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "fsu",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "sg_sb",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "stratum2",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "hh_no",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "person_no",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "qtr",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "visit",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "sex",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "age",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "sector",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "cws",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": 32123,
+      "pct_unknown_code": 0.06368051700896044
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "wt",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "status_by_time",
+      "column": "cws",
+      "time_label": "V2",
+      "n_records": 170054,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": 10633,
+      "pct_unknown_code": 0.06252719724322862
+    },
+    {
+      "file_id": "perrv",
+      "scope": "status_by_time",
+      "column": "cws",
+      "time_label": "V3",
+      "n_records": 167594,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": 10645,
+      "pct_unknown_code": 0.06351659367280452
+    },
+    {
+      "file_id": "perrv",
+      "scope": "status_by_time",
+      "column": "cws",
+      "time_label": "V4",
+      "n_records": 166792,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": 10845,
+      "pct_unknown_code": 0.06502110412969447
+    },
+    {
+      "file_id": "hhv1",
+      "scope": "column",
+      "column": "state",
+      "time_label": "ALL",
+      "n_records": 101920,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "hhv1",
+      "scope": "column",
+      "column": "fsu",
+      "time_label": "ALL",
+      "n_records": 101920,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "hhv1",
+      "scope": "column",
+      "column": "visit",
+      "time_label": "ALL",
+      "n_records": 101920,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "hhrv",
+      "scope": "column",
+      "column": "state",
+      "time_label": "ALL",
+      "n_records": 132844,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "hhrv",
+      "scope": "column",
+      "column": "fsu",
+      "time_label": "ALL",
+      "n_records": 132844,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "hhrv",
+      "scope": "column",
+      "column": "visit",
+      "time_label": "ALL",
+      "n_records": 132844,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    }
+  ],
+  "nonresponse": []
+}

@@ -1,0 +1,19 @@
+{
+  "name": "figures",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "files": [
+      "state_distribution__SYNTHETIC.png",
+      "state_distribution_by_pathway__SYNTHETIC.png",
+      "sequence_index__SYNTHETIC.png",
+      "medoid_sequences__SYNTHETIC.png",
+      "prevalence__SYNTHETIC.png",
+      "k_selection__SYNTHETIC.png",
+      "stability_curves__SYNTHETIC.png",
+      "baseline_vs_clusters__SYNTHETIC.png",
+      "missingness__SYNTHETIC.png",
+      "silhouette__SYNTHETIC.png"
+    ]
+  }
+}

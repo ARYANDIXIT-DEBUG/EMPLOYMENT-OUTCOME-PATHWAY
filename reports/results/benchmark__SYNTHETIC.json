@@ -1,0 +1,98 @@
+{
+  "name": "benchmark",
+  "tag": "SYNTHETIC",
+  "is_synthetic": true,
+  "data": {
+    "sizes": [
+      100,
+      200,
+      400,
+      800
+    ],
+    "distance": [
+      {
+        "m": 100,
+        "seconds": 0.00859630000195466,
+        "peak_mb": 0.15474700927734375,
+        "estimated_mb": 0.152587890625,
+        "peak_over_estimate": 1.01415,
+        "status": "ok"
+      },
+      {
+        "m": 200,
+        "seconds": 0.010461800004122779,
+        "peak_mb": 0.4611358642578125,
+        "estimated_mb": 0.6103515625,
+        "peak_over_estimate": 0.755525,
+        "status": "ok"
+      },
+      {
+        "m": 400,
+        "seconds": 0.013935499999206513,
+        "peak_mb": 1.8216524124145508,
+        "estimated_mb": 2.44140625,
+        "peak_over_estimate": 0.746148828125,
+        "status": "ok"
+      },
+      {
+        "m": 800,
+        "seconds": 0.0313577999768313,
+        "peak_mb": 6.892879486083984,
+        "estimated_mb": 9.765625,
+        "peak_over_estimate": 0.705830859375,
+        "status": "ok"
+      }
+    ],
+    "clustering": [
+      {
+        "m": 100,
+        "k": 8,
+        "matrix_mb": 0.0762939453125,
+        "pam_seconds": 0.033277400012593716,
+        "pam_extra_peak_mb": 0.23055744171142578,
+        "hier_seconds": 0.03264600000693463,
+        "hier_extra_peak_mb": 0.09129810333251953,
+        "total_peak_mb": 0.3068513870239258,
+        "cap_mb": 512.0,
+        "status": "ok"
+      },
+      {
+        "m": 200,
+        "k": 8,
+        "matrix_mb": 0.30517578125,
+        "pam_seconds": 0.07139769999776036,
+        "pam_extra_peak_mb": 0.6446990966796875,
+        "hier_seconds": 0.060663299984298646,
+        "hier_extra_peak_mb": 0.3302888870239258,
+        "total_peak_mb": 0.9498748779296875,
+        "cap_mb": 512.0,
+        "status": "ok"
+      },
+      {
+        "m": 400,
+        "k": 8,
+        "matrix_mb": null,
+        "pam_seconds": null,
+        "pam_extra_peak_mb": null,
+        "hier_seconds": null,
+        "hier_extra_peak_mb": null,
+        "total_peak_mb": null,
+        "cap_mb": 512.0,
+        "status": "skipped: only 251 fit units available"
+      },
+      {
+        "m": 800,
+        "k": 8,
+        "matrix_mb": null,
+        "pam_seconds": null,
+        "pam_extra_peak_mb": null,
+        "hier_seconds": null,
+        "hier_extra_peak_mb": null,
+        "total_peak_mb": null,
+        "cap_mb": 512.0,
+        "status": "skipped: only 251 fit units available"
+      }
+    ],
+    "note": "measured on this machine; use them to replace the PLACEHOLDER distance.max_n and distance.max_matrix_mb in config.yaml"
+  }
+}

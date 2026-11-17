@@ -1,0 +1,199 @@
+{
+  "input": "data\\raw\\TurkeyPublicUseData.dta",
+  "input_sha256": "1bb32513435d605f48c90dca4264b678b082814dc7ad2106ecb4a144b84e96fc",
+  "pipeline_sha256": "02cedbca49e8a75ac68151d39f7ebb748880d43bcaa81a7e32544db5946a465e",
+  "n_rows": 5902,
+  "n_columns": 1535,
+  "data_label": "",
+  "stata_timestamp": "02 Apr 2014 11:13",
+  "variable_labels": {
+    "UNIQID": "UNUQ_ID",
+    "MM_Group": "Treatment Assignment (1= Treatment)",
+    "Treat": "",
+    "BB_dInterview": "In Baseline",
+    "BB_intdate": "Date of the interview",
+    "BB_work4wks1": "Working at all",
+    "FF_FILTER": "Interview_Result",
+    "FF_dmiss": "Followup Attritor",
+    "FF_intdate": "Date of the interview",
+    "FF_work4wks1": "Working at all",
+    "MIS_EC7": "START DATE OF EVALUATION COURSE",
+    "MIS_EC8": "END DATE OF EVALUATION COURSE",
+    "MIS_course_attend_days": "NUMBER OF ATTENDANCE (DAYS)",
+    "MIS_EC19": "DROP OUT ON THE FIRST DAY",
+    "MIS_EC21": "DROP OUT FROM THE SECOND DAY",
+    "MIS_EC22": "COMPLETED EVALUATION COUSE",
+    "MIS_EC23": "RECEIVED THE CERTIFICATE OF EVALUATION COURSE",
+    "MIS_certEC": "",
+    "FF_C60": "Were you selected for an ISKUR training course between September 2010 and June",
+    "FF_C61": "Did you attend any other vocational training course over the last year",
+    "FF_C62": "Did you complete this course",
+    "employjan12": "Ever employed in formal job by follow-up survey",
+    "lostjobjan1": "Lost first formal job by follow-up survey",
+    "infformaljob": "Still in first formal job at time of jan 2012 survey",
+    "everemployed": "Ever employed in a formal job post-course",
+    "everlostjob": "Lost first formal job nov 2013",
+    "formallyemployedAug2013": "Formally employed in August 2013 according to Social Security",
+    "formallyemployedin2013": "Formally employed in first 8 months of 2013 according to Social Security",
+    "incomeAug2013": "Income earned in August 2013 according to Social Security records",
+    "MM_gender": "GENDER",
+    "BB_age": "Age (B)"
+  },
+  "used_variables": {
+    "UNIQID": "respondent key and uniqueness validation",
+    "MM_Group": "original randomized assignment: 1 treatment, 2 control",
+    "Treat": "assignment consistency check against MM_Group",
+    "BB_dInterview": "baseline interview response validity",
+    "BB_intdate": "actual baseline interview date",
+    "BB_work4wks1": "worked at all in baseline reference period (employment, not unemployment)",
+    "FF_FILTER": "follow-up interview result validity",
+    "FF_dmiss": "follow-up attrition flag",
+    "FF_intdate": "actual follow-up interview date",
+    "FF_work4wks1": "worked at all in follow-up reference period",
+    "MIS_EC7": "administrative exact course start date; baseline timing anchor",
+    "MIS_EC8": "administrative exact course end date; follow-up timing anchor",
+    "MIS_course_attend_days": "administrative days attended; actual participation evidence",
+    "MIS_EC19": "administrative first-day dropout flag",
+    "MIS_EC21": "administrative second-day dropout flag",
+    "MIS_EC22": "administrative evaluation-course completion",
+    "MIS_EC23": "administrative certificate receipt response",
+    "MIS_certEC": "official derived certificate indicator; cross-check only",
+    "FF_C60": "self-reported selection for ISKUR course, not assignment or attendance",
+    "FF_C61": "self-reported other vocational training attendance",
+    "FF_C62": "self-reported ISKUR course status; distinct from MIS attendance/completion",
+    "employjan12": "ever in formal job by January 2012 administrative follow-up",
+    "lostjobjan1": "left first formal job by January 2012 administrative follow-up",
+    "infformaljob": "still in first formal job at January 2012 follow-up",
+    "everemployed": "ever in formal job after course",
+    "everlostjob": "left first formal job by November 2013 follow-up",
+    "formallyemployedAug2013": "point-in-time formal employment in August 2013",
+    "formallyemployedin2013": "any formal employment in first eight months of 2013; cumulative interval, not a wave",
+    "incomeAug2013": "administrative formal earnings in August 2013",
+    "MM_gender": "gender for descriptive participant profile",
+    "BB_age": "baseline age for descriptive participant profile"
+  },
+  "baseline_valid_n": 5278,
+  "baseline_pre_training_n": 3385,
+  "followup_valid_n": 5521,
+  "followup_post_course_n": 5499,
+  "assignment_crosscheck_fail_n": 0,
+  "certificate_raw_answered_n": 3016,
+  "certificate_source_crosscheck_fail_n": 0,
+  "geography": "Turkey",
+  "population": "historical ISKUR vocational training evaluation applicants, 2010-2013",
+  "not_maharashtra": true,
+  "n_baseline_pre_training": 3385,
+  "n_valid_post_training_trajectories": 1546,
+  "trajectory_patterns": [
+    "0->0->0",
+    "0->0->1",
+    "0->1->0",
+    "0->1->1",
+    "1->0->0",
+    "1->0->1",
+    "1->1->0",
+    "1->1->1"
+  ],
+  "cluster_method": "average-linkage agglomerative clustering on individual three-observation binary sequences using Hamming distance",
+  "candidate_cluster_metrics": [
+    {
+      "k": 2,
+      "silhouette_hamming": 0.6402220471187694,
+      "min_cluster_n": 678,
+      "min_cluster_share": 0.4385510996119017,
+      "eligible_min_5pct": true
+    },
+    {
+      "k": 3,
+      "silhouette_hamming": 0.6358308589289317,
+      "min_cluster_n": 88,
+      "min_cluster_share": 0.056921086675291076,
+      "eligible_min_5pct": true
+    },
+    {
+      "k": 4,
+      "silhouette_hamming": 0.7482926611747323,
+      "min_cluster_n": 88,
+      "min_cluster_share": 0.056921086675291076,
+      "eligible_min_5pct": true
+    },
+    {
+      "k": 5,
+      "silhouette_hamming": 0.7691031462705236,
+      "min_cluster_n": 44,
+      "min_cluster_share": 0.028460543337645538,
+      "eligible_min_5pct": false
+    }
+  ],
+  "selected_k": 4,
+  "silhouette_hamming": 0.7482926611747323,
+  "silhouette_interpretation": "individual-level precomputed Hamming distance silhouette; cluster labels are not exact-pattern identifiers",
+  "baseline_comparison": {
+    "valid_pretraining_baseline_n": 3385,
+    "employed_n": 393,
+    "not_employed_n": 2992,
+    "employed_share": 0.11610044313146234,
+    "definition": "worked at all in baseline reference period, among interviewed respondents with actual interview date strictly before administrative course start",
+    "interpretation": "not working is not equivalent to unemployed; it includes people outside the labor force"
+  },
+  "baseline_employed_vs_not_employed": {
+    "0": {
+      "n": 2992,
+      "postfollowup_any_work_share": 0.4211640211640212,
+      "aug2013_formal_work_share": 0.4135162261625962
+    },
+    "1": {
+      "n": 393,
+      "postfollowup_any_work_share": 0.5305039787798409,
+      "aug2013_formal_work_share": 0.5521628498727735
+    }
+  },
+  "followup_attrition_n": 373,
+  "followup_respondents_n": 5521,
+  "attendee_baseline_cohort_n": 1623,
+  "attendee_with_verified_followup_n": 1548,
+  "attendee_followup_unknown_n": 75,
+  "followup_work_extreme_bounds": {
+    "lower": 0.4183610597658657,
+    "upper": 0.4645717806531115
+  },
+  "attrition_admin_comparison": [
+    {
+      "followup_observed": false,
+      "n": 75,
+      "aug2013_formal_share": 0.41333333333333333,
+      "baseline_work_share": 0.10666666666666667
+    },
+    {
+      "followup_observed": true,
+      "n": 1548,
+      "aug2013_formal_share": 0.43790426908150065,
+      "baseline_work_share": 0.1111111111111111
+    }
+  ],
+  "attrition_cluster_prevalence_scenarios": {
+    "missing_followup_assumed_not_working": {
+      "1": 882,
+      "2": 276,
+      "3": 375,
+      "4": 88
+    },
+    "missing_followup_assumed_working": {
+      "1": 877,
+      "2": 245,
+      "3": 403,
+      "4": 96
+    }
+  },
+  "cluster_stability": {
+    "method": "100 deterministic 80% subsamples; re-fit agglomerative clustering; assign all cases to nearest subsample medoid; compare to primary labels by ARI",
+    "replicates": 100,
+    "ari_mean": 0.6197633268606869,
+    "ari_sd": 0.08037272404068324,
+    "ari_min": 0.5326072642102877,
+    "ari_q10": 0.5326072642102877
+  },
+  "certificate_semantics": "MIS_EC23 asks whether the evaluation-course certificate was received; official World Bank Create Variables do-file maps Yes=1 and control blanks=0. Raw response retained separately; derived source MIS_certEC cross-checked. Blank treatment responses remain unknown.",
+  "admin_longitudinal_scope": "Released public DTA contains formal-job milestones by Jan-2012 and Nov-2013 and Aug-2013 point/cumulative indicators. Source paper describes monthly first-job spell records, but these dates/monthly records are not in the released public-use file; no such waves are fabricated.",
+  "submission_suitability": "Suitable for a CA analysis of this historical Turkish evaluation with explicit scope disclosure; does not support Indian/Maharashtra outcome claims."
+}

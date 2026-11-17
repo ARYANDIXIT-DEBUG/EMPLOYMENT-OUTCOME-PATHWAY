@@ -91,13 +91,16 @@ def _code_text(s: pd.Series) -> pd.Series:
     return pd.Series(table[codes], dtype="object")
 
 
-def _code_tables(cfg: Config) -> tuple[list[str], dict[str, int], set[str], set[str]]:
+def _code_tables(cfg: Config, *, synthetic: bool = False) -> tuple[list[str], dict[str, int], set[str], set[str]]:
     """State names, code -> state index, unknown codes, lost codes, all as comparable text. Raises on overlaps."""
     d = cfg.to_dict()
     names = [s["name"] for s in d["states"]]
     to_state: dict[str, int] = {}
     for i, s in enumerate(d["states"]):
-        for c in s.get("raw_codes") or []:
+        codes = list(s.get("raw_codes") or [])
+        if synthetic:
+            codes.extend(s.get("synthetic_codes") or [])
+        for c in codes:
             key = _one_code(c)
             if key is None:
                 raise ConfigError(f"state {s['name']!r} has a blank raw code")
@@ -126,7 +129,7 @@ def map_raw_to_state(raw: pd.Series, nonresponse: pd.Series, cfg: Config, *, syn
     """
     if len(raw) != len(nonresponse):
         raise ValueError(f"raw ({len(raw)}) and nonresponse ({len(nonresponse)}) must have the same length")
-    _, to_state, unknown, lost_codes = _code_tables(cfg)
+    _, to_state, unknown, lost_codes = _code_tables(cfg, synthetic=synthetic)
     if synthetic and not lost_codes:
         lost_codes = {SYNTHETIC_LOST_CODE}
     r = _code_text(raw)
@@ -267,6 +270,8 @@ def build_trajectories(long_df: pd.DataFrame, cfg: Config) -> TrajectoryData:
     mapped = map_raw_to_state(long_df["raw_status"], nonresp, cfg, synthetic=synthetic)
     states = np.full((n, T), MISSING, dtype=np.int8)
     states[person_code, t] = mapped
+    recorded_mask = np.zeros((n, T), dtype=bool)
+    recorded_mask[person_code, t] = True
 
     attrs = _person_attributes(long_df, person_code, t, ids)
     weights, wmeta = _person_weights(long_df, cfg, synthetic, person_code, t, n)
@@ -278,12 +283,13 @@ def build_trajectories(long_df: pd.DataFrame, cfg: Config) -> TrajectoryData:
         "n_cells_without_record": int(n * T - len(long_df)),
         "records_by_kind": {"state": int((mapped >= 0).sum()), "missing_or_unknown": int((mapped == MISSING).sum()),
                             "lost": int((mapped == LOST).sum())},
+        "lost_codes_status": str(d.get("lost_codes_status", "unresolved")),
         "mapping_rules": "lost_codes -> LOST; states[].raw_codes -> state; unknown_codes or blank -> MISSING; "
                          "any other code raises; a pair with no record is MISSING",
         **wmeta,
     }
     return TrajectoryData(ids=ids.astype(object), states=states, time_labels=labels, state_names=names,
-                          attrs=attrs, weights=weights, is_synthetic=synthetic, meta=meta)
+                          attrs=attrs, weights=weights, is_synthetic=synthetic, meta=meta, recorded_mask=recorded_mask)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -497,7 +503,9 @@ def _demo() -> int:
     K, T = len(td.state_names), td.T
 
     # Independent re-derivation, row by row, from the config code table (slow but obviously correct).
-    code = {str(s["raw_codes"][0]): i for i, s in enumerate(d["states"])}
+    code = {str((s.get("raw_codes") or s.get("synthetic_codes") or [None])[0]): i
+            for i, s in enumerate(d["states"])}
+    code.pop("None", None)
     unk = str(d["unknown_codes"][0])
     lost_c = str(d["lost_codes"][0]) if d["lost_codes"] else SYNTHETIC_LOST_CODE
     pos = {pid: i for i, pid in enumerate(sorted(df["person_id"].unique()))}
@@ -550,7 +558,7 @@ def _demo() -> int:
     far = one.copy(); far.loc[far.index[0], "t"] = T
     mixed = df.iloc[:6].copy(); mixed["is_synthetic"] = [True, True, True, False, False, False]
     float_codes = Config({**d, "states": [{**s, "raw_codes": [float(i + 1)]} for i, s in enumerate(d["states"])],
-                          "unknown_codes": [99], "lost_codes": [97]}, cfg.root)
+                          "unknown_codes": [99], "lost_codes": [97], "lost_codes_status": "documented"}, cfg.root)
     mapped = map_raw_to_state(pd.Series([1.0, 2.0, np.nan, 99.0, "  3 ", None]), pd.Series([None, None, None, None, None, 97.0]), float_codes)
 
     checks = {

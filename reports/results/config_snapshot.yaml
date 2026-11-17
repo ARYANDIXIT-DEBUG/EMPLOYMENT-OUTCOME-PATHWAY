@@ -11,6 +11,8 @@ paths:
   docs_dir: docs
 data:
   plan: UNSET
+  checkpoint1_status: UNRESOLVED
+  b4q12_permission_status: user_confirmed
   scope_approved: false
   period: July2023-June2024
   sector_coverage: both
@@ -65,6 +67,18 @@ data:
         stratum2:
           source: b1q14_perv1
           label: Second Stage Stratum No.
+        stratum:
+          source: b1q5_perv1
+          label: Stratum (audit comparison; cross-visit stability rule unconfirmed)
+        sub_stratum:
+          source: b1q6_perv1
+          label: Sub-Stratum (audit comparison; cross-visit stability rule unconfirmed)
+        sub_sample:
+          source: b1q11_perv1
+          label: Sub-Sample (audit comparison; cross-visit stability rule unconfirmed)
+        fod_sub_region:
+          source: b1q12_perv1
+          label: FOD Sub-Region (audit comparison; cross-visit stability rule unconfirmed)
         hh_no:
           source: b1q15_perv1
           label: Sample Household Number
@@ -130,6 +144,18 @@ data:
         stratum2:
           source: b1q14_perrv
           label: Second Stage Stratum No.
+        stratum:
+          source: b1q5_perrv
+          label: Stratum (audit comparison; cross-visit stability rule unconfirmed)
+        sub_stratum:
+          source: b1q6_perrv
+          label: Sub-Stratum (audit comparison; cross-visit stability rule unconfirmed)
+        sub_sample:
+          source: b1q11_perrv
+          label: Sub-Sample (audit comparison; cross-visit stability rule unconfirmed)
+        fod_sub_region:
+          source: b1q12_perrv
+          label: FOD Sub-Region (audit comparison; cross-visit stability rule unconfirmed)
         hh_no:
           source: b1q15_perrv
           label: Sample Household Number
@@ -205,27 +231,13 @@ data:
     training_cols:
     - b4q12
     - b4pt1q3
-  verified: true
-  verified_note: 'Verified 2026-11-05 against NADA catalogue 213 (microdata.gov.in/NADA/index.php/catalog/213)
-    and actual CSV headers. Column names confirmed from CSV header check. CWS codes
-    11-97 confirmed from MoSPI PLFS annual report (OFFICIAL-DOC tier). b4q12 code
-    1 = vocational/technical training confirmed from full CSV scan: 13,031 records
-    with code 1; codes 2-6 are other/non-vocational training types. b4pt1q3 codes
-    1=completed/2=not-completed confirmed from cross-tab (non-blank only when b4q12=1).
-    Visit values are string labels V1/V2/V3/V4. Sector: 1=Rural, 2=Urban, both present
-    in both person files. Items left null: weight (panel validity unconfirmed), social_group,
-    religion (HH-level only), nonresponse_col (no such variable in person files).
-    b1q12 (b1q12_perv1 / b1q12_perrv) is FOD Sub-region code (PLFS Schedule 10.4 Block
-    1 field 12) — Field Operations Division administrative code, NOT an alternate
-    state identifier. NOT part of the person key. The first two digits of b1q12 represent
-    the state in FOD''s own coding scheme, which differs from the Census/NSS state
-    code (the ''state'' column). Known mismatches between Census state codes and FOD-prefix
-    digits are NSS administrative coding conventions, not data errors: state=04→FOD-prefix=06;
-    state=25→FOD-prefix=24; state=34→FOD-prefix=33/28/32; state=37→FOD-prefix=01;
-    state=31→FOD-prefix=32. These affect several thousand rows each but do not affect
-    any analysis variable — b1q12 is not used in trajectory construction. qtr (qtr_perv1
-    / qtr_perrv) is verified as a separate time coordinate and linked using visit-aware
-    cohort-quarter derivation in src.data_loader; it is not part of household_id.
+  verified: false
+  verified_note: 'Legacy verification note retained for audit trail only; it is not
+    an attestation. Official Catalogue 213 files and CSV headers are present, but
+    individual mappings, persistent person linkage, longitudinal weights, and data-use
+    scope are not all validated. The broad CWS categories 11-72, 81/82, and 91-98
+    follow PLFS Instruction Manual Vol. I §3.6.14; individual 91-98 labels and code
+    99 remain unresolved. See reports/P4_permissions.md and reports/11_baseline_resolution.md.
 
     '
 states:
@@ -235,35 +247,44 @@ states:
   - '41'
   - '42'
   - '51'
-  - '61'
-  - '62'
   - '71'
   - '72'
+  synthetic_codes: []
 - name: self_employment
   raw_codes:
   - '11'
   - '12'
+  - '61'
+  - '62'
+  synthetic_codes: []
 - name: unpaid_family_work
   raw_codes:
   - '21'
+  synthetic_codes: []
 - name: unemployed_seeking
   raw_codes:
   - '81'
   - '82'
+  synthetic_codes: []
 - name: out_of_labour_force
   raw_codes:
+  - '91'
   - '92'
   - '93'
   - '94'
   - '95'
+  - '96'
   - '97'
+  - '98'
+  synthetic_codes: []
 - name: education_training
-  raw_codes:
-  - '91'
+  raw_codes: []
+  synthetic_codes:
+  - SYNTHETIC:education_training
 unknown_codes:
-- '98'
 - '99'
 lost_codes: []
+lost_codes_status: unresolved
 time:
   n_points: 4
   labels:
@@ -422,3 +443,10 @@ report:
   results_tag: SYNTHETIC
 tier2:
   enabled: false
+validation:
+  data_integrity: audit_passed_schema_open
+  mappings: broad_groups_documented_detail_unresolved
+  linkage: candidate_rule_implemented_identity_unconfirmed
+  permissions: user_confirmed
+  profiling_scope: unresolved
+  research_readiness: blocked

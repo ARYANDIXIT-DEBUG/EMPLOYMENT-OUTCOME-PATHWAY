@@ -1,0 +1,13 @@
+cluster_id,admin_jan12_first_job_state,n,share_cluster
+1,first_job_active_jan2012,33,0.052969502407704656
+1,first_job_left_by_jan2012,103,0.1653290529695024
+1,no_formal_job_by_jan2012,487,0.7817014446227929
+2,first_job_active_jan2012,24,0.09795918367346938
+2,first_job_left_by_jan2012,71,0.2897959183673469
+2,no_formal_job_by_jan2012,150,0.6122448979591837
+3,first_job_active_jan2012,197,0.3338983050847458
+3,first_job_left_by_jan2012,209,0.35423728813559324
+3,no_formal_job_by_jan2012,184,0.31186440677966104
+4,first_job_active_jan2012,30,0.3409090909090909
+4,first_job_left_by_jan2012,33,0.375
+4,no_formal_job_by_jan2012,25,0.2840909090909091

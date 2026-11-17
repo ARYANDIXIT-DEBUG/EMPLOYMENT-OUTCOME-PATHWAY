@@ -53,6 +53,7 @@ __all__ = [
 PROTECTED_ROLES: tuple[str, ...] = ("sex", "social_group", "religion")
 
 _DEFAULT_ROOT = Path(__file__).resolve().parent.parent
+_LOST_CODES_STATUSES = {"documented", "documented_unavailable", "unresolved"}
 
 
 class ConfigError(Exception):
@@ -260,6 +261,14 @@ def _validate(data: Any) -> list[str]:
     for top, kind in (("states", list), ("unknown_codes", list), ("lost_codes", list), ("features", dict)):
         if not isinstance(data.get(top), kind):
             errs.append(f"'{top}' must be a {kind.__name__}")
+    lost_status = data.get("lost_codes_status")
+    if lost_status not in _LOST_CODES_STATUSES:
+        errs.append("'lost_codes_status' must be one of documented, documented_unavailable, unresolved")
+    elif isinstance(data.get("lost_codes"), list):
+        if lost_status == "documented" and not data["lost_codes"]:
+            errs.append("lost_codes_status is documented but lost_codes is empty")
+        elif lost_status in {"documented_unavailable", "unresolved"} and data["lost_codes"]:
+            errs.append(f"lost_codes_status is {lost_status} but lost_codes is non-empty")
     schema = (data.get("data") or {}).get("schema")
     if not isinstance(schema, dict):
         errs.append("'data.schema' must be a mapping")
@@ -304,11 +313,19 @@ def _validate(data: Any) -> list[str]:
             continue
         names.append(st["name"])
         codes = st.get("raw_codes")
-        if not (isinstance(codes, list) and codes):
-            errs.append(f"state '{st['name']}' needs a non-empty 'raw_codes' list")
+        synthetic_codes = st.get("synthetic_codes", [])
+        if not isinstance(codes, list) or (not codes and not synthetic_codes):
+            errs.append(f"state '{st['name']}' needs raw_codes or synthetic_codes")
             continue
+        if not isinstance(synthetic_codes, list):
+            errs.append(f"state '{st['name']}.synthetic_codes' must be a list")
+            synthetic_codes = []
         for c in codes:
             claim(c, f"state:{st['name']}")
+        # Synthetic-only codes are kept out of the real CWS namespace.
+        for c in synthetic_codes:
+            if not str(c).startswith("SYNTHETIC:"):
+                errs.append(f"state '{st['name']}' synthetic_codes must use the SYNTHETIC: prefix")
     if len(set(names)) != len(names):
         errs.append("state names must be unique")
     for key, label in (("unknown_codes", "unknown_codes"), ("lost_codes", "lost_codes")):
@@ -390,6 +407,8 @@ def _validate(data: Any) -> list[str]:
         ev = tr["timing_evidence"]
         if not (isinstance(ev, dict) and ev.get("source") and ev.get("note")):
             errs.append("trainee.timing_support is not 'none' but trainee.timing_evidence lacks 'source' and 'note'")
+        if tr["timing_support"] == "dated" and not (isinstance(ev, dict) and str(ev.get("status", "")).upper() == "VERIFIED"):
+            errs.append("trainee.timing_support is 'dated' but trainee.timing_evidence.status is not VERIFIED")
 
     # Rule 9: plan and scope approval
     dd = data["data"]

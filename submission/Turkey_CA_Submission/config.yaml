@@ -1,0 +1,555 @@
+# config.yaml: single source of truth for every dataset fact and method choice.
+#
+# STATUS: P5 — updated 2026-11-06 (was P4).
+#   P5 change:
+#     Quarter-aware cohort linking is implemented in src/data_loader.py. Its within-key/quarter/visit
+#     duplicate check passes on the current files, but CHECKPOINT 1 and official permission/code
+#     questions remain unresolved. Keep data.plan UNSET; no real-data modelling is authorized here.
+#     qtr stays a temporal coordinate, not an equality-join key (see data.schema below).
+#   P3 changes (retained — all verified 2026-11-05):
+#     [2] qtr column added to layouts.perv1 (source: qtr_perv1, col[002]).
+#     [3] qtr column added to layouts.perrv (source: qtr_perrv, col[002]).
+#     [4] CWS code 42 comment corrected: OFFICIAL label is "Casual wage labour in MGNREGS
+#         public works" — NOT agricultural casual wage. Mapping (wage_employment) CORRECT.
+#     [5] P4 review of Instruction Manual Vol. I §3.6.14: CWS codes 91–98 are out of labour force.
+#         Code 98 is therefore mapped to out_of_labour_force, not unknown/MISSING.
+#     [6] verified_note extended: FOD sub-region (b1q12) explained; state→FOD-prefix mismatches
+#         documented as NSS conventions, not errors.
+#   P2 status (2026-11-05): mapped to PLFS 2023-24 (DDI-IND-CSO-PLFS-2023-24, catalogue 213).
+#   Column names verified against actual CSV headers on 2026-11-05.
+#   CWS broad groups: Instruction Manual Vol. I §3.6.14 (PDF pp. 104–106): 11–72 employed,
+#   81/82 unemployed, 91–98 out of labour force. Individual 91–98 and code 99 labels are unresolved.
+#   b4q12_perv1 codes: confirmed from full CSV scan of perv1.csv on 2026-11-05
+#     (code 1 = "received vocational/technical training"; codes 2-6 = other/non-voc;
+#      blank = not applicable — training block not asked of under-15s and others).
+#   b4pt1q3_perv1 codes: confirmed from cross-tab on 2026-11-05
+#     (code 1 = completed last 365 days; code 2 = not completed last 365 days;
+#      non-blank only when b4q12=1, confirming it gates on vocational training).
+#   Visit values: 'V1' in perv1, 'V2'/'V3'/'V4' in perrv — string labels with prefix.
+#   Sector codes: 1=Rural, 2=Urban — both present across both person files.
+#   UNVERIFIED (left null): weight (panel validity), social_group, religion, nonresponse_col.
+#   Raw codes are compared as strings, so 11 and "11" are the same code.
+# Keys and shapes follow docs/INTERFACES.md section 6, plus key added in v1.6: clustering.medoid_min_observed.
+
+project:
+  name: employment-pathways
+  group: G24
+  seed: 2026                       # fixed seed; every random draw goes through make_rng(cfg, salt)
+
+paths:                             # relative to the project root; resolved by resolve_path()
+  raw_dir: data/raw
+  processed_dir: data/processed
+  results_dir: reports/results       # Canonical active results source; dashboard reads saved files here.
+  figures_dir: reports/figures       # Canonical active figure source.
+  report_template: reports/report_template.md
+  docs_dir: docs
+
+# ---------------------------------------------------------------------------------------------
+# DATA (gate). Verified from NADA catalogue 213 and actual CSV headers 2026-11-05.
+# ---------------------------------------------------------------------------------------------
+data:
+  plan: UNSET                       # Closed: CHECKPOINT 1 and full-test validation are unresolved
+  checkpoint1_status: UNRESOLVED
+  b4q12_permission_status: user_confirmed # User-confirmed in this session; no profiling scope inferred.
+  scope_approved: false
+  period: "July2023-June2024"      # DDI-IND-CSO-PLFS-2023-24
+  sector_coverage: both            # Files contain both rural (1) and urban (2) records; urban CWS focus
+  files:
+    - id: perv1
+      path: data/raw/perv1.csv
+      release_id: "DDI-IND-CSO-PLFS-2023-24"
+      design_id: "PLFS-2023-24-rotational-panel"
+      period: "V1"
+      sector: both
+      kind: person
+      role: primary
+    - id: perrv
+      path: data/raw/perrv.csv
+      release_id: "DDI-IND-CSO-PLFS-2023-24"
+      design_id: "PLFS-2023-24-rotational-panel"
+      period: "V2-V4"
+      sector: both
+      kind: person
+      role: primary
+    - id: hhv1
+      path: data/raw/hhv1.csv
+      release_id: "DDI-IND-CSO-PLFS-2023-24"
+      design_id: "PLFS-2023-24-rotational-panel"
+      period: "V1"
+      sector: both
+      kind: household
+      role: primary
+    - id: hhrv
+      path: data/raw/hhrv.csv
+      release_id: "DDI-IND-CSO-PLFS-2023-24"
+      design_id: "PLFS-2023-24-rotational-panel"
+      period: "V2-V4"
+      sector: both
+      kind: household
+      role: primary
+
+  layouts:
+    # -----------------------------------------------------------------------------------------
+    # Layout strategy: each layout maps canonical column names (used in data.schema) to the
+    # actual header name in the CSV via the 'source' field.  This lets both person files
+    # expose the same canonical names to the loader even though their raw headers differ
+    # (e.g. visit_perv1 vs visit_perrv, state_perv1 vs state_perrv, etc.).
+    # -----------------------------------------------------------------------------------------
+
+    # perv1: Person, first visit (V1). 139 columns, 418,159 rows.
+    perv1:
+      format: csv
+      encoding: utf-8
+      sep: ","
+      columns:
+        # --- linking key (canonical names; source = actual CSV header) ---
+        state:
+          source: state_perv1
+          label: "State/UT Code"
+        fsu:
+          source: b1q1_perv1
+          label: "FSU Serial Number"
+        sg_sb:
+          source: b1q13_perv1
+          label: "Sample Sg/Sb No."
+        stratum2:
+          source: b1q14_perv1
+          label: "Second Stage Stratum No."
+        stratum:
+          source: b1q5_perv1
+          label: "Stratum (audit comparison; cross-visit stability rule unconfirmed)"
+        sub_stratum:
+          source: b1q6_perv1
+          label: "Sub-Stratum (audit comparison; cross-visit stability rule unconfirmed)"
+        sub_sample:
+          source: b1q11_perv1
+          label: "Sub-Sample (audit comparison; cross-visit stability rule unconfirmed)"
+        fod_sub_region:
+          source: b1q12_perv1
+          label: "FOD Sub-Region (audit comparison; cross-visit stability rule unconfirmed)"
+        hh_no:
+          source: b1q15_perv1
+          label: "Sample Household Number"
+        person_no:
+          source: b4q1_perv1
+          label: "Person Serial No."
+        qtr:
+          source: qtr_perv1
+          label: "Quarter of survey (Q1=Jul-Sep 2023, Q2=Oct-Dec 2023, Q3=Jan-Mar 2024, Q4=Apr-Jun 2024)"
+          # Confirmed from CSV header scan 2026-11-05: col[002] = qtr_perv1, values Q1/Q2/Q3/Q4.
+          # Used with visit to derive the V1 cohort quarter; never equality-joined as a key component.
+        # --- time ---
+        visit:
+          source: visit_perv1
+          label: "Visit (values: V1)"
+        # --- demographic ---
+        sex:
+          source: b4q5_perv1
+          label: "Gender"
+        age:
+          source: b4q6_perv1
+          label: "Age"
+          dtype: int
+        # --- sector ---
+        sector:
+          source: b1q3_perv1
+          label: "Sector (1=Rural, 2=Urban)"
+        # --- employment status ---
+        cws:
+          source: b6q5_perv1
+          label: "Current Weekly Status (CWS)"
+        # --- training ---
+        b4q12:
+          source: b4q12_perv1
+          label: "Whether received any Vocational/Technical Training"
+          # Codes confirmed from CSV scan 2026-11-05:
+          #   1 = vocational/technical training received  (13,031 persons)
+          #   2 = non-vocational formal training          (25,657)
+          #   3,4,5,6 = other training categories        (varies)
+          #   blank = not applicable (under-15s, no training)
+          codes:
+            "1": "vocational/technical training"
+            "2": "non-vocational formal training"
+            "3": "training category 3"
+            "4": "training category 4"
+            "5": "training category 5"
+            "6": "training category 6"
+          na_codes: []
+        b4pt1q3:
+          source: b4pt1q3_perv1
+          label: "Whether Training completed during last 365 days"
+          # Codes confirmed from cross-tab (non-blank only when b4q12=1):
+          #   1 = completed within last 365 days  (2,753)
+          #   2 = not completed within last 365 days  (10,278)
+          codes:
+            "1": "completed last 365 days"
+            "2": "not completed last 365 days"
+          na_codes: []
+        # --- survey weight ---
+        wt:
+          source: mult_perv1
+          label: "Sub-sample wise Multiplier"
+          dtype: float
+        no_qtr:
+          source: no_qtr_perv1
+          label: "Occurrence of FSU in State x Sector x Stratum x Sub-Stratum in number of quarters"
+          dtype: int
+        nss:
+          source: NSS_perv1
+          label: "Number of sample FSUs in the second-stage stratum for NSS subsample"
+          dtype: int
+        nsc:
+          source: NSC_perv1
+          label: "Number of sample FSUs in the second-stage stratum for NSC subsample"
+          dtype: int
+
+    # perrv: Person, revisit (V2, V3, V4). 104 columns, 504,440 rows.
+    # NOTE: person serial column is b4q1_pervv (double-v) in this file — confirmed from CSV header.
+    perrv:
+      format: csv
+      encoding: utf-8
+      sep: ","
+      columns:
+        # --- linking key (same canonical names; different CSV sources) ---
+        state:
+          source: state_perrv
+          label: "State/UT Code"
+        fsu:
+          source: b1q1_perrv
+          label: "FSU Serial Number"
+        sg_sb:
+          source: b1q13_perrv
+          label: "Sample Sg/Sb No."
+        stratum2:
+          source: b1q14_perrv
+          label: "Second Stage Stratum No."
+        stratum:
+          source: b1q5_perrv
+          label: "Stratum (audit comparison; cross-visit stability rule unconfirmed)"
+        sub_stratum:
+          source: b1q6_perrv
+          label: "Sub-Stratum (audit comparison; cross-visit stability rule unconfirmed)"
+        sub_sample:
+          source: b1q11_perrv
+          label: "Sub-Sample (audit comparison; cross-visit stability rule unconfirmed)"
+        fod_sub_region:
+          source: b1q12_perrv
+          label: "FOD Sub-Region (audit comparison; cross-visit stability rule unconfirmed)"
+        hh_no:
+          source: b1q15_perrv
+          label: "Sample Household Number"
+        person_no:
+          source: b4q1_pervv
+          label: "Person Serial No. (NB: source header is b4q1_pervv — double-v)"
+        qtr:
+          source: qtr_perrv
+          label: "Quarter of survey (Q1=Jul-Sep 2023, Q2=Oct-Dec 2023, Q3=Jan-Mar 2024, Q4=Apr-Jun 2024)"
+          # Confirmed from CSV header scan 2026-11-05: col[002] = qtr_perrv, values Q1/Q2/Q3/Q4.
+          # perrv contains quarterly samples together. Quarter plus visit distinguishes within-file
+          # records, while the loader links only records with the same derived V1 cohort quarter.
+        # --- time ---
+        visit:
+          source: visit_perrv
+          label: "Visit (values: V2, V3, V4)"
+        # --- demographic ---
+        sex:
+          source: b4q5_perrv
+          label: "Gender"
+        age:
+          source: b4q6_perrv
+          label: "Age"
+          dtype: int
+        # --- sector ---
+        sector:
+          source: b1q3_perrv
+          label: "Sector (1=Rural, 2=Urban)"
+        # --- employment status ---
+        cws:
+          source: b6q5_perrv
+          label: "Current Weekly Status (CWS)"
+        # --- survey weight ---
+        wt:
+          source: mult_perrv
+          label: "Sub-sample wise Multiplier"
+          dtype: float
+        # Training columns not present in perrv — no b4q12 or b4pt1q3 in this file (confirmed from header).
+
+    # Household files: not used in person trajectory analysis.
+    # Minimal layouts for file_hashes and coverage_report only.
+    hhv1:
+      format: csv
+      encoding: utf-8
+      sep: ","
+      columns:
+        state: {source: state_hhv1}
+        fsu:   {source: b1q1_hhv1}
+        visit: {source: visit_hhv1}
+
+    hhrv:
+      format: csv
+      encoding: utf-8
+      sep: ","
+      columns:
+        state: {source: state_hhrv}
+        fsu:   {source: b1q1_hhrv}
+        visit: {source: visit_hhrv}
+
+  design_mix_justification: null   # both person files share the same design_id
+
+  schema:
+    # Composite linking key: state + FSU + Sg/Sb + 2nd-stage stratum + HH number + person serial.
+    # household_id = first 5 components; person_id = person serial (the 6th).
+    # Canonical names map to actual CSV headers through each layout's 'source' field.
+    #
+    # Stable sample/person key. Quarter is a separate temporal coordinate and is
+    # used by src.data_loader to validate within-quarter uniqueness and derive the
+    # cohort quarter from the visit number. Thus Q1/V1, Q2/V2, Q3/V3 and Q4/V4
+    # link; cross-quarter key collisions at the same visit remain separate people.
+    household_id:
+      - state
+      - fsu
+      - sg_sb
+      - stratum2
+      - hh_no
+    person_id: person_no
+    visit: visit               # canonical column name, resolved per-layout to visit_perv1 / visit_perrv
+    quarter: qtr               # survey quarter; required for validated rotational-panel linking
+    month: null
+    sector: sector             # 1=Rural, 2=Urban (both present; apply urban filter in preprocessing)
+    age: age
+    sex: sex                   # protected: link validation only, never a clustering input
+    social_group: null         # not in person files; HH-level only — UNVERIFIED location
+    religion: null             # not in person files; HH-level only — UNVERIFIED location
+    weight: null               # wt column confirmed as "Sub-sample wise Multiplier" (mult_perv1 / mult_perrv)
+                               # but validity for panel/revisit analysis is UNVERIFIED — keep null
+    status_col: cws            # CWS summary: b6q5_perv1 in perv1, b6q5_perrv in perrv (via layout source)
+    nonresponse_col: null      # No non-response/casualty column in either person file (confirmed from NADA
+                               # data dictionary: 104 cols perrv, 139 cols perv1, none labelled casualty)
+    training_cols:
+      - b4q12                  # "Whether received any Vocational/Technical Training" — perv1 only
+      - b4pt1q3                # "Whether Training completed during last 365 days" — perv1 only
+
+  verified: false
+  verified_note: >
+    Legacy verification note retained for audit trail only; it is not an attestation. Official Catalogue 213
+    files and CSV headers are present, but individual mappings, persistent person linkage, longitudinal weights,
+    and data-use scope are not all validated. The broad CWS categories 11-72, 81/82, and 91-98 follow
+    PLFS Instruction Manual Vol. I §3.6.14; individual 91-98 labels and code 99 remain unresolved.
+    See reports/P4_permissions.md and reports/11_baseline_resolution.md.
+
+# ---------------------------------------------------------------------------------------------
+# STATE SPACE. Broad classes from MoSPI PLFS Instruction Manual Vol. I §3.6.14, PDF pp. 104–106.
+# The manual does not provide individual labels for CWS codes 91–98 in this section. Code 99 is
+# outside its stated CWS ranges. Neither individual codes 91–98 nor 99 are assigned invented meanings.
+# ---------------------------------------------------------------------------------------------
+states:
+  - name: wage_employment
+    # Regular salaried/wage employee (31), casual wage labour (41,42,51), and temporarily absent
+    # from regular salaried/wage work (71/72), as described in Instruction Manual Vol. I §§3.6.2, 3.6.8.
+    # Code 42 OFFICIAL label (MoSPI Schedule 10.4 codebook): "Casual wage labour in public works
+    # under MGNREGS". NOT agricultural casual wage — previous comment "agriculture" was inferred
+    # from demographic patterns and was INCORRECT. Corrected 2026-11-05 against official codebook.
+    raw_codes: ["31", "41", "42", "51", "71", "72"]
+    synthetic_codes: []
+  - name: self_employment
+    # Codes 61/62 represent had self-employment work in household enterprises but did not work;
+    # Vol. I §3.6.8 associates them with activity codes 11/12/21. They remain in this broad subgroup.
+    raw_codes: ["11", "12", "61", "62"]
+    synthetic_codes: []
+  - name: unpaid_family_work
+    # Helper in household enterprise, unpaid family worker (21)
+    raw_codes: ["21"]
+    synthetic_codes: []
+  - name: unemployed_seeking
+    # Unemployed seeking work (81) or not seeking but available (82)
+    raw_codes: ["81", "82"]
+    synthetic_codes: []
+  - name: out_of_labour_force
+    # Instruction Manual Vol. I §3.6.14 documents the broad group only: CWS codes 91–98 are OLF.
+    # No individual code meanings are assigned here.
+    raw_codes: ["91", "92", "93", "94", "95", "96", "97", "98"]
+    synthetic_codes: []
+  - name: education_training
+    # Synthetic demonstration state only. CWS code 91 is not given a distinct real-data meaning.
+    raw_codes: []
+    synthetic_codes: ["SYNTHETIC:education_training"]
+
+# Codes that are present but cannot be classified -> treated as MISSING
+# Code 99 is outside the CWS ranges stated in Instruction Manual Vol. I §3.6.14. Its meaning is
+# unresolved; do not infer one. It remains unclassified/MISSING pending an official code-label source.
+unknown_codes: ["99"]
+
+# P4: no person-level lost code is defined in the reviewed documents, but the documents do not
+# explicitly state that none exists. Do not infer a code or a nonresponse field.
+lost_codes: []
+lost_codes_status: unresolved
+
+time:
+  n_points: 4                      # 4 visits: V1 (perv1) + V2, V3, V4 (perrv)
+                                   # Confirmed from full CSV scan: perv1 visit_perv1=['V1'],
+                                   # perrv visit_perrv=['V2','V3','V4']
+  labels: [visit_1, visit_2, visit_3, visit_4]
+  reference_period: CWS            # Current Weekly Status at every visit
+
+# ---------------------------------------------------------------------------------------------
+# TRAINEE DEFINITION. Codes confirmed from CSV scan 2026-11-05.
+# ---------------------------------------------------------------------------------------------
+trainee:
+  definition: ever_trained
+  rules:
+    ever_trained:
+      variable: b4q12             # canonical column name from layout
+      codes_yes: ["1"]            # Code 1 = vocational/technical training received — confirmed from CSV scan
+    recent_completion:
+      variable: b4pt1q3           # canonical column name from layout
+      codes_yes: ["1"]            # Code 1 = completed within last 365 days — confirmed from cross-tab
+  min_time_points: 3              # PROPOSED: observed points needed to enter the analysis
+  timing_support: coarse_flag     # b4pt1q3 provides a coarse completion flag (last 365 days)
+                                  # but cannot date training precisely within the panel window
+  timing_evidence:
+    source: "NADA catalogue 213 perv1 variable b4pt1q3_perv1 label: 'Whether Training completed during last 365 days'"
+    note: >
+      Code 1 (completed last 365 days) confirmed from CSV cross-tab on 2026-11-05. Only non-blank
+      when b4q12=1 (vocational/technical training), confirming it gates correctly. 2,753 records
+      with code 1 (completed) and 10,278 with code 2 (not completed). Post-training wording
+      remains BLOCKED because coarse_flag does not date training within the panel window.
+
+# ---------------------------------------------------------------------------------------------
+# MISSING DATA.
+# ---------------------------------------------------------------------------------------------
+missing:
+  policy: pairwise_available
+  min_overlap: 2
+  attr_handling:
+    numeric: median
+    categorical: unknown_category
+  sensitivity_policies: [complete_cases_only, forward_fill, missing_as_state]
+
+# ---------------------------------------------------------------------------------------------
+# DISTANCE and REDUCTION. Placeholders for size limits; the benchmark sets the real values.
+# ---------------------------------------------------------------------------------------------
+distance:
+  name: dynamic_hamming
+  substitution: trate
+  indel: 1.0
+  attribute_inputs: []
+  reduction: collapse_then_subsample
+  max_n: 3000
+  max_matrix_mb: 512
+  peak_factor: 2.0
+  block_rows: 256
+
+# ---------------------------------------------------------------------------------------------
+# BASELINE. Defined BEFORE any clustering run. Fill and lock after Checkpoint 1.
+# ---------------------------------------------------------------------------------------------
+baseline:
+  reference_visit: 3               # PROPOSED: last visit (index 3 = V4); revisit after audit histogram
+  employed_states: [wage_employment, self_employment, unpaid_family_work]
+  unknown_treatment: exclude
+  sample_rule: same_as_clustering
+  locked: false
+  change_log: []
+  sensitivity_variants_def: []
+
+# ---------------------------------------------------------------------------------------------
+# CLUSTERING
+# ---------------------------------------------------------------------------------------------
+clustering:
+  k_candidates: [2, 3, 4, 5, 6, 7, 8]
+  primary: kmedoids
+  comparison: hierarchical
+  linkage: average
+  n_init: 10
+  max_iter: 100
+  medoid_min_observed: all
+  min_cluster_frac: 0.02
+  k_rule:
+    min_stability_ari: 0.6
+    silhouette_margin: 0.02
+  k_stability_repeats: 10
+  feature_inputs: []
+
+evaluation:
+  feature_representation: null
+
+# ---------------------------------------------------------------------------------------------
+# STABILITY UNDER ATTRITION
+# ---------------------------------------------------------------------------------------------
+stability:
+  n_repeats: 30
+  random_loss: [0.1, 0.2, 0.3, 0.4]
+  informative:
+    attribute: age
+    strength: 1.0
+  censor_points: [3, 2]
+  survival_max_dist: 0.25
+
+# ---------------------------------------------------------------------------------------------
+# PROFILING and FEATURES
+# ---------------------------------------------------------------------------------------------
+profiling:
+  permitted_vars: []                # Empty: profiling whitelist not inferred from the rider.
+  weighted: false                  # true only after weight validity for panel records is verified
+features: {}
+
+# ---------------------------------------------------------------------------------------------
+# SYNTHETIC (pipeline testing and planted-structure validation only; never reported as a result)
+# ---------------------------------------------------------------------------------------------
+synthetic:
+  n: 2000
+  noise: 0.08
+  missing_rate: 0.10
+  planted:
+    - {name: stable_wage,                 prevalence: 0.28, prototype: [wage_employment, wage_employment, wage_employment, wage_employment]}
+    - {name: stable_self_employment,      prevalence: 0.18, prototype: [self_employment, self_employment, self_employment, self_employment]}
+    - {name: unemployed_to_wage,          prevalence: 0.14, prototype: [unemployed_seeking, unemployed_seeking, wage_employment, wage_employment]}
+    - {name: wage_to_exit,                prevalence: 0.10, prototype: [wage_employment, wage_employment, unemployed_seeking, out_of_labour_force]}
+    - {name: stable_out_of_labour_force,  prevalence: 0.18, prototype: [out_of_labour_force, out_of_labour_force, out_of_labour_force, out_of_labour_force]}
+    - {name: education_to_wage,           prevalence: 0.12, prototype: [education_training, education_training, wage_employment, wage_employment]}
+
+dashboard:
+  title: "Employment Outcome Pathway Grouping After Skilling"
+  synthetic_banner: "SYNTHETIC DEMONSTRATION - NOT PLFS RESULTS"
+
+report:
+  template: null
+  results_tag: auto
+
+tier2:
+  enabled: false
+
+# Evidence-state summary. These fields are independent; no single boolean certifies research readiness.
+validation:
+  data_integrity: audit_passed_schema_open # Inputs read and dimensions/headers checked; unresolved schema/code items remain.
+  mappings: broad_groups_documented_detail_unresolved # Individual CWS codes 91–98 and code 99 remain unresolved.
+  linkage: candidate_rule_implemented_identity_unconfirmed # Candidate links are reproducible; persistent identity is unconfirmed.
+  permissions: user_confirmed       # User confirms approval/permission; no profiling whitelist is implied.
+  profiling_scope: unresolved       # Rider does not name an allowed profiling-variable whitelist.
+  research_readiness: blocked       # CHECKPOINT 1, plan, timing, mappings and linkage remain unresolved.
+  cross_sectional_readiness: passed_descriptive_only # perv1 cohort, CWS groups, annual weight inputs, and reconciliation validated; no clusters.
+
+# Separately gated one-time analysis. It does not alter or open the longitudinal gate above.
+cross_sectional:
+  enabled: true
+  status: validated
+  cohort: formal_vocational_training
+  training_field: b4q12
+  training_code: "1"
+  age_min: 15
+  age_max: 59
+  sector_scope: both
+  observation_file: perv1
+  observation_visit: V1
+  outcome_scope: "CWS broad groups only"
+  weight_formula: "mult / (100 if nss == nsc else 200) / no_qtr"
+  fields:
+    no_qtr: no_qtr_perv1
+    nss: NSS_perv1
+    nsc: NSC_perv1
+  permission_status: user_confirmed
+  training_definition_source: "Instruction Manual Vol II, Schedule 10.4, pp. 5-6; formal training particulars apply to code 1"
+  age_definition_source: "Instruction Manual Vol II, Schedule 10.4, pp. 5-6; training module universe age 12-59; analysis uses 15-59 for CWS indicator comparability"
+  weight_source: "Catalogue 213 user rider, section B: combined subsample divisor and annual NO_QTR adjustment"
+  cws_source: "Instruction Manual Vol I, section 3.6.14, pp. 104-106; broad CWS categories only"
+  clustering: disabled
+  clustering_reason: "CWS is a single categorical outcome; occupational profiling permission is not established."

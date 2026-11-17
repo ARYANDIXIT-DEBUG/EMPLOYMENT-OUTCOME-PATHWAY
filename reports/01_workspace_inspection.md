@@ -1,4 +1,4 @@
-# Workspace inspection — SIH26135 / PLFS 2023–24
+# Workspace inspection — legacy PLFS 2023–24 route
 
 > Historical baseline snapshot before Prompts 3–10. Its legacy-linking, permission, and pytest statements reflect the code/configuration at that inspection point. For current quarter-aware audit status, gate conditions, full-suite result, and readiness, see `reports/06_checkpoint1.md` and `reports/10_readiness.md`.
 

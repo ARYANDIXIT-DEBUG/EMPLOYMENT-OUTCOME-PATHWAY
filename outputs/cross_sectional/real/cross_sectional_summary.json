@@ -1,0 +1,203 @@
+{
+  "analysis_type": "cross_sectional_annual_cws_descriptive",
+  "is_synthetic": false,
+  "research_question": "Annual CWS employment-indicator distribution at first visit among people aged 15–59 reporting formal vocational/technical training.",
+  "cohort": "perv1 V1; age 15–59; b4q12 code 1; rural and urban",
+  "summary": {
+    "source_rows": 418159,
+    "eligible_rows": 13027,
+    "excluded_by_cohort_rule": 405132,
+    "eligible_by_quarter": {
+      "Q1": 3452,
+      "Q2": 3214,
+      "Q3": 3173,
+      "Q4": 3188
+    },
+    "eligible_by_sector": {
+      "1": 5132,
+      "2": 7895
+    },
+    "outcome_missing_rows": 0,
+    "outcome_unclassified_rows": 0,
+    "no_qtr_distribution": {
+      "3.0": 2,
+      "4.0": 13025
+    },
+    "combined_subsample_divisor_distribution": {
+      "100.0": 16,
+      "200.0": 13011
+    }
+  },
+  "estimates": [
+    {
+      "sector": "all",
+      "cws_group": "employed",
+      "n_unweighted": 8612,
+      "n_known_cws": 13027,
+      "share_unweighted_known_cws": 0.6610885084823828,
+      "weighted_estimated_count": 19426941.12166667,
+      "share_weighted_known_cws": 0.6223861521351726,
+      "weighted_estimated_total_eligible": 31213646.150416665,
+      "n_cws_missing_or_unclassified": 0,
+      "weight_formula": "MULT / (100 if NSS == NSC else 200) / NO_QTR"
+    },
+    {
+      "sector": "all",
+      "cws_group": "unemployed",
+      "n_unweighted": 1231,
+      "n_known_cws": 13027,
+      "share_unweighted_known_cws": 0.094496046672296,
+      "weighted_estimated_count": 2876171.46875,
+      "share_weighted_known_cws": 0.09214468104398647,
+      "weighted_estimated_total_eligible": 31213646.150416665,
+      "n_cws_missing_or_unclassified": 0,
+      "weight_formula": "MULT / (100 if NSS == NSC else 200) / NO_QTR"
+    },
+    {
+      "sector": "all",
+      "cws_group": "out_of_labour_force",
+      "n_unweighted": 3184,
+      "n_known_cws": 13027,
+      "share_unweighted_known_cws": 0.24441544484532127,
+      "weighted_estimated_count": 8910533.559999999,
+      "share_weighted_known_cws": 0.28546916682084106,
+      "weighted_estimated_total_eligible": 31213646.150416665,
+      "n_cws_missing_or_unclassified": 0,
+      "weight_formula": "MULT / (100 if NSS == NSC else 200) / NO_QTR"
+    },
+    {
+      "sector": "1",
+      "cws_group": "employed",
+      "n_unweighted": 3440,
+      "n_known_cws": 5132,
+      "share_unweighted_known_cws": 0.6703039750584567,
+      "weighted_estimated_count": 9612213.220416667,
+      "share_weighted_known_cws": 0.6117045693346868,
+      "weighted_estimated_total_eligible": 15713816.280416667,
+      "n_cws_missing_or_unclassified": 0,
+      "weight_formula": "MULT / (100 if NSS == NSC else 200) / NO_QTR"
+    },
+    {
+      "sector": "1",
+      "cws_group": "unemployed",
+      "n_unweighted": 475,
+      "n_known_cws": 5132,
+      "share_unweighted_known_cws": 0.09255650818394388,
+      "weighted_estimated_count": 1529980.9962499999,
+      "share_weighted_known_cws": 0.09736533563503205,
+      "weighted_estimated_total_eligible": 15713816.280416667,
+      "n_cws_missing_or_unclassified": 0,
+      "weight_formula": "MULT / (100 if NSS == NSC else 200) / NO_QTR"
+    },
+    {
+      "sector": "1",
+      "cws_group": "out_of_labour_force",
+      "n_unweighted": 1217,
+      "n_known_cws": 5132,
+      "share_unweighted_known_cws": 0.23713951675759937,
+      "weighted_estimated_count": 4571622.063750001,
+      "share_weighted_known_cws": 0.29093009503028117,
+      "weighted_estimated_total_eligible": 15713816.280416667,
+      "n_cws_missing_or_unclassified": 0,
+      "weight_formula": "MULT / (100 if NSS == NSC else 200) / NO_QTR"
+    },
+    {
+      "sector": "2",
+      "cws_group": "employed",
+      "n_unweighted": 5172,
+      "n_known_cws": 7895,
+      "share_unweighted_known_cws": 0.6550981633945535,
+      "weighted_estimated_count": 9814727.901250001,
+      "share_weighted_known_cws": 0.6332152019453101,
+      "weighted_estimated_total_eligible": 15499829.870000001,
+      "n_cws_missing_or_unclassified": 0,
+      "weight_formula": "MULT / (100 if NSS == NSC else 200) / NO_QTR"
+    },
+    {
+      "sector": "2",
+      "cws_group": "unemployed",
+      "n_unweighted": 756,
+      "n_known_cws": 7895,
+      "share_unweighted_known_cws": 0.09575680810639646,
+      "weighted_estimated_count": 1346190.4725000001,
+      "share_weighted_known_cws": 0.08685195152403309,
+      "weighted_estimated_total_eligible": 15499829.870000001,
+      "n_cws_missing_or_unclassified": 0,
+      "weight_formula": "MULT / (100 if NSS == NSC else 200) / NO_QTR"
+    },
+    {
+      "sector": "2",
+      "cws_group": "out_of_labour_force",
+      "n_unweighted": 1967,
+      "n_known_cws": 7895,
+      "share_unweighted_known_cws": 0.24914502849905004,
+      "weighted_estimated_count": 4338911.49625,
+      "share_weighted_known_cws": 0.27993284653065675,
+      "weighted_estimated_total_eligible": 15499829.870000001,
+      "n_cws_missing_or_unclassified": 0,
+      "weight_formula": "MULT / (100 if NSS == NSC else 200) / NO_QTR"
+    }
+  ],
+  "employment_indicators": [
+    {
+      "sector": "all",
+      "n_unweighted": 13027,
+      "weighted_population_estimate": 31213646.150416665,
+      "weighted_employed_estimate": 19426941.12166667,
+      "weighted_unemployed_estimate": 2876171.46875,
+      "wpr_weighted": 0.6223861521351726,
+      "lfpr_weighted": 0.714530833179159,
+      "ur_weighted": 0.12895829929970626,
+      "wpr_unweighted": 0.6610885084823828,
+      "lfpr_unweighted": 0.7555845551546787,
+      "ur_unweighted": 0.1250634969013512,
+      "denominator_missing_or_unclassified": 0
+    },
+    {
+      "sector": "1",
+      "n_unweighted": 5132,
+      "weighted_population_estimate": 15713816.280416667,
+      "weighted_employed_estimate": 9612213.220416667,
+      "weighted_unemployed_estimate": 1529980.9962499999,
+      "wpr_weighted": 0.6117045693346868,
+      "lfpr_weighted": 0.7090699049697188,
+      "ur_weighted": 0.1373141561256786,
+      "wpr_unweighted": 0.6703039750584567,
+      "lfpr_unweighted": 0.7628604832424006,
+      "ur_unweighted": 0.12132822477650064,
+      "denominator_missing_or_unclassified": 0
+    },
+    {
+      "sector": "2",
+      "n_unweighted": 7895,
+      "weighted_population_estimate": 15499829.870000001,
+      "weighted_employed_estimate": 9814727.901250001,
+      "weighted_unemployed_estimate": 1346190.4725000001,
+      "wpr_weighted": 0.6332152019453101,
+      "lfpr_weighted": 0.7200671534693432,
+      "ur_weighted": 0.12061646070866194,
+      "wpr_unweighted": 0.6550981633945535,
+      "lfpr_unweighted": 0.7508549715009499,
+      "ur_unweighted": 0.12753036437246965,
+      "denominator_missing_or_unclassified": 0
+    }
+  ],
+  "weight": "annual weight = MULT / (100 if NSS == NSC else 200) / NO_QTR, Catalogue 213 rider §§B (combined subsamples and annual estimate)",
+  "cws_mapping": "11–72 employed; 81/82 unemployed; 91–98 out of labour force; blank remains missing; any other code remains unclassified",
+  "provenance": {
+    "input_file": "data\\raw\\perv1.csv",
+    "input_sha256": "b852af28508a230270b2d371e5a975230dbc363982bad97d1dc8f2601c2664f6",
+    "config_sha256": "c735d9f9bf0873814d1f750adac49df65dab5289b57e410435821f21b9bee54d",
+    "code_file": "src\\cross_sectional.py",
+    "code_sha256": "80c5811eb29341728195a2e595a234997b0f1a05b97b25f2f8c51a46479e5ba2",
+    "seed": null,
+    "randomness": "none"
+  },
+  "limits": [
+    "Cross-sectional first-visit estimates; no person linking, transitions, or pathways.",
+    "Descriptive association only; no causal training effect.",
+    "No demographic profiling or occupational clustering was performed.",
+    "CWS missing/unclassified outcomes are retained and reported separately, never assigned to unemployment.",
+    "The perv1 file has no sample nonresponse/casualty field; the published multiplier is used without an inferred separate nonresponse adjustment."
+  ]
+}

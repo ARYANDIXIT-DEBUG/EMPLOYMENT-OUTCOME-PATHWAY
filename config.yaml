@@ -3,22 +3,22 @@
 # STATUS: P5 — updated 2026-11-06 (was P4).
 #   P5 change:
 #     Quarter-aware cohort linking is implemented in src/data_loader.py. Its within-key/quarter/visit
-#     duplicate check passes on the current files, but CHECKPOINT 1 still reports 3,390 duplicates
-#     under its legacy key/time rule, and the complete test suite does not pass. Keep data.plan UNSET
-#     until the audit and test blockers are resolved; no real-data modelling is authorized here.
+#     duplicate check passes on the current files, but CHECKPOINT 1 and official permission/code
+#     questions remain unresolved. Keep data.plan UNSET; no real-data modelling is authorized here.
 #     qtr stays a temporal coordinate, not an equality-join key (see data.schema below).
 #   P3 changes (retained — all verified 2026-11-05):
 #     [2] qtr column added to layouts.perv1 (source: qtr_perv1, col[002]).
 #     [3] qtr column added to layouts.perrv (source: qtr_perrv, col[002]).
 #     [4] CWS code 42 comment corrected: OFFICIAL label is "Casual wage labour in MGNREGS
 #         public works" — NOT agricultural casual wage. Mapping (wage_employment) CORRECT.
-#     [5] Code 98 comment corrected: OFFICIAL label for b6q5=98 is "not known / others"
-#         (NSSO residual). Avg age in data: 44–46, 78–79% male. Mapping (unknown_codes) CORRECT.
+#     [5] P4 review of Instruction Manual Vol. I §3.6.14: CWS codes 91–98 are out of labour force.
+#         Code 98 is therefore mapped to out_of_labour_force, not unknown/MISSING.
 #     [6] verified_note extended: FOD sub-region (b1q12) explained; state→FOD-prefix mismatches
 #         documented as NSS conventions, not errors.
 #   P2 status (2026-11-05): mapped to PLFS 2023-24 (DDI-IND-CSO-PLFS-2023-24, catalogue 213).
 #   Column names verified against actual CSV headers on 2026-11-05.
-#   CWS codes 11-97: MoSPI PLFS annual report (OFFICIAL-DOC tier).
+#   CWS broad groups: Instruction Manual Vol. I §3.6.14 (PDF pp. 104–106): 11–72 employed,
+#   81/82 unemployed, 91–98 out of labour force. Individual 91–98 and code 99 labels are unresolved.
 #   b4q12_perv1 codes: confirmed from full CSV scan of perv1.csv on 2026-11-05
 #     (code 1 = "received vocational/technical training"; codes 2-6 = other/non-voc;
 #      blank = not applicable — training block not asked of under-15s and others).
@@ -39,8 +39,8 @@ project:
 paths:                             # relative to the project root; resolved by resolve_path()
   raw_dir: data/raw
   processed_dir: data/processed
-  results_dir: reports/results
-  figures_dir: reports/figures
+  results_dir: reports/results       # Canonical active results source; dashboard reads saved files here.
+  figures_dir: reports/figures       # Canonical active figure source.
   report_template: reports/report_template.md
   docs_dir: docs
 
@@ -49,6 +49,8 @@ paths:                             # relative to the project root; resolved by r
 # ---------------------------------------------------------------------------------------------
 data:
   plan: UNSET                       # Closed: CHECKPOINT 1 and full-test validation are unresolved
+  checkpoint1_status: UNRESOLVED
+  b4q12_permission_status: user_confirmed # User-confirmed in this session; no profiling scope inferred.
   scope_approved: false
   period: "July2023-June2024"      # DDI-IND-CSO-PLFS-2023-24
   sector_coverage: both            # Files contain both rural (1) and urban (2) records; urban CWS focus
@@ -113,6 +115,18 @@ data:
         stratum2:
           source: b1q14_perv1
           label: "Second Stage Stratum No."
+        stratum:
+          source: b1q5_perv1
+          label: "Stratum (audit comparison; cross-visit stability rule unconfirmed)"
+        sub_stratum:
+          source: b1q6_perv1
+          label: "Sub-Stratum (audit comparison; cross-visit stability rule unconfirmed)"
+        sub_sample:
+          source: b1q11_perv1
+          label: "Sub-Sample (audit comparison; cross-visit stability rule unconfirmed)"
+        fod_sub_region:
+          source: b1q12_perv1
+          label: "FOD Sub-Region (audit comparison; cross-visit stability rule unconfirmed)"
         hh_no:
           source: b1q15_perv1
           label: "Sample Household Number"
@@ -176,6 +190,18 @@ data:
           source: mult_perv1
           label: "Sub-sample wise Multiplier"
           dtype: float
+        no_qtr:
+          source: no_qtr_perv1
+          label: "Occurrence of FSU in State x Sector x Stratum x Sub-Stratum in number of quarters"
+          dtype: int
+        nss:
+          source: NSS_perv1
+          label: "Number of sample FSUs in the second-stage stratum for NSS subsample"
+          dtype: int
+        nsc:
+          source: NSC_perv1
+          label: "Number of sample FSUs in the second-stage stratum for NSC subsample"
+          dtype: int
 
     # perrv: Person, revisit (V2, V3, V4). 104 columns, 504,440 rows.
     # NOTE: person serial column is b4q1_pervv (double-v) in this file — confirmed from CSV header.
@@ -197,6 +223,18 @@ data:
         stratum2:
           source: b1q14_perrv
           label: "Second Stage Stratum No."
+        stratum:
+          source: b1q5_perrv
+          label: "Stratum (audit comparison; cross-visit stability rule unconfirmed)"
+        sub_stratum:
+          source: b1q6_perrv
+          label: "Sub-Stratum (audit comparison; cross-visit stability rule unconfirmed)"
+        sub_sample:
+          source: b1q11_perrv
+          label: "Sub-Sample (audit comparison; cross-visit stability rule unconfirmed)"
+        fod_sub_region:
+          source: b1q12_perrv
+          label: "FOD Sub-Region (audit comparison; cross-visit stability rule unconfirmed)"
         hh_no:
           source: b1q15_perrv
           label: "Sample Household Number"
@@ -291,74 +329,60 @@ data:
       - b4q12                  # "Whether received any Vocational/Technical Training" — perv1 only
       - b4pt1q3                # "Whether Training completed during last 365 days" — perv1 only
 
-  verified: true
+  verified: false
   verified_note: >
-    Verified 2026-11-05 against NADA catalogue 213 (microdata.gov.in/NADA/index.php/catalog/213)
-    and actual CSV headers. Column names confirmed from CSV header check. CWS codes 11-97 confirmed
-    from MoSPI PLFS annual report (OFFICIAL-DOC tier). b4q12 code 1 = vocational/technical training
-    confirmed from full CSV scan: 13,031 records with code 1; codes 2-6 are other/non-vocational
-    training types. b4pt1q3 codes 1=completed/2=not-completed confirmed from cross-tab (non-blank
-    only when b4q12=1). Visit values are string labels V1/V2/V3/V4. Sector: 1=Rural, 2=Urban,
-    both present in both person files. Items left null: weight (panel validity unconfirmed),
-    social_group, religion (HH-level only), nonresponse_col (no such variable in person files).
-    b1q12 (b1q12_perv1 / b1q12_perrv) is FOD Sub-region code (PLFS Schedule 10.4 Block 1 field
-    12) — Field Operations Division administrative code, NOT an alternate state identifier. NOT
-    part of the person key. The first two digits of b1q12 represent the state in FOD's own coding
-    scheme, which differs from the Census/NSS state code (the 'state' column). Known mismatches
-    between Census state codes and FOD-prefix digits are NSS administrative coding conventions, not
-    data errors: state=04→FOD-prefix=06; state=25→FOD-prefix=24; state=34→FOD-prefix=33/28/32;
-    state=37→FOD-prefix=01; state=31→FOD-prefix=32. These affect several thousand rows each but
-    do not affect any analysis variable — b1q12 is not used in trajectory construction.
-    qtr (qtr_perv1 / qtr_perrv) is verified as a separate time coordinate and linked using visit-aware
-    cohort-quarter derivation in src.data_loader; it is not part of household_id.
+    Legacy verification note retained for audit trail only; it is not an attestation. Official Catalogue 213
+    files and CSV headers are present, but individual mappings, persistent person linkage, longitudinal weights,
+    and data-use scope are not all validated. The broad CWS categories 11-72, 81/82, and 91-98 follow
+    PLFS Instruction Manual Vol. I §3.6.14; individual 91-98 labels and code 99 remain unresolved.
+    See reports/P4_permissions.md and reports/11_baseline_resolution.md.
 
 # ---------------------------------------------------------------------------------------------
-# STATE SPACE. CWS codes verified from MoSPI PLFS annual report (OFFICIAL-DOC tier).
-# Source: plfs_verification.md §1.6. Codes compared as strings.
+# STATE SPACE. Broad classes from MoSPI PLFS Instruction Manual Vol. I §3.6.14, PDF pp. 104–106.
+# The manual does not provide individual labels for CWS codes 91–98 in this section. Code 99 is
+# outside its stated CWS ranges. Neither individual codes 91–98 nor 99 are assigned invented meanings.
 # ---------------------------------------------------------------------------------------------
 states:
   - name: wage_employment
-    # Regular salaried/wage employee (31), casual wage labour in public works other than MGNREGS (41),
-    # casual wage labour in MGNREGS public works (42), casual wage labour in other (51),
-    # had job but absent sick/other reason (61,62,71,72).
+    # Regular salaried/wage employee (31), casual wage labour (41,42,51), and temporarily absent
+    # from regular salaried/wage work (71/72), as described in Instruction Manual Vol. I §§3.6.2, 3.6.8.
     # Code 42 OFFICIAL label (MoSPI Schedule 10.4 codebook): "Casual wage labour in public works
     # under MGNREGS". NOT agricultural casual wage — previous comment "agriculture" was inferred
     # from demographic patterns and was INCORRECT. Corrected 2026-11-05 against official codebook.
-    # Demographic: avg age 46.3, 78% female in perv1 — consistent with MGNREG workforce composition.
-    # Code 12 OFFICIAL label: "Employer (self-employed with hired workers)" — mapped to self_employment.
-    raw_codes: ["31", "41", "42", "51", "61", "62", "71", "72"]
+    raw_codes: ["31", "41", "42", "51", "71", "72"]
+    synthetic_codes: []
   - name: self_employment
-    # Own-account worker (11), employer/self-employed with hired workers (12)
-    # Code 12 confirmed from demographic pattern: avg age 45.8, 82% urban, working-age adults
-    raw_codes: ["11", "12"]
+    # Codes 61/62 represent had self-employment work in household enterprises but did not work;
+    # Vol. I §3.6.8 associates them with activity codes 11/12/21. They remain in this broad subgroup.
+    raw_codes: ["11", "12", "61", "62"]
+    synthetic_codes: []
   - name: unpaid_family_work
     # Helper in household enterprise, unpaid family worker (21)
     raw_codes: ["21"]
+    synthetic_codes: []
   - name: unemployed_seeking
     # Unemployed seeking work (81) or not seeking but available (82)
     raw_codes: ["81", "82"]
+    synthetic_codes: []
   - name: out_of_labour_force
-    # Domestic duties only (92), rentiers/pensioners (93), unable to work (94),
-    # begging (95), others not in LF (97)
-    raw_codes: ["92", "93", "94", "95", "97"]
+    # Instruction Manual Vol. I §3.6.14 documents the broad group only: CWS codes 91–98 are OLF.
+    # No individual code meanings are assigned here.
+    raw_codes: ["91", "92", "93", "94", "95", "96", "97", "98"]
+    synthetic_codes: []
   - name: education_training
-    # Attending educational institution (91) — closest real CWS code to education/training status.
-    # Note: trainees in full-time education still appear here; the trainee filter (b4q12=1)
-    # operates separately from this state assignment.
-    raw_codes: ["91"]
+    # Synthetic demonstration state only. CWS code 91 is not given a distinct real-data meaning.
+    raw_codes: []
+    synthetic_codes: ["SYNTHETIC:education_training"]
 
 # Codes that are present but cannot be classified -> treated as MISSING
-# Code 99: average age 2.2 years from data scan — infants/toddlers below the CWS reference age.
-#   Not an employment state; treated as not applicable / missing status. Comment is correct.
-# Code 98: avg age 44–46, 78–79% male across both person files (confirmed from data scan 2026-11-05).
-#   OFFICIAL label for b6q5=98 is "not known / others" (standard NSSO residual category).
-#   Web sources citing "0-4 years" for code 98 refer to a DIFFERENT schedule block, NOT b6q5 (CWS).
-#   Cannot map to an employment state; treated as MISSING (consistent with pipeline missing policy).
-#   Corrected 2026-11-05.
-unknown_codes: ["98", "99"]
+# Code 99 is outside the CWS ranges stated in Instruction Manual Vol. I §3.6.14. Its meaning is
+# unresolved; do not infer one. It remains unclassified/MISSING pending an official code-label source.
+unknown_codes: ["99"]
 
-# Non-response / casualty codes that mean LOST. No such column in person files.
+# P4: no person-level lost code is defined in the reviewed documents, but the documents do not
+# explicitly state that none exists. Do not infer a code or a nonresponse field.
 lost_codes: []
+lost_codes_status: unresolved
 
 time:
   n_points: 4                      # 4 visits: V1 (perv1) + V2, V3, V4 (perrv)
@@ -464,7 +488,7 @@ stability:
 # PROFILING and FEATURES
 # ---------------------------------------------------------------------------------------------
 profiling:
-  permitted_vars: []
+  permitted_vars: []                # Empty: profiling whitelist not inferred from the rider.
   weighted: false                  # true only after weight validity for panel records is verified
 features: {}
 
@@ -484,7 +508,7 @@ synthetic:
     - {name: education_to_wage,           prevalence: 0.12, prototype: [education_training, education_training, wage_employment, wage_employment]}
 
 dashboard:
-  title: "Employment Outcome Pathways (INT396 CA-1, G24)"
+  title: "Employment Outcome Pathway Grouping After Skilling"
   synthetic_banner: "SYNTHETIC DEMONSTRATION - NOT PLFS RESULTS"
 
 report:
@@ -493,3 +517,39 @@ report:
 
 tier2:
   enabled: false
+
+# Evidence-state summary. These fields are independent; no single boolean certifies research readiness.
+validation:
+  data_integrity: audit_passed_schema_open # Inputs read and dimensions/headers checked; unresolved schema/code items remain.
+  mappings: broad_groups_documented_detail_unresolved # Individual CWS codes 91–98 and code 99 remain unresolved.
+  linkage: candidate_rule_implemented_identity_unconfirmed # Candidate links are reproducible; persistent identity is unconfirmed.
+  permissions: user_confirmed       # User confirms approval/permission; no profiling whitelist is implied.
+  profiling_scope: unresolved       # Rider does not name an allowed profiling-variable whitelist.
+  research_readiness: blocked       # CHECKPOINT 1, plan, timing, mappings and linkage remain unresolved.
+  cross_sectional_readiness: passed_descriptive_only # perv1 cohort, CWS groups, annual weight inputs, and reconciliation validated; no clusters.
+
+# Separately gated one-time analysis. It does not alter or open the longitudinal gate above.
+cross_sectional:
+  enabled: true
+  status: validated
+  cohort: formal_vocational_training
+  training_field: b4q12
+  training_code: "1"
+  age_min: 15
+  age_max: 59
+  sector_scope: both
+  observation_file: perv1
+  observation_visit: V1
+  outcome_scope: "CWS broad groups only"
+  weight_formula: "mult / (100 if nss == nsc else 200) / no_qtr"
+  fields:
+    no_qtr: no_qtr_perv1
+    nss: NSS_perv1
+    nsc: NSC_perv1
+  permission_status: user_confirmed
+  training_definition_source: "Instruction Manual Vol II, Schedule 10.4, pp. 5-6; formal training particulars apply to code 1"
+  age_definition_source: "Instruction Manual Vol II, Schedule 10.4, pp. 5-6; training module universe age 12-59; analysis uses 15-59 for CWS indicator comparability"
+  weight_source: "Catalogue 213 user rider, section B: combined subsample divisor and annual NO_QTR adjustment"
+  cws_source: "Instruction Manual Vol I, section 3.6.14, pp. 104-106; broad CWS categories only"
+  clustering: disabled
+  clustering_reason: "CWS is a single categorical outcome; occupational profiling permission is not established."

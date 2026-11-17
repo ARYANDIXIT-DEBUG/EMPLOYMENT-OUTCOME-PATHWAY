@@ -46,7 +46,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from . import LOST, MISSING, TrajectoryData
+from . import LOST, MISSING, SYNTHETIC_LOST_CODE, TrajectoryData
 from .config import Config, load_config
 
 __all__ = [
@@ -384,11 +384,15 @@ def _demo_td(cfg: Config, df: pd.DataFrame, truth: Any, extra_missing: str | Non
     """
     d = cfg.to_dict()
     names = [s["name"] for s in d["states"]]
-    code = {str(s["raw_codes"][0]): i for i, s in enumerate(d["states"])}
+    code = {str((s.get("raw_codes") or s.get("synthetic_codes") or [None])[0]): i
+            for i, s in enumerate(d["states"])}
+    code.pop("None", None)
     n, T = truth.params["n"], truth.params["T"]
     S = np.full((n, T), MISSING, dtype=np.int8)
     pid = df["person_id"].str[1:].astype(int).to_numpy()
-    lost_code = str(d["lost_codes"][0])
+    # Smoke/demo data need a synthetic sentinel when the real release has no documented lost code.
+    # This sentinel is confined to this synthetic fixture and is never added to the config mapping.
+    lost_code = str(d["lost_codes"][0]) if d.get("lost_codes") else SYNTHETIC_LOST_CODE
     for p, t, raw, nr in zip(pid, df["t"].to_numpy(), df["raw_status"].to_numpy(), df["nonresponse_code"].to_numpy()):
         if nr is not None and str(nr) == lost_code:
             S[p, t] = LOST

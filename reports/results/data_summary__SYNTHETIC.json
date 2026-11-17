@@ -8,6 +8,9 @@
     "n_persons_in_panel": 2000,
     "n_trainees_analysed": 1912,
     "n_time_points": 4,
+    "n_eligible_records": 7359,
+    "n_eligible_cells": 7648,
+    "n_eligible_cells_without_record": 289,
     "time_labels": [
       "visit_1",
       "visit_2",
@@ -43,9 +46,14 @@
       }
     },
     "records_by_kind": {
-      "state": 7245,
-      "missing_or_unknown": 211,
-      "lost": 163
+      "state": 7082,
+      "missing_or_unknown": 156,
+      "lost": 121
+    },
+    "cells_by_kind": {
+      "observed": 7082,
+      "missing": 445,
+      "lost": 121
     }
   }
 }

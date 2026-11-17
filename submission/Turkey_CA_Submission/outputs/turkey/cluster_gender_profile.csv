@@ -1,0 +1,15 @@
+cluster_id,MM_gender,n
+1,,1
+1,Female,485
+1,Male,137
+2,,1
+2,Female,128
+2,Male,114
+2,Unknown,2
+3,,2
+3,Female,324
+3,Male,261
+3,Unknown,3
+4,Female,26
+4,Male,61
+4,Unknown,1

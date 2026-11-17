@@ -143,8 +143,9 @@ def test_structureless_data_scores_much_lower_than_structured_data(easy):
     td0, truth0, plan0, D0m, ref0 = easy
     rng = np.random.default_rng(7)
     rows = rng.integers(0, len(NAMES), size=(600, 4))
-    codes = [str(s["raw_codes"][0]) for s in D0["states"]]
+    codes = [str((s.get("raw_codes") or s.get("synthetic_codes"))[0]) for s in D0["states"]]
     df = pd.DataFrame([{"person_id": f"P{i:04d}", "t": t, "raw_status": codes[v]} for i, r in enumerate(rows) for t, v in enumerate(r)])
+    df.attrs["is_synthetic"] = True
     td = build_trajectories(df, CFG)
     plan = plan_reduction(td, CFG, make_rng(CFG, "null-plan"))
     sub = substitution_cost_matrix(td, CFG)

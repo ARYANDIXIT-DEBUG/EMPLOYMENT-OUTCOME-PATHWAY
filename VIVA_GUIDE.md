@@ -1,90 +1,82 @@
-# VIVA_GUIDE.md: Employment Outcome Pathway Grouping After Skilling (INT396 CA-1, G24)
+# INT396 G24 viva guide: Turkey ISKUR pathways
 
-How to use these notes. Each answer says why before what, and says where the evidence lives so you can open it instead of recalling it. Do not quote a number from memory: read it from `reports/report__<tag>.md` or the dashboard on the day. Everything produced so far is from SYNTHETIC data (pipeline testing). If the real-data gate is still open when you present (it is open in this release), say so first, and present the method and the tests, not findings.
+## 60-second summary
 
-## The 60-second version
+This CA describes observed employment sequences among applicants to Turkey's İŞKUR vocational training program. The World Bank public-use file contains 5,902 applicants from the 2010–2013 evaluation. I keep randomized assignment, reported selection, administrative attendance, completion, and certificate receipt separate. The primary cohort is 1,546 documented attendees with a valid pre-course interview, valid post-course interview, and August 2013 Social Security employment outcome. Average-linkage clustering on the individual Hamming distance selects four groups. The results describe this historical Turkish sample; they do not estimate a training effect or represent Maharashtra or India.
 
-Trainees move between employment states over a few survey visits. I group them by the shape of that movement (k-medoids on a sequence distance), choose the number of groups by a rule fixed in advance, and then test whether the groups say anything that a plain "employed or not" split does not, and whether they survive losing trainees or visits. The pipeline refuses to run on real data until an audit shows the files really contain the same person at more than one time point, because without that there are no trajectories to cluster.
+## Questions and answers
 
-## Questions you should expect, and answers
+### Why use this dataset?
 
-### Why does the real-data gate exist?
-The Periodic Labour Force Survey (PLFS) is mostly a set of cross-sectional files. A person appears at more than one time point only in the rotational panel, and only if the release carries a verified linking key. Stacking cross-sectional files and calling the rows trajectories would invent pathways. So the first deliverable is an audit, `src/data_audit.py`, that reports linkage facts and nothing else. Evidence: `README.md`, `DATASET_SETUP.md`, the gate refusal (exit code 3) of `run_pipeline.py`.
+It provides a documented applicant population, randomized assignment, course administration records, dated baseline and follow-up interviews, and administrative formal-employment outcomes. This supports a historically scoped descriptive CA with real timing evidence. The released file does not include the month-by-month job spell dates described in related research.
 
-### What if the audit says there are no usable trajectories?
-Then the project's question has to change, and that is a scope decision, not a coding one. Plan B is cross-sectional outcome profiles and Plan C is aggregate only. Both need a scope-change memo that you write and the instructor's approval, and the pipeline will not run them as pathways. I would say plainly that this is possible.
+### Why cluster employment sequences?
 
-### Can about four visits support the word "pathway"?
-Only in a limited sense. Four visits is a short window, so what is found is a short-run pattern, not a career. The report says this in its first section and in its limitations, and the dashboard repeats it. Two pathways that are identical on the first visits cannot be told apart if only those visits are kept, which the censoring study shows directly.
+The question is whether people with different observed employment histories can be summarized into readable sequence groups. The groups are descriptive summaries. Random assignment is not used here to claim a causal program effect.
 
-### Why k-medoids and not k-means?
-k-means averages points in a Euclidean space. A sequence of categorical states has no meaningful average, and a mean of states is not a state. k-medoids needs only a distance, so it can use a sequence distance, and each pathway is represented by a real trainee (its medoid) that you can read and question. This is reasoning from the method, not a measured comparison.
+### Who enters the pathway analysis?
 
-### Why dynamic Hamming and not optimal matching?
-Everyone is observed on the same visit schedule, so two sequences can be compared position by position. Optimal matching lets a state slide in time, which a fixed visit schedule does not justify. Optimal matching is implemented as a sensitivity alternative, not the default. Evidence: `src/distances.py` docstring.
+People with evidence of actual course attendance (positive administrative attendance days or a documented first/second-day dropout) and all three valid outcomes: any work at a baseline interview strictly before course start; any work at a follow-up interview strictly after course end; and formal Social Security employment in August 2013, conditional on course end preceding that month. This yields 1,546 complete sequences. Unknown attendance is not treated as participation.
 
-### How are the substitution costs set?
-From the data being clustered: two states people often move between are close, and two states that never exchange people are far. The cost is estimated once from the analysed sample and passed consistently to the matrix and the extension. The consequence to admit: the metric depends on the sample, so each stability repeat re-estimates it.
+### Why are assignment, selection, attendance, completion, and certification separate?
 
-### How are missing visits handled?
-A missing or lost visit is never recoded into an employment state. The primary policy compares two people only on the visits both were observed, and takes the mean cost over those. A pair with too little overlap is treated as maximally dissimilar and a warning counts how many. Because of this the distance is not a true metric (the triangle inequality can fail), so the silhouette is a description, not a test. The report repeats the whole analysis under three other policies in a sensitivity table.
+`MM_Group` records randomized assignment; `FF_C60` is a respondent's selection report; administrative days or early dropout flags establish attendance evidence; `MIS_EC22` records course completion; and `MIS_EC23` asks whether the evaluation-course certificate was received. These are distinct events. Neither completion nor a certificate is used as a substitute for attendance.
 
-### Is the missing data random?
-The audit runs a small set of tests with a Bonferroni correction and writes a verdict. The honest answer is that tests on observed information can fail to find a problem, but cannot prove missing-completely-at-random and cannot rule out dependence on what is unobserved. Say that, then point to the sensitivity table.
+### Why four clusters?
 
-### How did you choose k?
-By a rule written down before looking at results (`clustering.k_rule` in `config.yaml`), not by the silhouette alone. A candidate k is admissible only if it is stable on subsamples, has no group below the minimum share, and wastes no medoid (two medoids at distance zero). Among admissible values the smallest k within a margin of the best silhouette is chosen. If nothing is admissible the most stable k is returned with a reason that begins "FALLBACK", and I would say that the data then do not show a clearly supported number of pathways. Evidence: the k table in the report.
+The pipeline tests k=2 through 5 using individual-level Hamming silhouettes and requires each cluster to contain at least 5% of the 1,546 sequences. k=5 has the highest raw silhouette (0.7691), but its smallest cluster is 44 people (2.85%), below the predeclared 5% floor. k=4 is the highest-scoring admissible solution (0.7483); k=3 scores 0.6358. This is a transparent selection rule, not proof that four natural types exist.
 
-### How do you know the silhouette on collapsed data is right?
-Identical sequences are merged and weighted by their count. The weighted silhouette is defined so that it equals the ordinary silhouette on every individual. This is tested against a one-person-at-a-time reference and against scikit-learn in `tests/test_evaluation.py`.
+### What does Hamming distance measure?
 
-### Why a baseline, and is it a fair comparison?
-A grouping is worth reporting only if it says something a simple split does not. The baseline is employed or not at one reference visit. It is built from the same trajectories, so agreement with it is not independent validation, and if the reference visit is the last visit, part of the agreement is by construction. The informative numbers are what the baseline hides (how many different pathways sit inside each class) and the like-for-like silhouette on the same units with the same distance. The report states both.
+For two three-point binary sequences, it is the share of observation points where their states differ. For example, `0→1→0` and `0→1→1` differ at one of three points, so their distance is 1/3. Silhouette is calculated from the full individual pairwise Hamming-distance matrix.
 
-### Why compare with hierarchical clustering, and what did it show?
-To see whether the pathways depend on one algorithm. Read the section on the hierarchical comparison and quote what the numbers show on the day: the silhouette, the smallest group share and whether any group falls below the size rule. On the SYNTHETIC run the hierarchical partition recovered the planted groups less well than k-medoids and left groups of a few people, far below the size rule, which is a known tendency of average linkage to split off tiny groups of unusual sequences. That is a statement about synthetic data. Do not present it as a finding about real trainees unless the real run shows it.
+### What does a silhouette of 0.7483 mean?
 
-### What does the stability study show, and what are its limits?
-It repeats the whole analysis after removing trainees at random, after removing them in a way that depends on an attribute, and after keeping only the first visits. Two questions: do the same people end up grouped together (adjusted Rand index), and does each reference pathway still exist (some new medoid is close to it)? Limits to state: censoring repeats differ only through random starts, so their spread understates the uncertainty a changed sample would bring; informative loss is a stress test, not a correction for attrition bias; and none of this measures sensitivity to the choice of distance or k.
+It indicates that, under this distance and four-cluster partition, observations tend to be closer to their assigned group than to the nearest alternative. Because sequences have only three binary points and only eight exact patterns are possible, this score measures separation in a small sequence space; it does not establish latent classes or external validity.
 
-### What does passing the planted-structure tests prove?
-That the code can find clear structure it was given and does not find strong evidence of structure in pure noise. It says nothing about real data, where there is no truth to score against, and the synthetic pathways are easy by design. The thresholds are loose guards, not performance claims.
+### What does mean ARI 0.6198 mean?
 
-### How do you avoid unfairness?
-Sex, social group and religion are blocked as clustering inputs at configuration load and again at run time in the distance and collapse code. They may be shown to describe who is in each pathway, and only if the data-use assessment allows. This is a fairness check on the result, not a use of those attributes to form it. Profiling is descriptive: no tests and no causal language.
+Across 100 deterministic 80% subsamples, the same clustering method is refit and all cases are assigned to the nearest subsample medoid. The mean adjusted Rand index of 0.6198 summarizes agreement with the full-data labels after accounting for chance. It is moderate sample stability, not test–retest reliability, causal evidence, or proof of population-level robustness. The standard deviation is 0.0804.
 
-### Are survey weights used?
-Not to form pathways. Counts of identical sequences are never mixed with survey weights. Weighted profiles are available only if `profiling.weighted` is true and the weights are verified; otherwise the code refuses.
+### Why include baseline employment?
 
-### How do you know the report matches the results?
-Every number in the report template is a placeholder filled from `reports/results/` by `src/report_builder.py`. A placeholder that cannot be filled stops the build with a list; nothing is left blank or guessed. `claims_audit` lists every placeholder with the file and key behind it and flags any number typed into the text. This checks that numbers come from result files, not that the sentences around them are true.
+It distinguishes people who were already working before training from those not working at the dated baseline. Among 3,385 valid pre-course respondents, 393 (11.6%) worked at all and 2,992 did not. “Not working” is not synonymous with unemployed; it can include people outside the labour force. Baseline comparisons are descriptive and unadjusted.
 
-### What would you do next, and what is out of scope?
-Run the audit on real files first. Then, if Plan A holds, set the baseline lock, confirm the PROPOSED defaults in `config.yaml`, and run the pipeline. Tier 2 extensions are switched off (`tier2.enabled: false`) and were not built; say that you would ask before starting any of them.
+### How are attrition and missing outcomes handled?
 
-## Weak points to own before they are found
+Only interviews passing response flags, containing real interview dates, and occurring on the correct side of course dates contribute survey outcomes. Missing outcomes remain unknown. Of 1,623 documented attendees with a valid pre-course baseline, 1,548 have verified follow-up and 75 do not. Extreme bounds put follow-up any-work prevalence at 41.8%–46.5% by assigning missing outcomes to either state for the bound calculation only. Those states are never imputed into the analysis file.
 
-- The design is only as good as the audit result. Until the audit is run on real files, no claim about real trainees is possible.
-- Several defaults are PROPOSED and unverified (listed in `README.md`). Say which you would change if the data suggested it.
-- The code was verified on one combination only: Python 3.13.16, Ubuntu 24.04.5, the versions in `requirements.lock.txt`. Windows, macOS, other Python versions and older pandas were not tested; `pytest` on your machine is the first step.
-- The report tables show pathway numbers, not names, by design. A name is only meaningful when it is based on the profile of a cluster found in real data, and none exists yet. The dashboard's pathway selector uses the labels `profiling.name_pathways` derives from each run's own cluster profiles; on SYNTHETIC results those describe synthetic clusters only, so do not present them as findings.
-- Real data will be harder: more missing visits, noisier states, less separation. Expect lower silhouette and lower stability than the synthetic run, and say that in advance.
+### Why do 1,548 verified follow-ups result in 1,546 complete three-point pathways?
 
-## A four-minute demo script
+Among the 1,623 documented baseline attendees, 1,548 completed a verified post-course follow-up interview. However, exactly two individuals (source records 2218 and 4438) have missing administrative Social Security employment status in August 2013 (`formallyemployedAug2013` is missing). Because the pathway methodology requires complete observation across all three temporal anchor points (pre-course baseline, post-course follow-up, and August 2013 administrative formal employment), those two individuals cannot form complete three-point sequences ($1,548 - 2 = 1,546$).
 
-1. Open the dashboard. Point to the SYNTHETIC banner if present, then read the sentence about who the trainees are.
-2. Data quality tab: the share of observed, missing and lost cells, and the verdict with its limits.
-3. Choosing k tab: the admissibility rule and why a candidate was excluded.
-4. Pathways tab: pick one pathway, show its medoid (a real trainee) and its composition by visit.
-5. Versus the baseline tab: what the baseline hides, then the like-for-like table.
-6. Stability and limits tab: the censoring row and the hierarchical comparison, then read the limits aloud.
-7. Close with the gate: a real run is refused until the audit supports trajectories.
+### Which dashboard is the official Turkey application?
 
-## Commands to have ready
+`dashboard/app3.py` is the official, seven-section Turkey ISKUR dashboard. It features dark-theme styling, live SVG charts, verified SHA-256 integrity gates, and URL-synchronized navigation. Earlier versions (`dashboard/app.py` for legacy PLFS/synthetic exploration and `dashboard/app1.py`) are intentionally preserved in the workspace as legacy materials.
 
+### What are the four groups?
+
+The ordered groups combine exact sequences: (1) `000` and `100`, no follow-up work and no August formal job; (2) `001` and `101`, no follow-up work but formal employment by August 2013; (3) `010` and `011`, not working at baseline but working at follow-up; and (4) `110` and `111`, working at both survey points. The final position is narrower than “worked at all” because it measures formal Social Security employment.
+
+### Can the findings be generalized to Maharashtra or India?
+
+No. The applicants, program, geography, and historical period are Turkish. The preserved PLFS route is a separate cross-sectional descriptive analysis and does not validate Maharashtra employment pathways.
+
+### What are the main limitations?
+
+The sequence has only three points and mixes two survey “any work” measures with a later formal-employment measure. There are only eight possible binary patterns, the final measure is narrower, 75 baseline attendees lack verified follow-up, and public-use data lack monthly formal-job spell dates. Clustering is descriptive, and none of the estimates is causal.
+
+## Reproduction and evidence
+
+```powershell
+python -B -m src.turkey_pipeline
+python dashboard/app3.py --self-test
+python -B -m pytest -q -p no:cacheprovider tests/test_turkey_pipeline.py
+streamlit run dashboard/app3.py
 ```
-python run_pipeline.py --synthetic
-streamlit run dashboard/app.py
-python -m pytest tests -q
-python run_pipeline.py --stage audit
-```
+
+Use [the final Turkey report](reports/TURKEY_FINAL_REPORT.md), [the generated profile report](outputs/turkey/cluster_profile_report.md), and [the requirement audit](reports/TURKEY_REQUIREMENT_AUDIT.md) for exact tables and evidence. The raw dataset is not included in submission packages; obtain it under the World Bank catalog conditions and verify its SHA-256 against the recorded run metadata.
+
+## Preserved PLFS viva material
+
+The separate cross-sectional PLFS question and its limitations are documented in [the legacy viva Q&A](reports/viva_questions_and_answers.md). Do not combine its estimates with the Turkey analysis.

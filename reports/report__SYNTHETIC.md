@@ -2,7 +2,7 @@
 
 # Employment Outcome Pathway Grouping After Skilling
 
-INT396 Unsupervised Learning, CA-1 project. Problem statement SIH26135 (Government of Maharashtra). Group G24.
+Employment Outcome Pathway Grouping After Skilling — INT396 | G24. Synthetic legacy PLFS demonstration only.
 
 <!-- How this file works. It contains words and placeholders only. Every number below is a double-brace placeholder
      (result name, then key), filled by src/report_builder.py from reports/results/. If a number is not a
@@ -21,7 +21,7 @@ How long a "pathway" is: each person is followed over 4 visits at most. A patter
 
 The data plan is `synthetic`. The panel holds 2000 people; after the eligibility rule (at least 3 observed visits, where a missing or lost visit does not count) 1912 remain, so 88 were removed by that rule. Survey weights attached: yes. Weights are never used to form the pathways; counts of people are used throughout unless a table says otherwise.
 
-Records by kind: observed state 7245, unknown 211, lost to follow-up 163.
+Within the eligible sample, 7359 source rows are represented across 7648 person-visit cells. Row counts: observed state 7082, unknown or blank status 156, lost to follow-up 121; these sum to the eligible source-row count. 289 person-visit cells have no source row. Cell counts (including no-row cells): observed 7082, missing 445, lost 121; these sum to eligible person-visit cells.
 
 The list of states and the visit labels are saved in the `data_summary` result and shown in the dashboard.
 
@@ -203,7 +203,7 @@ each row repeats the whole analysis with the same k; the ARI compares with the p
 
 ## 7. Reproducibility
 
-Seed 2026. The stages run are listed in the `run_meta` result. Versions: Python 3.13.1, numpy 2.5.4, pandas 3.1.1, scipy 1.18.1, scikit-learn 1.9.1, matplotlib 3.11.2. The configuration used is saved beside the results as `config_snapshot.yaml`. Warnings raised during the run, by stage, are in the file `run_meta`.
+Seed 2026. The stages run are listed in the `run_meta` result. Versions: Python 3.13.1, numpy 2.3.5, pandas 2.3.3, scipy 1.17.0, scikit-learn 1.8.0, matplotlib 3.10.8. The configuration used is saved beside the results as `config_snapshot.yaml`. Warnings raised during the run, by stage, are in the file `run_meta`.
 
 ---
 *Results used (SYNTHETIC): baseline__SYNTHETIC.json, clustering__SYNTHETIC.json, data_summary__SYNTHETIC.json, evaluation__SYNTHETIC.json, figures__SYNTHETIC.json, hierarchical_comparison__SYNTHETIC.json, k_selection__SYNTHETIC.json, missing_sensitivity__SYNTHETIC.json, missingness__SYNTHETIC.json, profiles__SYNTHETIC.json, run_meta__SYNTHETIC.json, stability__SYNTHETIC.json. Settings: config.yaml, seed 2026.*

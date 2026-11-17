@@ -67,6 +67,7 @@ __all__ = [
 
 MAX_INVALID_LINK_SHARE = 0.02      # PROPOSED: above this share of linked persons failing the link tests, the key is rejected
 ATTRIBUTE_ROLES = ("age", "sex", "sector", "social_group", "religion")   # long-panel columns carry the ROLE name
+DESIGN_CHECK_FIELDS = ("sector", "stratum", "sub_stratum", "sub_sample", "fod_sub_region")
 SYNTHETIC_TRAINING_RULE = ("trained", ["Y"])   # generator-owned marker; never derived from real PLFS config
 UNVERIFIED_PREFIX = "UNVERIFIED:"
 
@@ -81,6 +82,7 @@ class DesignMixError(Exception):
 
 def classify_link_quality(*, sex_change: bool = False, age_change: bool = False,
                           design_mismatch: bool | None = None,
+                          design_field_mismatch: bool = False,
                           coordinate_collision: bool = False,
                           incomplete_coordinates: bool = False) -> str:
     """Return transparent evidence flags without treating unverified links as true persons.
@@ -92,6 +94,8 @@ def classify_link_quality(*, sex_change: bool = False, age_change: bool = False,
     if design_mismatch is None:
         flags.append("design_fields_unassessed")
     elif design_mismatch:
+        flags.append("design_field_mismatch")
+    if design_field_mismatch and "design_field_mismatch" not in flags:
         flags.append("design_field_mismatch")
     if sex_change:
         flags.append("sex_change_unresolved")
@@ -132,7 +136,8 @@ def _needed_columns(cfg: Config) -> dict[str, list[str]]:
     every += _as_list(schema.get("quarter"))
     for role in ATTRIBUTE_ROLES:
         every += _as_list(schema.get(role))
-    some = _as_list(schema.get("training_cols"))
+    role_cols = {col for role in ATTRIBUTE_ROLES for col in _as_list(schema.get(role))}
+    some = _as_list(schema.get("training_cols")) + [field for field in DESIGN_CHECK_FIELDS if field not in role_cols]
     for rule in (d["trainee"].get("rules") or {}).values():
         var = (rule or {}).get("variable")
         if var and var not in some:
@@ -511,10 +516,13 @@ def link_persons(tables: dict[str, pd.DataFrame], cfg: Config) -> pd.DataFrame:
         sub = panel.loc[idx]
         is_sex_change = "sex" in roles and sub["sex"].dropna().nunique() > 1
         is_age_change = "age" in roles and sub["age"].dropna().nunique() > 1
+        is_design_change = any(field in sub and sub[field].dropna().astype(str).nunique() > 1
+                               for field in DESIGN_CHECK_FIELDS)
         is_collision = bool(coord_collision.loc[idx].any())
         incomplete = bool(sub["key"].astype(str).str.startswith("UNLINKED_ROW_").any())
         panel.loc[idx, "link_quality_flag"] = classify_link_quality(
             sex_change=bool(is_sex_change), age_change=bool(is_age_change),
+            design_field_mismatch=bool(is_design_change),
             coordinate_collision=is_collision, incomplete_coordinates=incomplete,
         )
     meta["n_linked_persons"] = int((panel.groupby("key")["t"].nunique() >= 2).sum())
@@ -616,6 +624,7 @@ def _letter_config_dict() -> dict:
     for st, code in zip(d["states"], "ABCDEF"):
         st["raw_codes"] = [code]
     d["unknown_codes"], d["lost_codes"] = ["X"], ["L"]
+    d["lost_codes_status"] = "documented"  # synthetic demo mapping only
     return d
 
 
@@ -652,10 +661,17 @@ def _demo() -> int:
             root = Path(tmp)
             (root / "data" / "raw").mkdir(parents=True)
             raw = _demo_raw_table(df_syn)
+            # The production loader audits these design fields when they are not otherwise
+            # configured roles. Give the synthetic panel stable fixture values so its schema
+            # test exercises the same loader contract without depending on PLFS columns.
+            for field, value in (("stratum", "S1"), ("sub_stratum", "SS1"),
+                                 ("sub_sample", "SUB1"), ("fod_sub_region", "FOD1")):
+                raw[field] = value
             d = load_config().to_dict()
-            d.update({k: d_letters[k] for k in ("states", "unknown_codes", "lost_codes")})
+            d.update({k: d_letters[k] for k in ("states", "unknown_codes", "lost_codes", "lost_codes_status")})
             cols = {"hh": {}, "pn": {}, "visit": {}, "age": {"dtype": "int"}, "sex": {}, "sector": {}, "act": {},
-                    "nr": {}, "wt": {"dtype": "float"}, "trained": {}}
+                    "nr": {}, "wt": {"dtype": "float"}, "trained": {}, "stratum": {}, "sub_stratum": {},
+                    "sub_sample": {}, "fod_sub_region": {}}
             files, layouts = [], {}
             groups = [("all", raw)] if mode == "one_file_with_visit_column" else [(f"v{v}", g) for v, g in raw.groupby("visit")]
             for fid, g in groups:
@@ -670,7 +686,7 @@ def _demo() -> int:
                                        status_col="act", nonresponse_col="nr", weight="wt", training_cols=["trained"],
                                        visit="visit" if mode == "one_file_with_visit_column" else None,
                                        quarter=None)
-            d["trainee"]["rules"]["ever_trained"] = {"variable": "trained", "codes_yes": ["Y"]}
+            d["trainee"]["rules"] = {"ever_trained": {"variable": "trained", "codes_yes": ["Y"]}}
             with open(root / "config.yaml", "w", encoding="utf-8") as fh:
                 yaml.safe_dump(d, fh, sort_keys=False)
             cfg = load_config(root / "config.yaml")

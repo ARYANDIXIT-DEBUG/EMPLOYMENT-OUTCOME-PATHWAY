@@ -1,6 +1,6 @@
 # Employment Outcome Pathway Grouping After Skilling
 
-INT396 Unsupervised Learning, CA-1 project. Problem statement SIH26135 (Government of Maharashtra). Group G24.
+Employment Outcome Pathway Grouping After Skilling — INT396 | G24. This template is retained for the legacy synthetic pathway explorer.
 
 <!-- How this file works. It contains words and placeholders only. Every number below is a double-brace placeholder
      (result name, then key), filled by src/report_builder.py from reports/results/. If a number is not a
@@ -19,7 +19,7 @@ How long a "pathway" is: each person is followed over {{config.time.n_points}} v
 
 The data plan is `{{data_summary.data_plan}}`. The panel holds {{data_summary.n_persons_in_panel}} people; after the eligibility rule (at least {{data_summary.min_time_points}} observed visits, where a missing or lost visit does not count) {{data_summary.n_trainees_analysed}} remain, so {{data_summary.eligibility.n_removed}} were removed by that rule. Survey weights attached: {{data_summary.weights_attached}}. Weights are never used to form the pathways; counts of people are used throughout unless a table says otherwise.
 
-Records by kind: observed state {{data_summary.records_by_kind.state}}, unknown {{data_summary.records_by_kind.missing_or_unknown}}, lost to follow-up {{data_summary.records_by_kind.lost}}.
+Within the eligible sample, {{data_summary.n_eligible_records}} source rows are represented across {{data_summary.n_eligible_cells}} person-visit cells. Row counts: observed state {{data_summary.records_by_kind.state}}, unknown or blank status {{data_summary.records_by_kind.missing_or_unknown}}, lost to follow-up {{data_summary.records_by_kind.lost}}; these sum to the eligible source-row count. {{data_summary.n_eligible_cells_without_record}} person-visit cells have no source row. Cell counts (including no-row cells): observed {{data_summary.cells_by_kind.observed}}, missing {{data_summary.cells_by_kind.missing}}, lost {{data_summary.cells_by_kind.lost}}; these sum to eligible person-visit cells.
 
 The list of states and the visit labels are saved in the `data_summary` result and shown in the dashboard.
 

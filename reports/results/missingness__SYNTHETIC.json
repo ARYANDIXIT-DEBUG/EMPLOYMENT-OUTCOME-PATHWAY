@@ -132,7 +132,7 @@
         "method": "chi-square",
         "n": 1763,
         "statistic": 6.355167556898973,
-        "p_value": 0.2731769463876207,
+        "p_value": 0.27317694638762063,
         "effect_size": 0.06003953866888779,
         "effect_name": "cramers_v",
         "missing_rate_by_previous_state": {

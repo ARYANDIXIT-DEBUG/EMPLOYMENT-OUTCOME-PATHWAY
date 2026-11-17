@@ -87,10 +87,12 @@ def test_effective_max_units_is_the_largest_that_fits_the_cap():
 # ---------------------------------------------------------------------------------------------
 def _td(rows):
     from src.trajectories import build_trajectories as bt
-    codes = [str(s["raw_codes"][0]) for s in D["states"]]
+    codes = [str((s.get("raw_codes") or s.get("synthetic_codes"))[0]) for s in D["states"]]
     recs = [{"person_id": f"p{i:03d}", "t": t, "raw_status": codes[v] if v >= 0 else str(D["unknown_codes"][0])}
             for i, r in enumerate(rows) for t, v in enumerate(r)]
-    return bt(pd.DataFrame(recs), CFG)
+    df = pd.DataFrame(recs)
+    df.attrs["is_synthetic"] = True
+    return bt(df, CFG)
 
 
 def test_trate_costs_by_hand():

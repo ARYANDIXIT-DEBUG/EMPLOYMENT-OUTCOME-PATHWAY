@@ -77,6 +77,7 @@ class TrajectoryData:
     weights: np.ndarray | None
     is_synthetic: bool
     meta: dict[str, Any] = field(default_factory=dict)
+    recorded_mask: np.ndarray | None = None  # True where a source record existed, before eligibility filtering
 
     def __post_init__(self) -> None:
         self.ids = np.asarray(self.ids)
@@ -101,6 +102,11 @@ class TrajectoryData:
         if not isinstance(self.attrs, pd.DataFrame) or len(self.attrs) != n:
             raise ValueError("attrs must be a DataFrame with one row per id")
         self.attrs = self.attrs.reset_index(drop=True)
+        if self.recorded_mask is not None:
+            mask = np.asarray(self.recorded_mask, dtype=bool)
+            if mask.shape != states.shape:
+                raise ValueError(f"recorded_mask must have shape {states.shape}, got {mask.shape}")
+            self.recorded_mask = mask
         if self.weights is not None:
             w = np.asarray(self.weights, dtype=np.float64)
             if w.shape != (n,):
@@ -125,6 +131,22 @@ class TrajectoryData:
         sel = _as_index(idx, self.n)
         meta = dict(self.meta)
         meta.setdefault("subset_of_n", self.n)
+        recorded = None if self.recorded_mask is None else self.recorded_mask[sel]
+        if recorded is not None:
+            selected_states = self.states[sel]
+            n_cells = int(selected_states.size)
+            n_records = int(recorded.sum())
+            meta.update({
+                "n_persons": int(len(sel)),
+                "n_cells": n_cells,
+                "n_records": n_records,
+                "n_cells_without_record": n_cells - n_records,
+                "records_by_kind": {
+                    "state": int(((selected_states >= 0) & recorded).sum()),
+                    "missing_or_unknown": int(((selected_states == MISSING) & recorded).sum()),
+                    "lost": int(((selected_states == LOST) & recorded).sum()),
+                },
+            })
         return TrajectoryData(
             ids=self.ids[sel],
             states=self.states[sel],
@@ -134,6 +156,7 @@ class TrajectoryData:
             weights=None if self.weights is None else self.weights[sel],
             is_synthetic=self.is_synthetic,
             meta=meta,
+            recorded_mask=recorded,
         )
 
 

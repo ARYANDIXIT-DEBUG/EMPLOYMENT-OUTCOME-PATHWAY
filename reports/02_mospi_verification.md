@@ -31,3 +31,6 @@ The requested official sources were not found in the workspace: the Catalogue 21
 2. Supply the official instruction manual and release notes needed to verify visit/quarter sequencing, CWS codes, training universes/timing, casualty fields, and weights.
 3. Supply the actual MoSPI data-use rider/terms and record an authorized decision on trainee selection, profiling, and disclosure.
 4. Until those sources are available, treat all local code/field interpretations above as unconfirmed, do not invent lost codes or person-key fields, and do not use weights or `b4q12` for analysis.
+# Historical snapshot note (2026-11-06)
+
+This report records the earlier workspace state. Catalogue 213 documents were later placed in `docs/mospi/` and reviewed in [P4_permissions.md](P4_permissions.md). The user has since confirmed required permissions; current config records `user_confirmed` for b4q12 selection. These updates do not resolve profiling scope, persistent person linkage, individual CWS 91–98/99 labels, linked-weight validity, lost-code status, or training timing. See [11_baseline_resolution.md](11_baseline_resolution.md) for the current baseline.

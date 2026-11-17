@@ -100,19 +100,31 @@ def check_data_gate(cfg: Config) -> None:
     """Refuse a real run unless the data have passed the gate. Raises GateError naming the first unmet condition.
 
     Conditions include explicit CHECKPOINT 1 completion, documented b4q12 selection permission,
-    a non-empty documented lost-code mapping, and dated/verified trainee timing before the existing
+    an explicitly resolved lost-code state, and dated/verified trainee timing before the existing
     plan, schema verification, and design checks. Missing statuses fail closed; synthetic runs bypass
     this real-data gate in `run()`.
     """
     d = cfg.to_dict()["data"]
     if str(d.get("checkpoint1_status", "UNRESOLVED")).upper() != "PASSED":
         raise GateError("CHECKPOINT 1 is not recorded as PASSED (data.checkpoint1_status)")
-    if str(d.get("b4q12_permission_status", "UNRESOLVED")).upper() != "CONFIRMED":
+    if str(d.get("b4q12_permission_status", "UNRESOLVED")).lower() not in {"confirmed", "user_confirmed"}:
         raise GateError("permission to select the sample using b4q12 is not confirmed (data.b4q12_permission_status)")
-    if not cfg.to_dict().get("lost_codes"):
-        raise GateError("lost_codes is empty: verify and document the release's casualty/nonresponse mapping before real analysis")
-    if not cfg.to_dict().get("data", {}).get("schema", {}).get("nonresponse_col"):
-        raise GateError("data.schema.nonresponse_col is unset: loss-to-follow-up records cannot be classified")
+    validation = cfg.to_dict().get("validation", {})
+    if str(validation.get("permissions", "unresolved")).lower() not in {"confirmed", "user_confirmed"}:
+        raise GateError(f"validation.permissions is not confirmed (currently {validation.get('permissions', 'unresolved')!r})")
+    for key in ("data_integrity", "mappings", "linkage", "research_readiness"):
+        if str(validation.get(key, "unresolved")).lower() not in {"passed", "validated"}:
+            raise GateError(f"validation.{key} is not passed/validated (currently {validation.get(key, 'unresolved')!r})")
+    lost_status = str(cfg.to_dict().get("lost_codes_status", "unresolved")).lower()
+    if lost_status == "unresolved":
+        raise GateError("lost_codes_status is unresolved: verify whether the release documents person-level lost codes")
+    if lost_status == "documented":
+        if not cfg.to_dict().get("lost_codes"):
+            raise GateError("lost_codes is empty despite documented status: configure the documented mapping")
+        if not cfg.to_dict().get("data", {}).get("schema", {}).get("nonresponse_col"):
+            raise GateError("data.schema.nonresponse_col is unset: documented loss-to-follow-up records cannot be classified")
+    # documented_unavailable means the source explicitly confirms there is no person-level mapping;
+    # absent/blank observations remain MISSING, so a nonexistent nonresponse field is not an error.
     trainee = cfg.to_dict().get("trainee", {})
     timing_evidence = trainee.get("timing_evidence") or {}
     if str(trainee.get("timing_support", "none")).lower() != "dated" or \
@@ -289,13 +301,17 @@ class Pipeline:
 
     def data_summary(self) -> dict[str, Any]:
         td, cfg = self.td, self.cfg
+        cells = {"observed": int((td.states >= 0).sum()), "missing": int((td.states == -1).sum()),
+                 "lost": int((td.states == -2).sum())}
         return {"is_synthetic": self.synthetic, "data_plan": "synthetic" if self.synthetic else str(cfg.data.plan),
                 "n_persons_in_panel": self._cache.get("n_persons_panel"), "n_trainees_analysed": int(td.n), "n_time_points": int(td.T),
+                "n_eligible_records": int(td.meta.get("n_records", 0)), "n_eligible_cells": int(td.n * td.T),
+                "n_eligible_cells_without_record": int(td.meta.get("n_cells_without_record", 0)),
                 "time_labels": list(td.time_labels), "state_names": list(td.state_names), "weights_attached": td.weights is not None,
                 "min_time_points": int(cfg.trainee.min_time_points), "trainee_definition": str(cfg.trainee.definition),
                 "timing_support": str(cfg.trainee.timing_support), "missing_policy": str(cfg.missing.policy),
                 "distance": str(cfg.distance.name), "eligibility": td.meta.get("eligibility"),
-                "records_by_kind": td.meta.get("records_by_kind")}
+                "records_by_kind": td.meta.get("records_by_kind"), "cells_by_kind": cells}
 
     def stage_build(self) -> None:
         self.save("data_summary", self.data_summary())

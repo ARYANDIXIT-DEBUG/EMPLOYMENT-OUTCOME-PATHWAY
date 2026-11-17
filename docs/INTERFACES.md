@@ -1,8 +1,8 @@
-# INTERFACES.md: binding interface contract (v1.9)
+# INTERFACES.md: binding interface contract (v2.0)
 
-Project: Employment Outcome Pathway Grouping After Skilling (INT396 CA-1, group G24, SIH26135).
+Project: Employment Outcome Pathway Grouping After Skilling (INT396, G24; CA Project).
 
-This file is the single source of truth for module names, public function signatures, shared types, config keys and result-file names. It merges the original contract with three amendments agreed before implementation (training variables and protected attributes, collapsing of identical trajectories, and the distance-matrix memory cap), and with the changes listed in section 10. v1.7 is a consolidation: it brings the text into line with the delivered code (verified by comparing every public signature, the import graph and the config keys against the files) and documents the modules that were previously described only as a sketch.
+Sections 1–10 document the preserved PLFS longitudinal/synthetic pipeline. Section 11 documents the primary Turkey ISKUR analysis interface and output contract. Shared names and contracts are kept here so the independent project routes remain distinguishable.
 
 ## 0. Rules of the contract
 
@@ -10,7 +10,7 @@ This file is the single source of truth for module names, public function signat
 2. An earlier file's interface is never changed silently. If a change is unavoidable, the message says so and gives the full updated earlier file.
 3. Types are Python 3.10+ annotations. `ndarray[int8](n,T)` means a numpy array with that dtype and shape.
 4. `recap` restates this contract and the delivered-file list.
-5. Nothing in this contract states a fact about PLFS. Every dataset property (columns, codes, weights, coverage, licence, design) lives in `config.yaml` as a user-verified mapping and is checked at runtime.
+5. Sections 1–10 describe the legacy PLFS pathway pipeline; they do not establish that its real-data gate is open. Turkey's source and analytical definitions are documented in section 11 and `docs/TURKEY_DATA_DICTIONARY.md`.
 
 ## 1. Conventions
 
@@ -85,7 +85,9 @@ class TrajectoryData:
     weights: np.ndarray | None # float64 (n,), verified survey weight; None if not verified
     is_synthetic: bool
     meta: dict[str, Any]
+    recorded_mask: np.ndarray | None  # (n,T), true only where a source row existed; None for constructed fixtures
     # properties/methods: n, T, subset(idx) -> TrajectoryData     (idx = integer array or boolean mask)
+    # subset() carries recorded_mask and recomputes row/cell metadata for the selected people.
 
 @dataclass
 class CollapsedTrajectories:
@@ -317,7 +319,7 @@ def benchmark_distance(td, cfg, sizes: list[int]) -> pd.DataFrame   # measured s
 
 Substitution-cost rule (v1.5). TRATE costs are estimated from data, so the matrix and every later distance must use one set of costs. The orchestrator estimates `sub_cost = substitution_cost_matrix(td, cfg)` once from ALL individuals of the sample being analysed and passes it to `build_distance`, `distance_to_medoids` and `cluster_full`. If `sub_cost` is None, the costs are estimated from the unit set passed to that call, which is identical in `collapse` mode but not in subsample modes. Estimating from collapsed rows weighted by `freq` equals estimating from individuals.
 
-Plan and matrix details (v1.5). `plan_reduction` draws from `rng` only through `rng.permutation(n)` (collapse_then_subsample) or `rng.choice(n, size, replace=False)` (subsample). Pairs of units with fewer than `missing.min_overlap` jointly observed time points get the maximum substitution cost and a `UserWarning` with the count; `ReductionPlan.reason` says whether such pairs can occur.
+Plan and matrix details (v1.5). `plan_reduction` draws from `rng` only through `rng.permutation(n)` (collapse_then_subsample) or `rng.choice(n, size, replace=False)` (subsample). Pairs of units with fewer than `missing.min_overlap` jointly observed time points have an undefined empirical distance; the implementation assigns the maximum substitution cost and emits a `UserWarning` with the count. This fail-closed choice avoids treating a pair with too little shared evidence as similar, but it can overstate dissimilarity when missingness is extensive. Read the warning count and compare missing-data sensitivities before interpreting affected clusters; the complete-case Turkey pathway analysis does not use this legacy pairwise-missing distance rule. `ReductionPlan.reason` says whether such pairs can occur.
 
 Reduction modes:
 - `collapse`: requires `u <= effective_max_units(cfg)`, otherwise raises `MemoryCapError`; no silent fallback.
@@ -625,6 +627,7 @@ Where the other checks live: the scipy average-linkage equivalence and PAM optim
 - **v1.11:** standardized the synthetic warning as `SYNTHETIC DEMONSTRATION - NOT PLFS RESULTS`; synthetic trainee selection always uses the generator-owned marker, independently of real PLFS selection configuration. Full pytest: 153 passed, 3 distance warnings.
 - **v1.10:** final-readiness safeguards and documentation. The real-data gate now requires explicit CHECKPOINT 1, b4q12-permission, documented casualty mapping, and verified dated-training statuses in addition to Plan A/schema/design checks. Synthetic LOST data uses a generator-only sentinel when the real-data `lost_codes` list is empty; the actual config is not assigned an invented code. Link-quality flags retain and expose inconsistencies rather than excluding records. Added temporary-config gate regression tests; full pytest: 152 passed, 3 distance warnings.
 
+- **v2.0:** clarified that sections 1–10 are the preserved PLFS pathway-pipeline contract and added the independent Turkey pipeline, outputs, dashboard, and tests in section 11. The Turkey route does not use the PLFS gate or outputs.
 - **v1.9:** behaviour fix in `run_pipeline.run`, no signature change to any public name. `run_meta` is now saved just before the `report` stage renders (the report template reads `run_meta.seed` and `run_meta.versions.*`) and saved again after the last stage; before this, a full run into an empty results folder failed at the report stage with unresolved `run_meta` placeholders. Found by running from a fresh extraction. `_save_run_meta` is a private helper. The pipeline self-test gains one regression check (20 checks).
 - **v1.8:** documentation only, no signature change. Section 5 lists `PipelineError`, `QUICK_REPEATS` and `Pipeline` (run_pipeline) and the dashboard's per-tab `render_*` functions and `TAB_NAMES`, which the v1.7 scan reported as undocumented public names; every other public function and class was already listed. Section 9 and section 8 were checked against the five test files (133 tests) and the saved results of a full synthetic run, and `reports/report_template.md` reads only keys listed in section 8 (figures by position in the fixed order of the `figures` result).
 - **v1.7:** consolidation, no signature change. Section 3: `StabilityResult.level` documented for censoring; `BaselineResult.counts` and `definition` keys listed. Section 4: `ReportError`, `GateError` added. Section 5: documented from the code the modules previously only sketched (`profiling` columns and long-table formats, `visualization` stamp and file-name rules, `report_builder` placeholder syntax and errors, `run_pipeline` gate, flags, exit codes and `--quick`, `dashboard/app` tabs and self-test); added `compare_to_clustering` keys, `HIDDEN_MIN_SHARE`, `LOCK_FILE`, the `evaluate_partition` rule that `features` without a declared representation raise `ConfigError`, `pathway_separation` `n_zero_distance_medoid_pairs`, `cluster_full` (k-medoids only), `cut_linkage` label numbering, the note that a hand-built `Config` is not validated. Section 8 replaced: the v1.0 list of planned result names is replaced by the names the pipeline actually saves, with keys. Section 9 test map corrected to what the tests cover. Two private demo helpers were renamed with a leading underscore (`baseline._res_eq`, `evaluation._scikit_zero`); neither was part of the contract. Checked: every public signature, the import graph and the config keys against the code.
@@ -635,3 +638,21 @@ Where the other checks live: the scipy average-linkage equivalence and PAM optim
 - **v1.2:** `Config` gains the read-only property `.root` (needed to resolve `data.files[].path`, which is relative to the project root and is not one of the `paths` keys); validation gains rules 12 and 13 (two internal-consistency checks that would otherwise fail later with an index error).
 - **v1.1:** `BaselineResult.labels` gains code `2` (unknown) for `baseline.unknown_treatment = "category"`; the earlier text listed only `{0, 1, -1}`, which left the "separate explicit category" option without a code.
 - **v1.0:** merges Reply 1 with amendments 1 to 3. Changes from Reply 1's draft: `k_selection_table` and `select_k` live in `stability.py` (they need `evaluation.py`, which is delivered after `clustering.py`); `subsample_indices` is replaced by `plan_reduction`; `cluster_full` takes a `ReductionPlan` and a matrix instead of building its own; `FullClustering` no longer carries `sample_idx`; `hierarchical` is frequency-weighted average linkage only.
+
+## 11. Primary Turkey ISKUR analysis
+
+The Turkey route in `src/turkey_pipeline.py` is an independent descriptive analysis. It reads `data/raw/TurkeyPublicUseData.dta`, writes only to `outputs/turkey/`, and does not call `run_pipeline.py` or alter PLFS settings. The data dictionary records source variables, timing, missingness, cohort rules, and interpretations.
+
+Public functions:
+
+| Name | Contract |
+|---|---|
+| `load_and_preprocess(path: Path = INPUT) -> tuple[pd.DataFrame, dict[str, Any]]` | Reads the Stata source; checks required variables, unique IDs, and assignment consistency; applies dated response validity; separates assignment, reported selection, attendance evidence, completion and certificate receipt; retains unsupported outcomes as nullable missing. Returns all source rows and provenance metadata. |
+| `run(path: Path = INPUT, out: Path = OUT, stability_reps: int = 100) -> dict[str, Any]` | Writes row-preserving research files, cluster-level aggregate tables, candidate-k evaluation, deterministic subsample ARI results, baseline comparison, and attrition sensitivity summary. Returns the summary written to `summary.json`. |
+| `main() -> int` | Module command entry point; runs the deterministic analysis and prints the summary. Invoke with `python -B -m src.turkey_pipeline`. |
+
+The analysis sequence has exactly three binary observations: verified pre-course survey work, verified post-course survey work, and August 2013 formal Social Security employment. The primary cohort is actual-attendance evidence plus complete observations. Candidate average-linkage agglomerative solutions use the individual pairwise Hamming matrix; the selected k is the highest-silhouette candidate from k=2–5 whose smallest cluster is at least 5%. Stability is the mean ARI across deterministic 80% subsample refits with nearest-subsample-medoid assignment. Attrition sensitivity uses extreme bounds and frozen-medoid scenarios; it does not impute individual missing states.
+
+Principal saved outputs: `summary.json`, `cluster_prevalence.csv`, `cluster_method_evaluation.csv`, `cluster_admin_profile.csv`, `cluster_jan2012_state_profile.csv`, `cluster_gender_profile.csv`, `baseline_employment_by_cluster.csv`, `baseline_employed_comparison.csv`, `attrition_admin_comparison.csv`, and `cluster_profile_report.md`. `trainee_analysis.csv` and `valid_post_training_trajectories.csv` contain respondent-level rows and must not be copied into submission/release packages.
+
+`dashboard/app.py` displays the Turkey panel independently from the PLFS and synthetic routes. It validates the Turkey source SHA-256 recorded in `summary.json` before showing results; it never reruns analysis in the dashboard. Regression coverage: `tests/test_turkey_pipeline.py` and `tests/test_dashboard_safety.py`. The current complete test suite also includes a PLFS output integrity check that cannot pass without the authentic `data/raw/perv1.csv` source file.

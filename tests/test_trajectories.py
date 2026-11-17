@@ -28,17 +28,17 @@ from src.trajectories import (CollapseRefused, build_trajectories, collapse_traj
                               transition_matrix, trajectory_summary)
 
 _BASE_CFG = load_config()
+# This module tests the defined-mapping state with a test-only code. It does not claim that
+# the PLFS release documents this sentinel; the workspace config remains lost_codes_status=unresolved.
 D = _BASE_CFG.to_dict()
-# This module tests synthetic LOST semantics. The real PLFS config correctly has no
-# documented lost code, so provide a test-only sentinel rather than inventing a real code.
-if not D["lost_codes"]:
-    D["lost_codes"] = [SYNTHETIC_LOST_CODE]
+D["lost_codes"] = [SYNTHETIC_LOST_CODE]
+D["lost_codes_status"] = "documented"
 CFG = Config(D, _BASE_CFG.root)
 D = CFG.to_dict()
 NAMES = [s["name"] for s in D["states"]]
 K, T = len(NAMES), int(D["time"]["n_points"])
-CODE = {n: str(s["raw_codes"][0]) for n, s in zip(NAMES, D["states"])}      # state name -> raw code, from config only
-UNK, LOSTC = str(D["unknown_codes"][0]), str(D["lost_codes"][0])
+CODE = {n: str((s.get("raw_codes") or s.get("synthetic_codes"))[0]) for n, s in zip(NAMES, D["states"])}
+UNK, LOSTC = str(D["unknown_codes"][0]), SYNTHETIC_LOST_CODE
 W, S, U, X, O, E = (CODE[n] for n in ("wage_employment", "self_employment", "unpaid_family_work", "unemployed_seeking",
                                        "out_of_labour_force", "education_training"))
 
@@ -54,7 +54,10 @@ def panel(rows: dict[str, list], **extra: list) -> pd.DataFrame:
             for k, v in extra.items():
                 r[k] = v[list(rows).index(p)]
             recs.append(r)
-    return pd.DataFrame(recs)
+    df = pd.DataFrame(recs)
+    if any(str(x).startswith("SYNTHETIC:") for x in df.get("raw_status", pd.Series(dtype=str)).dropna()):
+        df.attrs["is_synthetic"] = True
+    return df
 
 
 def with_distance(**kw):
@@ -66,14 +69,62 @@ def with_distance(**kw):
 # map_raw_to_state
 # ---------------------------------------------------------------------------------------------
 def test_each_listed_code_maps_to_its_own_state_index():
-    out = map_raw_to_state(pd.Series([CODE[n] for n in NAMES]), pd.Series([None] * K, dtype="object"), CFG)
-    assert out.tolist() == list(range(K)) and out.dtype == np.int8
+    listed = [(i, str(c)) for i, state in enumerate(D["states"]) for c in state["raw_codes"]]
+    out = map_raw_to_state(pd.Series([code for _, code in listed]), pd.Series([None] * len(listed), dtype="object"), CFG)
+    assert out.tolist() == [i for i, _ in listed] and out.dtype == np.int8
+
+
+def test_documented_cws_out_of_labour_force_range_includes_code_98_and_96():
+    # PLFS 2023-24 Instruction Manual Vol. I §3.6.14 classifies all CWS codes 91–98 as out of LF.
+    out = map_raw_to_state(pd.Series(["91", "96", "98", "99"]), pd.Series([None] * 4), CFG)
+    assert out.tolist() == [NAMES.index("out_of_labour_force")] * 3 + [MISSING]
+
+
+def test_91_to_98_individual_codes_are_not_given_invented_real_meanings():
+    out = map_raw_to_state(pd.Series([str(i) for i in range(91, 99)]), pd.Series([None] * 8), CFG)
+    assert out.tolist() == [NAMES.index("out_of_labour_force")] * 8
+    assert "99" in D["unknown_codes"]
+
+
+def test_documented_temporarily_absent_codes_follow_their_employment_group():
+    # Instruction Manual Vol. I §§3.6.2 and 3.6.8: 61/62 are absent from self-employment work;
+    # 71/72 are absent from regular salaried/wage work.
+    out = map_raw_to_state(pd.Series(["61", "62", "71", "72"]), pd.Series([None] * 4), CFG)
+    assert out.tolist() == [NAMES.index("self_employment")] * 2 + [NAMES.index("wage_employment")] * 2
+
+
+def test_synthetic_only_education_state_does_not_map_real_cws_91():
+    real = map_raw_to_state(pd.Series(["91"]), pd.Series([None]), CFG)
+    synthetic = map_raw_to_state(pd.Series([CODE["education_training"]]), pd.Series([None]), CFG, synthetic=True)
+    assert real.tolist() == [NAMES.index("out_of_labour_force")]
+    assert synthetic.tolist() == [NAMES.index("education_training")]
 
 
 def test_unknown_and_blank_are_missing_and_lost_code_is_lost():
     raw = pd.Series([UNK, None, np.nan, W, None])
     nr = pd.Series([None, None, None, None, LOSTC], dtype="object")
     assert map_raw_to_state(raw, nr, CFG).tolist() == [MISSING, MISSING, MISSING, 0, LOST]
+
+
+def test_defined_lost_mapping_is_applied_and_recorded():
+    df = panel({"a": [W, None, None, None]})
+    df["nonresponse_code"] = [None, LOSTC, None, None]
+    td = build_trajectories(df, CFG)
+    assert td.states[0].tolist() == [0, LOST, MISSING, MISSING]
+    assert td.meta["records_by_kind"]["lost"] == 1
+    assert td.meta["lost_codes_status"] == "documented"
+
+
+def test_documented_unavailable_lost_mapping_keeps_observation_missing_and_records_status():
+    d = _BASE_CFG.to_dict()
+    d["lost_codes"] = []
+    d["lost_codes_status"] = "documented_unavailable"
+    cfg = Config(d, _BASE_CFG.root)
+    df = panel({"a": [W, None, "skip", "skip"]})
+    td = build_trajectories(df, cfg)
+    assert td.states[0].tolist() == [0, MISSING, MISSING, MISSING]
+    assert td.meta["records_by_kind"]["lost"] == 0
+    assert td.meta["lost_codes_status"] == "documented_unavailable"
 
 
 def test_reserved_synthetic_lost_sentinel_never_enters_real_mapping():
@@ -102,7 +153,7 @@ def test_integer_valued_floats_read_as_integers():
     """A numeric column holding NA is stored as float; 11.0 must equal '11'. Checked with a config whose codes are plain numbers."""
     from src.config import Config
     d = {**D, "states": [{**s, "raw_codes": [str(11 + i)]} for i, s in enumerate(D["states"])],
-         "unknown_codes": ["99"], "lost_codes": ["98"]}
+         "unknown_codes": ["99"], "lost_codes": ["98"], "lost_codes_status": "documented"}
     cfg = Config(d, CFG.root)
     out = map_raw_to_state(pd.Series([11.0, 12.0, 99.0, np.nan]), pd.Series([np.nan] * 4), cfg)
     assert out.tolist() == [0, 1, MISSING, MISSING]
@@ -123,6 +174,43 @@ def test_a_pair_with_no_record_is_missing_not_a_state():
     td = build_trajectories(panel({"a": [W, "skip", "skip", W]}), CFG)
     assert td.states[0].tolist() == [0, MISSING, MISSING, 0]
     assert td.meta["n_cells_without_record"] == 2
+
+
+def test_eligible_subset_reconciles_rows_and_all_cells():
+    # a is eligible; b is excluded by selection. a has one observed, one explicit missing,
+    # one no-record cell and one lost cell. Counts must describe a, not the source panel.
+    df = panel({"a": [W, None, "skip", None], "b": [S, S, S, S]})
+    df.loc[(df.person_id == "a") & (df.t == 3), "nonresponse_code"] = LOSTC
+    source = build_trajectories(df, CFG)
+    eligible = source.subset(np.array([True, False]))
+    assert source.meta["n_persons"] == 2 and eligible.meta["n_persons"] == 1
+    assert eligible.meta["n_records"] == 3
+    assert eligible.meta["n_cells"] == 4
+    assert eligible.meta["n_cells_without_record"] == 1
+    assert eligible.meta["records_by_kind"] == {"state": 1, "missing_or_unknown": 1, "lost": 1}
+    assert sum(eligible.meta["records_by_kind"].values()) == eligible.meta["n_records"]
+    assert eligible.meta["n_cells_without_record"] + sum(eligible.meta["records_by_kind"].values()) == eligible.meta["n_cells"]
+
+
+def test_synthetic_eligible_data_summary_reconciles_rows_and_cells():
+    from run_pipeline import Pipeline
+
+    df = panel({"a": [W, None, "skip", None], "b": [S, S, S, S]})
+    df.loc[(df.person_id == "a") & (df.t == 3), "nonresponse_code"] = LOSTC
+    df.attrs["is_synthetic"] = True
+    source = build_trajectories(df, CFG)
+    eligible = source.subset(np.array([True, False]))
+    pipe = Pipeline(CFG, synthetic=True, quick=True, log=lambda _: None)
+    pipe._cache["td"] = eligible
+    pipe._cache["n_persons_panel"] = source.n
+    summary = pipe.data_summary()
+    assert summary["n_persons_in_panel"] == 2
+    assert summary["n_trainees_analysed"] == 1
+    assert summary["n_eligible_records"] == sum(summary["records_by_kind"].values()) == 3
+    assert summary["n_eligible_cells"] == 4
+    assert summary["n_eligible_cells_without_record"] == 1
+    assert sum(summary["cells_by_kind"].values()) == summary["n_eligible_cells"]
+    assert summary["cells_by_kind"] == {"observed": 1, "missing": 2, "lost": 1}
 
 
 def test_lost_follow_up_is_kept_apart_from_missing():
@@ -222,7 +310,9 @@ def test_sequence_strings_use_letters_question_mark_and_hash():
     df = panel({"a": [W, UNK, E, W]})
     df2 = panel({"b": [W, W, None, None]})
     df2["nonresponse_code"] = [None, None, LOSTC, LOSTC]
-    td = build_trajectories(pd.concat([df, df2]), CFG)
+    both = pd.concat([df, df2])
+    both.attrs["is_synthetic"] = True
+    td = build_trajectories(both, CFG)
     assert sequence_strings(td) == ["A?FA", "AA##"]
     assert sequence_strings(td, np.array([1])) == ["AA##"]
 

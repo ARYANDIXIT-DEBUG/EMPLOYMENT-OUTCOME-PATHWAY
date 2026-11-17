@@ -1,106 +1,177 @@
 # PROJECT_MANIFEST.md
 
-Employment Outcome Pathway Grouping After Skilling (INT396 CA-1, group G24, SIH26135).
+Employment Outcome Pathway Grouping After Skilling — INT396, Group G24.
 
-This is the list of every file in the release and what it is for, followed by the SHA-256 of each file. The hash block is written by `scripts/build_release.py`, not by hand; `scripts/build_release.py` refuses to build if this table and the shipped files differ. The SHA-256 of the ZIP itself cannot be stored inside it and is given separately with the delivery.
+## Package scope
 
-Release status: software verified on one environment; real-data run BLOCKED (CHECKPOINT 1 open). No real data, no real results and no synthetic outputs are shipped. See `FINAL_AUDIT_REPORT.md`.
+The submission deliverable is the finalized in-place project folder itself. All legacy archives, PLFS and synthetic routes, code tests, source documentation, Turkey presentation, viva materials, and aggregate Turkey outputs are preserved in place. Raw respondent microdata and respondent-level derived files (`trainee_analysis.csv` and `valid_post_training_trajectories.csv`) are research-copy files governed by World Bank study conditions. A user reproducing from scratch obtains the Turkey dataset independently and verifies its SHA-256. The original authenticated PLFS `perv1.csv` is absent from this checkout; its dashboard view and one legacy PLFS integrity test remain unavailable until restored.
+
+The required Turkey dataset has SHA-256 `1bb32513435d605f48c90dca4264b678b082814dc7ad2106ecb4a144b84e96fc`. Current validation: Turkey pipeline completed (1,546 complete sequences, k=4, silhouette 0.7483, ARI 0.6198); official dashboard self-test (`dashboard/app3.py --self-test`) passed 18/18 checks; Turkey pipeline tests passed 6/6; browser checks at 1366×768 and 1920×1080 across all seven sections show zero exceptions and no document-level horizontal overflow (`scrollWidth == clientWidth`). Full suite is 188 passed, 1 skipped, 3 warnings (legacy PLFS test cleanly skipped when authentic `data/raw/perv1.csv` is absent).
 
 ## Files
 
 <!-- BEGIN FILES -->
 | Path | Purpose |
 |---|---|
-| `README.md` | What this is, run / test / dashboard commands (Linux, macOS, Windows), PROPOSED defaults, limits |
-| `DATASET_SETUP.md` | Where the data come from, what to verify before use, how to fill the config, the verification log |
-| `PROJECT_MANIFEST.md` | This file |
-| `VIVA_GUIDE.md` | Questions to expect and where the evidence for each answer lives |
-| `FINAL_AUDIT_REPORT.md` | What was verified on the development copy, what is blocked, open items, acceptance table |
-| `config.yaml` | Every setting and code list; the single source of truth. Real-data gate is closed (`data.plan: UNSET`) |
-| `requirements.txt` | Supported version ranges of the eight direct dependencies |
-| `requirements.lock.txt` | Exact versions from `pip freeze` of a clean virtual environment (Python 3.13.16, Ubuntu 24.04.5) |
-| `run_pipeline.py` | Orchestrator: audit, build, benchmark, cluster, evaluate, stability, profile, report; the real-data gate; `--self-test` |
-| `src/__init__.py` | Shared constants (state codes `MISSING`, `LOST`) and data types |
-| `src/config.py` | Loads and validates `config.yaml`; seeds; fairness guards |
-| `src/data_audit.py` | The gate: audit of the real files (counts only, no modelling) |
-| `src/synthetic_data.py` | SYNTHETIC panel with planted pathways; pipeline testing only |
-| `src/data_loader.py` | Real files to a long panel (reached only after the gate) |
-| `src/preprocessing.py` | Observation window, eligibility, attributes |
-| `src/missing_data.py` | Missingness audit, tests and policies |
-| `src/trajectories.py` | Long panel to states; collapsing identical sequences |
-| `src/distances.py` | Dynamic Hamming, optimal matching, memory plan |
-| `src/baseline.py` | Employed-or-not baseline, its lock, and the comparison with pathways |
-| `src/clustering.py` | k-medoids (PAM), average-linkage hierarchical comparison |
-| `src/evaluation.py` | Silhouette and other internal measures from the distance matrix |
-| `src/stability.py` | Stability under attrition and censoring; choosing k |
-| `src/profiling.py` | Descriptive tables and the pathway-naming helper |
-| `src/visualization.py` | Figures, stamped SYNTHETIC when applicable |
-| `src/report_builder.py` | Result files and the report template engine |
-| `dashboard/app.py` | Streamlit page; reads saved results only; `--self-test` |
-| `reports/report_template.md` | Report words and placeholders; no typed numbers; pathway tables show ids |
-| `tests/test_trajectories.py` | 33 tests |
-| `tests/test_distances.py` | 31 tests |
-| `tests/test_evaluation.py` | 30 tests |
-| `tests/test_stability.py` | 28 tests |
-| `tests/test_planted_structure.py` | 11 tests: planted-structure and pure-noise checks on SYNTHETIC data |
-| `docs/INTERFACES.md` | Function-level contracts between modules (version 1.8) |
-| `docs/DATA_USE_ASSESSMENT.md` | What the data-use conditions may allow, and the four questions for the instructor |
-| `scripts/build_release.py` | Rebuilds this ZIP reproducibly and rewrites the hash block below |
-| `data/raw/.gitkeep` | Empty placeholder so `data/raw/` exists; no raw data is shipped |
+| `DATASET_SETUP.md` | Dataset provenance, access, input hash and run commands. |
+| `FINAL_AUDIT_REPORT.md` | Project and Turkey analysis audit. |
+| `FINAL_LINE_BY_LINE_AUDIT.md` | Comprehensive line-by-line audit covering Parts A through H. |
+| `PROJECT_MANIFEST.md` | This manifest and generated SHA-256 inventory. |
+| `README.md` | Project overview, scope, results and reproduction. |
+| `SUBMISSION_READINESS_REPORT.md` | Authoritative submission-readiness assessment and criteria verification. |
+| `VIVA_GUIDE.md` | Turkey analysis viva questions and supported answers. |
+| `config.yaml` | Legacy PLFS configuration; real longitudinal gate remains closed. |
+| `dashboard/app3.py` | Official Turkey-only 7-section Streamlit dashboard with dark-theme UI. |
+| `dashboard/app.py` | Preserved legacy PLFS cross-sectional and synthetic data dashboard. |
+| `dashboard/app1.py` | Preserved intermediate dashboard comparison implementation. |
+| `data/raw/.gitkeep` | Empty raw-data directory placeholder; no microdata. |
+| `docs/DATA_DICTIONARY_CROSS_SECTIONAL.md` | Methods and data-use documentation: DATA_DICTIONARY_CROSS_SECTIONAL. |
+| `docs/DATA_USE_ASSESSMENT.md` | Methods and data-use documentation: DATA_USE_ASSESSMENT. |
+| `docs/INTERFACES.md` | Methods and data-use documentation: INTERFACES. |
+| `docs/METHODOLOGY_CROSS_SECTIONAL.md` | Methods and data-use documentation: METHODOLOGY_CROSS_SECTIONAL. |
+| `docs/TURKEY_DATA_DICTIONARY.md` | Methods and data-use documentation: TURKEY_DATA_DICTIONARY. |
+| `docs/mospi/Data_LayoutPLFS_2023-24.xlsx` | Official PLFS source documentation, retained for the legacy route. |
+| `docs/mospi/PLFS_2023-24_1_README.docx` | Official PLFS source documentation, retained for the legacy route. |
+| `docs/mospi/PLFS_2023-24_Catalogue213_DDI.xml` | Official PLFS source documentation, retained for the legacy route. |
+| `docs/mospi/PLFS_2023-24_Estimation_Procedure.pdf` | Official PLFS source documentation, retained for the legacy route. |
+| `docs/mospi/PLFS_2023-24_Instruction_Manual_Vol_I.pdf` | Official PLFS source documentation, retained for the legacy route. |
+| `docs/mospi/PLFS_2023-24_Instruction_Manual_Vol_II.pdf` | Official PLFS source documentation, retained for the legacy route. |
+| `docs/mospi/PLFS_2023-24_Updated_Instruction_Note.pdf` | Official PLFS source documentation, retained for the legacy route. |
+| `outputs/turkey/attrition_admin_comparison.csv` | Aggregate Turkey analysis output: attrition_admin_comparison.csv. |
+| `outputs/turkey/baseline_employed_comparison.csv` | Aggregate Turkey analysis output: baseline_employed_comparison.csv. |
+| `outputs/turkey/baseline_employment_by_cluster.csv` | Aggregate Turkey analysis output: baseline_employment_by_cluster.csv. |
+| `outputs/turkey/cluster_admin_profile.csv` | Aggregate Turkey analysis output: cluster_admin_profile.csv. |
+| `outputs/turkey/cluster_gender_profile.csv` | Aggregate Turkey analysis output: cluster_gender_profile.csv. |
+| `outputs/turkey/cluster_jan2012_state_profile.csv` | Aggregate Turkey analysis output: cluster_jan2012_state_profile.csv. |
+| `outputs/turkey/cluster_method_evaluation.csv` | Aggregate Turkey analysis output: cluster_method_evaluation.csv. |
+| `outputs/turkey/cluster_prevalence.csv` | Aggregate Turkey analysis output: cluster_prevalence.csv. |
+| `outputs/turkey/cluster_profile_report.md` | Aggregate Turkey analysis output: cluster_profile_report.md. |
+| `outputs/turkey/summary.json` | Aggregate Turkey analysis output: summary.json. |
+| `pytest.ini` | Pytest discovery is limited to the authoritative tests directory. |
+| `reports/TURKEY_FINAL_REPORT.md` | Turkey deliverable or preserved PLFS viva material: TURKEY_FINAL_REPORT.md. |
+| `reports/dashboard_screenshots/primary_turkey_1366x768.jpg` | Primary Turkey dashboard at 1366×768. |
+| `reports/dashboard_screenshots/primary_turkey_1920x1080.jpg` | Primary Turkey dashboard at 1920×1080. |
+| `reports/TURKEY_REQUIREMENT_AUDIT.md` | Turkey deliverable or preserved PLFS viva material: TURKEY_REQUIREMENT_AUDIT.md. |
+| `reports/viva_questions_and_answers.md` | Turkey deliverable or preserved PLFS viva material: viva_questions_and_answers.md. |
+| `requirements.lock.txt` | Pinned project Python dependencies. |
+| `requirements.txt` | Pinned project Python dependencies. |
+| `run_pipeline.py` | Preserved original PLFS longitudinal pipeline. |
+| `scripts/build_release.py` | Reproducible submission builder; excludes microdata. |
+| `src/__init__.py` | Project source module: __init__. |
+| `src/baseline.py` | Project source module: baseline. |
+| `src/clustering.py` | Project source module: clustering. |
+| `src/config.py` | Project source module: config. |
+| `src/cross_sectional.py` | Project source module: cross_sectional. |
+| `src/data_audit.py` | Project source module: data_audit. |
+| `src/data_loader.py` | Project source module: data_loader. |
+| `src/distances.py` | Project source module: distances. |
+| `src/evaluation.py` | Project source module: evaluation. |
+| `src/missing_data.py` | Project source module: missing_data. |
+| `src/preprocessing.py` | Project source module: preprocessing. |
+| `src/profiling.py` | Project source module: profiling. |
+| `src/report_builder.py` | Project source module: report_builder. |
+| `src/stability.py` | Project source module: stability. |
+| `src/synthetic_data.py` | Project source module: synthetic_data. |
+| `src/trajectories.py` | Project source module: trajectories. |
+| `src/turkey_pipeline.py` | Project source module: turkey_pipeline. |
+| `src/visualization.py` | Project source module: visualization. |
+| `submission/PLFS_2023-24_Cross_Sectional_Study_final_submission_v3.pptx` | Updated preserved PLFS cross-sectional presentation. |
+| `submission/Turkey_ISKUR_CA_presentation_v4.pptx` | Eight-slide Turkey ISKUR CA presentation with INT396 G24 project branding. |
+| `tests/test_cross_sectional.py` | Regression and methodology tests: test_cross_sectional. |
+| `tests/test_dashboard_safety.py` | Regression and methodology tests: test_dashboard_safety. |
+| `tests/test_data_loader_linkage.py` | Regression and methodology tests: test_data_loader_linkage. |
+| `tests/test_distances.py` | Regression and methodology tests: test_distances. |
+| `tests/test_evaluation.py` | Regression and methodology tests: test_evaluation. |
+| `tests/test_planted_structure.py` | Regression and methodology tests: test_planted_structure. |
+| `tests/test_real_safety_gate.py` | Regression and methodology tests: test_real_safety_gate. |
+| `tests/test_stability.py` | Regression and methodology tests: test_stability. |
+| `tests/test_trajectories.py` | Regression and methodology tests: test_trajectories. |
+| `tests/test_turkey_pipeline.py` | Regression and methodology tests: test_turkey_pipeline. |
 <!-- END FILES -->
 
-## Not shipped, on purpose
+## Deliverable Scope & Build Status
 
-- Raw PLFS data (none was used), caches and bytecode, virtual environments, drafts, temp files, credentials.
-- Generated outputs: `reports/results/`, `reports/figures/`, `reports/report__*.md`. They are rebuilt by `python run_pipeline.py --synthetic` and are tagged SYNTHETIC; none is a research result.
-- `docs/SCOPE_CHANGE_MEMO.md`: mentioned in two code messages and in `README.md`, `DATASET_SETUP.md` and `docs/DATA_USE_ASSESSMENT.md`; it is a memo you would write if the audit forces Plan B or C, so it does not exist here.
+The primary deliverable for submission is the finalized in-place project folder itself. All legacy archives, source code, data dictionaries, reports, and canonical dashboard components are preserved and validated in place without archive creation or extraction.
 
-## Rebuilding
+The deterministic archive packaging script (`scripts/build_release.py`) is preserved intact for offline distribution builds, but is not executed during in-place finalization:
 
+```powershell
+# Optional standalone package builder (omitted during in-place finalization):
+# python -B scripts/build_release.py
 ```
-python scripts/build_release.py --out <name>.zip
-```
 
-The same files give the same ZIP bytes: sorted order, fixed timestamps and permissions, one top-level folder `Employment_Outcome_Pathway_Grouping_After_Skilling/`.
-
-## SHA-256 of each file
+## SHA-256 of packaged files
 
 <!-- BEGIN HASHES -->
 | File | SHA-256 |
 |---|---|
-| `DATASET_SETUP.md` | `81516fad2f9b65bd88ec376d698fb9bbbe7d2da44e6591060fbd96e11c321f6d` |
-| `FINAL_AUDIT_REPORT.md` | `aafb8d66c90e4db3d38da2793cde0d57c5d6ce823e2296eb7b2d95709b6da7b2` |
-| `README.md` | `486b2af47bb20f0ccb26c177f2464d4ef74005fe624ea03ce05bba3e64fd701b` |
-| `VIVA_GUIDE.md` | `74b35e639df2ebd6cd4aa2a095312f9e2bfc272f2e15b4f2f4527d7727ac6347` |
-| `config.yaml` | `b8266fc4b481a0dcd8241b908245c84774f515b87985826d9ed3e3ef02a41c0d` |
-| `dashboard/app.py` | `3af26772d8f98f34f885de4aca07ae3ba6ff0f7fc02821425dca02eb2727b1e9` |
+| `DATASET_SETUP.md` | `bed05a0c00857965406b20c5f939e990a0d58279d3d136eb3fadf69ed7484fe9` |
+| `FINAL_AUDIT_REPORT.md` | `e394532bb00b078b2b12c71652716bbfd86776cb4dee1992e78d3bf08697a1c5` |
+| `README.md` | `b973d51139218dd8ac4a738cbbaaa8bb1989829b9422e902bfcc34b32ec2d1b7` |
+| `VIVA_GUIDE.md` | `c7e417d716b4fe055bda7c97f5073ef73f3a53fdba74d4cec798a2a6c4ee05c8` |
+| `config.yaml` | `5ff6020a2a579cf0d1991ca393d2cf36c653f16bd76262506c8e5587ebe02e8e` |
+| `dashboard/app.py` | `32715ec99bbf89407e018dfc38a9d4fcf829c6f64da34406779842b7c3c5927e` |
 | `data/raw/.gitkeep` | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
-| `docs/DATA_USE_ASSESSMENT.md` | `1db211b7cc811d09cbdeef300504a4a752a04208c2a327c3c8e9f5d2cad4ca13` |
-| `docs/INTERFACES.md` | `5c9a8289a63929d921bb86e1b20dc1dcf672f20f801c567107e381ff7b01ca64` |
-| `reports/report_template.md` | `bd2043aee0e9a294c70b65a47bc80bf1f9d3871f96ff4fa36352a27bee718ca9` |
+| `docs/DATA_DICTIONARY_CROSS_SECTIONAL.md` | `320756cb34331729ac354a94ad57bd76b0d7aaa0f367fc5d081f704207448a4a` |
+| `docs/DATA_USE_ASSESSMENT.md` | `c32f1716bec189ce928ac6107609ed6e4d9a157d795e82b713673a09052d4254` |
+| `docs/INTERFACES.md` | `cafa1fd1fd84f088e61c13839e4604044c9443583030b7be295c3f1b9100f4d5` |
+| `docs/METHODOLOGY_CROSS_SECTIONAL.md` | `faa4b6455bf2bcaa01faba5e8aa178d4b46647b9afb3b976f99c44b815a5afe4` |
+| `docs/TURKEY_DATA_DICTIONARY.md` | `38ff8e2066ca38ea2e5d62936d3e3d2b69dc9a246a05154da17f8d829439f646` |
+| `docs/mospi/Data_LayoutPLFS_2023-24.xlsx` | `3de65c3dcaaadfd90b78579b8eaa65557e32dc7074f178dcc1e11195e8cf3836` |
+| `docs/mospi/PLFS_2023-24_1_README.docx` | `3f7448da3112fde2a29d4eaf75f32593a15a3bcaa51e39db929c908a2f4f8c5f` |
+| `docs/mospi/PLFS_2023-24_Catalogue213_DDI.xml` | `cacb046915e49466e1e587af12b6370ec50e680d97620b91129a4c9cef65f0ff` |
+| `docs/mospi/PLFS_2023-24_Estimation_Procedure.pdf` | `b6534db483bea876ff175feb138877445fc91f33ca183790165d6f4c5c84733d` |
+| `docs/mospi/PLFS_2023-24_Instruction_Manual_Vol_I.pdf` | `038994ccb43a1d11aa5248dc463cab074984562aa131f749e49a58e06c3841ed` |
+| `docs/mospi/PLFS_2023-24_Instruction_Manual_Vol_II.pdf` | `edb71767701c999d1f91b510dc6951585aec1f0eb2bc9865a36a5bea765a2e15` |
+| `docs/mospi/PLFS_2023-24_Updated_Instruction_Note.pdf` | `3eb898e80c862a3d8e901655799c7d5b9972edfa9fe3caa32087ca20160a778a` |
+| `outputs/turkey/attrition_admin_comparison.csv` | `6da0e63ef8251a4dcacc30a56db4ebecec1d3d41c50d2bdf3ae160e9039f89f3` |
+| `outputs/turkey/baseline_employed_comparison.csv` | `b603d4b49d16d13b173e06643960f8bf496dd8f358f18208db7674872b0e27ee` |
+| `outputs/turkey/baseline_employment_by_cluster.csv` | `69c73409b0caed5856503db4824e876085fcdd620479f1a4d7271042a992cefd` |
+| `outputs/turkey/cluster_admin_profile.csv` | `d4037b9cbf89c307ff820863ddf52af3af6f474fb26565f68c69dcd773a16079` |
+| `outputs/turkey/cluster_gender_profile.csv` | `bc98b6bbcdc0d81585607f49620eb1bfa4f90a47ceb47f721ad677a769df6713` |
+| `outputs/turkey/cluster_jan2012_state_profile.csv` | `e7284f6e4390c7ec3fae9bc78bd1b8ef5078fef2dff5d9907a20434d6c568747` |
+| `outputs/turkey/cluster_method_evaluation.csv` | `2dc714506a296b4544b71560da0dd8745c6242f4cbdeebe956e0064e60bd1c74` |
+| `outputs/turkey/cluster_prevalence.csv` | `a3637a743baded73f1ca45f442280b38e1285f964fb61f1dd9345e597b7e4089` |
+| `outputs/turkey/cluster_profile_report.md` | `090f5235315152ca7e10f76ac87df06b6bae71b853708d1c5bc08c3d4f95d46a` |
+| `outputs/turkey/summary.json` | `e6e2a1d0a15908b9c61409056517e346b044c59527aaef8d1c23340aab864594` |
+| `pytest.ini` | `c809c969ec7e11b9ff37784e9c6fcc0b7c5148d168e18b05aed797e03fbd6ead` |
+| `reports/TURKEY_FINAL_REPORT.md` | `490b43ed4e88630268083e2bc70218b1bbcc7d7128253c49d79c9b789f43f708` |
+| `reports/TURKEY_REQUIREMENT_AUDIT.md` | `222b7fc7fe0fea1d84acfa1eff63ff03b7db820638c80bf831cad6b0dcf6cc1e` |
+| `reports/dashboard_screenshots/primary_turkey_1366x768.jpg` | `2a992cacefe4ee07c7d62b8d14d28a765d78227111bcbaf271d527e0d9053540` |
+| `reports/dashboard_screenshots/primary_turkey_1920x1080.jpg` | `539ea3a0e911c04eebd7022636008ae5ceb750d386666b163ce3fe3d509adcac` |
+| `reports/viva_questions_and_answers.md` | `0cb27e16a6500e492ff1117f8e6e13436c50ad4471ca3b29c9781943a0f7bacb` |
 | `requirements.lock.txt` | `05c0c30e5eb24adef2f14d479ca90d2a7f86c7b063da6bb18a107f773b883348` |
 | `requirements.txt` | `0421c0e0e55fa4541274a78206a99a835e39765a02e2e20f1376a9f05fd95590` |
-| `run_pipeline.py` | `1564d97f2514759f727d1b2ae75ba047f05a620929847046ce47647b1a15937b` |
-| `scripts/build_release.py` | `5c1383699e67594eca4889b9705f54527a52a63f342355088f085b546d4fcf59` |
-| `src/__init__.py` | `27ff6246314925909f744fc636355687afb0d037f83a3c54d4fbc1054def1faf` |
-| `src/baseline.py` | `bd16afb8a5127210e44b5f6ad73156f21fbe256d502a6a09564e9647276ee978` |
-| `src/clustering.py` | `f2e5c5c398c43625d50f5204100404b5c64b113d82e212bf86858390a8dbd4cf` |
-| `src/config.py` | `29ea59a0952b340fb1bdc762aeb9f5662af74b5d092e5ca466374fa6c74122bd` |
-| `src/data_audit.py` | `19dc9f1ff9aabc054c073e1b089fd9c8bf0b35c4f68f2c337cc188123300f43d` |
-| `src/data_loader.py` | `02472945148cd2197abdf2e6450fafabc9be51c0b6065174a52ab1bea0d30be1` |
-| `src/distances.py` | `40bae5f8d9d447e1731e5e5424e4f23b0255b8e432c90a7c59b4922df52cc0da` |
-| `src/evaluation.py` | `dc5775b889a3346491a9c2ec12bb853db87659fca390c9899edb0e70064e0aed` |
-| `src/missing_data.py` | `6b9e39ab46bd7be8610d55542e4dc82feb42cd2dc089d0c372e6fe3443e5f1b1` |
-| `src/preprocessing.py` | `bddf0ba44f91bc279f9b7edc19afea63196736239dd220efc89e15917c18feac` |
-| `src/profiling.py` | `f3d681334720b4e7091878fa3969f44dd88fe300de00252a14b9cf5ecc1d75cc` |
-| `src/report_builder.py` | `e41904c30d2062d31be83c6552ba98da6d893c2d417b0d05865b385e4aaf49fe` |
-| `src/stability.py` | `ad9999d04556a3671611564260f59d5beb38971e0ae2b4d88a1d1dcaa305105f` |
-| `src/synthetic_data.py` | `30e3dc899072b918e4886cc8bdec9d18436a8d4a3db864466454d2df7a7629d4` |
-| `src/trajectories.py` | `ca0cd6525a8c9cac8646974a77bc9588d0047fb1184460ac903a972ec350a0ec` |
-| `src/visualization.py` | `363fae92c197d59c805875710152148968da2df1076c7a43e949e475f8465863` |
-| `tests/test_distances.py` | `6c2026d01b18d359de026c5c6108dcdee822718cd77c56c68216509a9060c059` |
+| `run_pipeline.py` | `ef7edb1f4cf3a8ef79198ab0a6280a264a072c484f3eafce95fec498d794d963` |
+| `scripts/build_release.py` | `ead58a2071d7d65fcbd68992df5cf046236f5ad7dcc1b23d97aff93fe1a85882` |
+| `src/__init__.py` | `a6e3eee45d4f41f7b04f5926c11d3ac45fe83883abd8bbd550704c22cf60a06b` |
+| `src/baseline.py` | `0362ac6b2ae65427250affdb2c8a82b0d6407a2007042d7f398776c35bc85b91` |
+| `src/clustering.py` | `ac23e2a9392c9eac56d1e76b5bad865231324cfb6fdd4745663411e33ca2e681` |
+| `src/config.py` | `200ffbb720df30ee903ca8b8afcced04637b845cb53e1e17165d4543d1e03b57` |
+| `src/cross_sectional.py` | `80c5811eb29341728195a2e595a234997b0f1a05b97b25f2f8c51a46479e5ba2` |
+| `src/data_audit.py` | `59d33cda639952f4771cf1487157fdf71774bbd3a14bc607fe01e2d9734d3be2` |
+| `src/data_loader.py` | `7be810f95eb18d7e00fe0ae3523a3df108b8f9e8ec9d35bce625272f91ec5e4b` |
+| `src/distances.py` | `a842cb0c6721f00d9b8c1c322cf34cff832500bb29aef5db4b0edfa72474dec7` |
+| `src/evaluation.py` | `dc5a097558bd63eba4242ff043dafb5321b9cf46da6c55de3223103bfbdbe90e` |
+| `src/missing_data.py` | `fbb6c4d216fb564329cf648326f7e9370218004af2582105436611cba8e75e74` |
+| `src/preprocessing.py` | `be470faab2f9e7f4620b9b9198ae0e17ff25edd6db2662ef2fcc937043ba1427` |
+| `src/profiling.py` | `3025cb34b42d984fc81702fa20aec47eb3a481feabd57b93e9e9eb6ac9c27152` |
+| `src/report_builder.py` | `54bfae5aff54f3c8c4697dafa5290784db4f49ccd8d743d2a79701dde5a5f8f9` |
+| `src/stability.py` | `a169f4fcb29d6b14151e6b28dc7bc3fb60084058b021f56b12d2bcb49c65a3ec` |
+| `src/synthetic_data.py` | `db1643d44cc23b670dc63e4a5dcbcede179a7ed091c306e44ab60c47d8ebdd8d` |
+| `src/trajectories.py` | `9250fb2b2921efce7e97ad7c32a6f51c7f1b8055d651073b10d91c0455889136` |
+| `src/turkey_pipeline.py` | `02cedbca49e8a75ac68151d39f7ebb748880d43bcaa81a7e32544db5946a465e` |
+| `src/visualization.py` | `0a952b736f0992d88bd946ef1dfb7b6ecc1589634ed4d5751559626543234fc9` |
+| `submission/PLFS_2023-24_Cross_Sectional_Study_final_submission_v3.pptx` | `259680b7e557a50b9eb5dacf02b152927bb56f8aac7f9fa6e1570d1a221d8a0e` |
+| `submission/Turkey_ISKUR_CA_presentation_v4.pptx` | `dacf9ab37e70e218863f803883dc1a9157074ef335adb4366ae024245a969b75` |
+| `tests/test_cross_sectional.py` | `37a5a7a220a0a6188d5823a32e4127095667d1c71bff8940e96efb103c60657c` |
+| `tests/test_dashboard_safety.py` | `88bd6546ec21b2528771f5e38b3c8799546cb370a106ce42ad62335f168cbb92` |
+| `tests/test_data_loader_linkage.py` | `4bfd9ae9cc6bf59f39f94f860c1d822b332531f97835a786f34e033fabcf32f0` |
+| `tests/test_distances.py` | `cb0291ff0040f4009ab66f926aa9d046944cde92784aa1d0ea65906e2136573f` |
 | `tests/test_evaluation.py` | `9c940eff0e745e497ba88b38b08b842d2eb1fc421c8385745a30bba8915323d3` |
-| `tests/test_planted_structure.py` | `fc5635486348f1c52a578bbfb3977c8cdeba25dec582406ff4ba7babacbff3c7` |
-| `tests/test_stability.py` | `1841d3d25f08a21eeef6cb1bb0bf7662b670f2bb53ee8021bb26e02e7cd4cc99` |
-| `tests/test_trajectories.py` | `d9f44b28ac3f703980abcd5237a729c1f66251464fc065c092f429f67447e51c` |
+| `tests/test_planted_structure.py` | `d7201c0926c6318e417a91cac574f0e9ed6a55a7c1797e842531446b2b8a0f06` |
+| `tests/test_real_safety_gate.py` | `29808e05741551ea357ec3248a16289ad094d618ce996322e725371408f903bf` |
+| `tests/test_stability.py` | `8e3a33d8f4b2fa18bd5c7cdba0b5555921f573f90cf3b8d5e9b1eba5edddfd17` |
+| `tests/test_trajectories.py` | `537d798598be86f2a90daf8b19aa8bfda12ff6070f35c50ea9a026bc5d7e27db` |
+| `tests/test_turkey_pipeline.py` | `bacfd690d24865bbe15ffc911327461529ecce85002099f5603f171616228053` |
 <!-- END HASHES -->

@@ -1,7 +1,7 @@
 {
   "is_synthetic": false,
   "config": {
-    "plan": "A",
+    "plan": "UNSET",
     "verified": true,
     "trainee_definition": "ever_trained",
     "timing_support": "coarse_flag",
@@ -11,8 +11,8 @@
   },
   "environment": {
     "python": "3.13.1",
-    "pandas": "3.1.1",
-    "numpy": "2.5.4"
+    "pandas": "2.3.3",
+    "numpy": "2.3.5"
   },
   "files": [
     {
@@ -94,30 +94,36 @@
   },
   "schema_issues": [
     "data.schema.weight is not set: prevalence will be unweighted only (set it only after you verify which multiplier applies to revisit records)",
-    "data.schema.nonresponse_col is not set: no record can be classified as lost to follow-up, so the LOST code will not be used"
+    "lost_codes_status is unresolved: confirm whether the release documents person-level lost codes",
+    "codes mapped in config that never occur in the status column: ['96']"
   ],
   "linkage": {
-    "issues": [
-      "3390 (key, time) pairs occur more than once: the configured key is NOT unique within a time point, so it is not a valid person key"
-    ],
+    "issues": [],
     "expected_time_points": 4,
     "min_time_points": 3,
+    "duplicate_key_time_pairs": null,
     "n_records": 922599,
     "n_records_missing_key": 0,
+    "legacy_key_visit_collision_groups": 3390,
+    "legacy_key_visit_collision_excess_rows": 3390,
+    "quarter_visit_collision_groups": 0,
+    "quarter_visit_collision_excess_rows": 0,
+    "quarter_link_invalid_rows": 0,
+    "quarter_link_issues": [],
+    "quarter_aware_linking": true,
     "status": "ok",
-    "n_person_keys": 542755,
+    "n_person_keys": 546423,
     "time_points_per_person": {
-      "1": 332853,
-      "2": 85828,
-      "3": 81596,
-      "4": 42478
+      "1": 335312,
+      "2": 87350,
+      "3": 82457,
+      "4": 41304
     },
-    "n_linked_2plus": 209902,
-    "linkage_rate_2plus": 0.386734346067747,
-    "share_at_min_time_points": 0.22860038138755054,
-    "share_full_window": 0.07826367329642288,
-    "mean_time_points": 1.6935984007517204,
-    "duplicate_key_time_pairs": 3390,
+    "n_linked_2plus": 211111,
+    "linkage_rate_2plus": 0.38635086736832086,
+    "share_at_min_time_points": 0.226493028294929,
+    "share_full_window": 0.07558979032727392,
+    "mean_time_points": 1.6884336859905238,
     "time_labels_sorted": [
       "V1",
       "V2",
@@ -127,15 +133,899 @@
     "time_label_order_rule": "numeric if every label is numeric, otherwise alphabetical: verify",
     "retention_from_first_label": {
       "V1": 1.0,
-      "V2": 0.3061658364402058,
-      "V3": 0.2035398018457094,
-      "V4": 0.1068660485604758
+      "V2": 0.3061371392221619,
+      "V3": 0.20140903340595323,
+      "V4": 0.10052874624245801
     },
+    "pairwise_link_checks": [
+      {
+        "cohort_quarter": "Q1",
+        "visit_pair": "V1-V2",
+        "candidate_keys_present_both_visits": 42347,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q1",
+        "visit_pair": "V1-V3",
+        "candidate_keys_present_both_visits": 41679,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q1",
+        "visit_pair": "V1-V4",
+        "candidate_keys_present_both_visits": 41331,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q1",
+        "visit_pair": "V2-V3",
+        "candidate_keys_present_both_visits": 41482,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q1",
+        "visit_pair": "V2-V4",
+        "candidate_keys_present_both_visits": 41071,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q1",
+        "visit_pair": "V3-V4",
+        "candidate_keys_present_both_visits": 41317,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q2",
+        "visit_pair": "V1-V2",
+        "candidate_keys_present_both_visits": 42483,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q2",
+        "visit_pair": "V1-V3",
+        "candidate_keys_present_both_visits": 42035,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q2",
+        "visit_pair": "V1-V4",
+        "candidate_keys_present_both_visits": 209,
+        "sex_changes": 65,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 165,
+          "sub_stratum": 165,
+          "sub_sample": 79,
+          "fod_sub_region": 182
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 182,
+        "raw_age_changes": 207,
+        "age_delta_min": -57.0,
+        "age_delta_median": -1.0,
+        "age_delta_max": 69.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 207,
+          "1": 197,
+          "2": 192,
+          "5": 159,
+          "10": 113
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q2",
+        "visit_pair": "V2-V3",
+        "candidate_keys_present_both_visits": 41863,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q2",
+        "visit_pair": "V2-V4",
+        "candidate_keys_present_both_visits": 206,
+        "sex_changes": 62,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 162,
+          "sub_stratum": 162,
+          "sub_sample": 76,
+          "fod_sub_region": 179
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 179,
+        "raw_age_changes": 204,
+        "age_delta_min": -57.0,
+        "age_delta_median": -1.0,
+        "age_delta_max": 69.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 204,
+          "1": 194,
+          "2": 190,
+          "5": 158,
+          "10": 113
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q2",
+        "visit_pair": "V3-V4",
+        "candidate_keys_present_both_visits": 205,
+        "sex_changes": 63,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 161,
+          "sub_stratum": 161,
+          "sub_sample": 76,
+          "fod_sub_region": 178
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 178,
+        "raw_age_changes": 203,
+        "age_delta_min": -57.0,
+        "age_delta_median": -1.0,
+        "age_delta_max": 69.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 203,
+          "1": 193,
+          "2": 189,
+          "5": 157,
+          "10": 112
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q3",
+        "visit_pair": "V1-V2",
+        "candidate_keys_present_both_visits": 42931,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q3",
+        "visit_pair": "V1-V3",
+        "candidate_keys_present_both_visits": 263,
+        "sex_changes": 101,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 137,
+          "sub_stratum": 137,
+          "sub_sample": 186,
+          "fod_sub_region": 203
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 236,
+        "raw_age_changes": 255,
+        "age_delta_min": -88.0,
+        "age_delta_median": -5.0,
+        "age_delta_max": 55.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 255,
+          "1": 238,
+          "2": 229,
+          "5": 198,
+          "10": 154
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q3",
+        "visit_pair": "V1-V4",
+        "candidate_keys_present_both_visits": 254,
+        "sex_changes": 95,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 129,
+          "sub_stratum": 129,
+          "sub_sample": 179,
+          "fod_sub_region": 195
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 228,
+        "raw_age_changes": 246,
+        "age_delta_min": -88.0,
+        "age_delta_median": -4.0,
+        "age_delta_max": 55.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 246,
+          "1": 230,
+          "2": 221,
+          "5": 192,
+          "10": 148
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q3",
+        "visit_pair": "V2-V3",
+        "candidate_keys_present_both_visits": 258,
+        "sex_changes": 99,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 136,
+          "sub_stratum": 136,
+          "sub_sample": 183,
+          "fod_sub_region": 200
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 232,
+        "raw_age_changes": 250,
+        "age_delta_min": -88.0,
+        "age_delta_median": -4.5,
+        "age_delta_max": 55.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 250,
+          "1": 234,
+          "2": 225,
+          "5": 194,
+          "10": 150
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q3",
+        "visit_pair": "V2-V4",
+        "candidate_keys_present_both_visits": 249,
+        "sex_changes": 93,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 128,
+          "sub_stratum": 128,
+          "sub_sample": 176,
+          "fod_sub_region": 192
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 224,
+        "raw_age_changes": 241,
+        "age_delta_min": -88.0,
+        "age_delta_median": -4.0,
+        "age_delta_max": 55.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 241,
+          "1": 226,
+          "2": 217,
+          "5": 188,
+          "10": 144
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q3",
+        "visit_pair": "V3-V4",
+        "candidate_keys_present_both_visits": 40750,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q4",
+        "visit_pair": "V1-V2",
+        "candidate_keys_present_both_visits": 253,
+        "sex_changes": 70,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 125,
+          "sub_stratum": 125,
+          "sub_sample": 159,
+          "fod_sub_region": 173
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 227,
+        "raw_age_changes": 245,
+        "age_delta_min": -53.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 68.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 245,
+          "1": 236,
+          "2": 225,
+          "5": 206,
+          "10": 154
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q4",
+        "visit_pair": "V1-V3",
+        "candidate_keys_present_both_visits": 244,
+        "sex_changes": 68,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 120,
+          "sub_stratum": 120,
+          "sub_sample": 150,
+          "fod_sub_region": 169
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 218,
+        "raw_age_changes": 236,
+        "age_delta_min": -53.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 68.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 236,
+          "1": 227,
+          "2": 216,
+          "5": 197,
+          "10": 145
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q4",
+        "visit_pair": "V1-V4",
+        "candidate_keys_present_both_visits": 243,
+        "sex_changes": 67,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 120,
+          "sub_stratum": 120,
+          "sub_sample": 150,
+          "fod_sub_region": 169
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 218,
+        "raw_age_changes": 235,
+        "age_delta_min": -53.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 68.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 235,
+          "1": 226,
+          "2": 215,
+          "5": 196,
+          "10": 145
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q4",
+        "visit_pair": "V2-V3",
+        "candidate_keys_present_both_visits": 40496,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q4",
+        "visit_pair": "V2-V4",
+        "candidate_keys_present_both_visits": 40003,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      },
+      {
+        "cohort_quarter": "Q4",
+        "visit_pair": "V3-V4",
+        "candidate_keys_present_both_visits": 40373,
+        "sex_changes": 0,
+        "sex_assessment": "assessed_raw_difference",
+        "design_mismatch_by_field": {
+          "sector": 0,
+          "stratum": 0,
+          "sub_stratum": 0,
+          "sub_sample": 0,
+          "fod_sub_region": 0
+        },
+        "design_assessment_by_field": {
+          "sector": "assessed_raw_difference",
+          "stratum": "assessed_raw_difference",
+          "sub_stratum": "assessed_raw_difference",
+          "sub_sample": "assessed_raw_difference",
+          "fod_sub_region": "assessed_raw_difference"
+        },
+        "design_mismatch_any": 0,
+        "raw_age_changes": 0,
+        "age_delta_min": 0.0,
+        "age_delta_median": 0.0,
+        "age_delta_max": 0.0,
+        "design_fields_checked": 5,
+        "age_sensitivity_abs_delta_over_years": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "5": 0,
+          "10": 0
+        },
+        "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+        "interpretation": "unresolved candidate-link differences; no records excluded"
+      }
+    ],
     "link_validity": {
-      "n_linked_keys_checked": 209902,
-      "keys_with_changing_sex": 1448,
-      "keys_with_age_span_over_limit": 4057,
-      "age_span_limit_years": 1.0,
+      "n_linked_keys_checked": 211111,
+      "keys_with_changing_sex": 238,
+      "keys_with_any_age_change": 710,
+      "keys_with_age_span_over_limit": null,
+      "age_span_limit_years": null,
+      "age_sensitivity_span_counts": {
+        "0": 710,
+        "1": 674,
+        "2": 649,
+        "5": 565,
+        "10": 423
+      },
+      "age_tolerance_status": "unresolved: no official tolerance; counts are sensitivity-only",
+      "keys_with_changing_design_by_field": {
+        "sector": 0,
+        "stratum": 429,
+        "sub_stratum": 429,
+        "sub_sample": 425,
+        "fod_sub_region": 561
+      },
+      "keys_with_any_design_field_change": 648,
+      "design_stability_status": "unresolved: documentation labels fields but gives no cross-visit invariance rule",
       "keys_with_changing_sector": 0
     },
     "link_validity_note": "a high count of changing sex or large age spans means the key joins different people; sex is used here to validate links only",
@@ -145,8 +1035,8 @@
         "share_linked_2plus": 0.0
       },
       "2": {
-        "n_keys": 300209,
-        "share_linked_2plus": 0.6991862335905985
+        "n_keys": 303877,
+        "share_linked_2plus": 0.6947251684069541
       }
     },
     "design_id": "PLFS-2023-24-rotational-panel"
@@ -568,6 +1458,50 @@
     {
       "file_id": "perv1",
       "scope": "column",
+      "column": "stratum",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "sub_stratum",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "sub_sample",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
+      "column": "fod_sub_region",
+      "time_label": "ALL",
+      "n_records": 418159,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perv1",
+      "scope": "column",
       "column": "hh_no",
       "time_label": "ALL",
       "n_records": 418159,
@@ -650,8 +1584,8 @@
       "n_records": 418159,
       "n_blank": 0,
       "pct_blank": 0.0,
-      "n_unknown_code": 30219,
-      "pct_unknown_code": 0.07226676933893567
+      "n_unknown_code": 29787,
+      "pct_unknown_code": 0.07123366948935692
     },
     {
       "file_id": "perv1",
@@ -694,8 +1628,8 @@
       "n_records": 418159,
       "n_blank": 0,
       "pct_blank": 0.0,
-      "n_unknown_code": 30219,
-      "pct_unknown_code": 0.07226676933893567
+      "n_unknown_code": 29787,
+      "pct_unknown_code": 0.07123366948935692
     },
     {
       "file_id": "perrv",
@@ -744,6 +1678,50 @@
     {
       "file_id": "perrv",
       "scope": "column",
+      "column": "stratum",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "sub_stratum",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "sub_sample",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
+      "column": "fod_sub_region",
+      "time_label": "ALL",
+      "n_records": 504440,
+      "n_blank": 0,
+      "pct_blank": 0.0,
+      "n_unknown_code": null,
+      "pct_unknown_code": null
+    },
+    {
+      "file_id": "perrv",
+      "scope": "column",
       "column": "hh_no",
       "time_label": "ALL",
       "n_records": 504440,
@@ -826,8 +1804,8 @@
       "n_records": 504440,
       "n_blank": 0,
       "pct_blank": 0.0,
-      "n_unknown_code": 32123,
-      "pct_unknown_code": 0.06368051700896044
+      "n_unknown_code": 31779,
+      "pct_unknown_code": 0.06299857267464912
     },
     {
       "file_id": "perrv",
@@ -848,8 +1826,8 @@
       "n_records": 170054,
       "n_blank": 0,
       "pct_blank": 0.0,
-      "n_unknown_code": 10633,
-      "pct_unknown_code": 0.06252719724322862
+      "n_unknown_code": 10519,
+      "pct_unknown_code": 0.06185682195067449
     },
     {
       "file_id": "perrv",
@@ -859,8 +1837,8 @@
       "n_records": 167594,
       "n_blank": 0,
       "pct_blank": 0.0,
-      "n_unknown_code": 10645,
-      "pct_unknown_code": 0.06351659367280452
+      "n_unknown_code": 10533,
+      "pct_unknown_code": 0.06284831199207609
     },
     {
       "file_id": "perrv",
@@ -870,8 +1848,8 @@
       "n_records": 166792,
       "n_blank": 0,
       "pct_blank": 0.0,
-      "n_unknown_code": 10845,
-      "pct_unknown_code": 0.06502110412969447
+      "n_unknown_code": 10727,
+      "pct_unknown_code": 0.0643136361456185
     },
     {
       "file_id": "hhv1",

@@ -81,9 +81,10 @@ def _state_setup(cfg: Config) -> tuple[list[str], list[str], str, str]:
     names = [s["name"] for s in d["states"]]
     codes = []
     for s in d["states"]:
-        if not s["raw_codes"]:
-            raise ConfigError(f"state {s['name']!r} has no raw_codes: the synthetic generator needs one")
-        codes.append(str(s["raw_codes"][0]))
+        available = s.get("raw_codes") or s.get("synthetic_codes") or []
+        if not available:
+            raise ConfigError(f"state {s['name']!r} has no code for synthetic generation")
+        codes.append(str(available[0]))
     if not d["unknown_codes"]:
         raise ConfigError("unknown_codes must hold at least one code for the generator")
     # The real PLFS mapping may correctly have no documented casualty code. Synthetic fixtures

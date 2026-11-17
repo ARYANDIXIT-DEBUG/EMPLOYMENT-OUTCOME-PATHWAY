@@ -47,3 +47,6 @@ The online official [Catalogue 213 dictionary page](https://microdata.gov.in/NAD
 5. Confirm the appropriate longitudinal multiplier and casualty/nonresponse mapping, or document that no such fields/codes apply to this analysis.
 
 No gate conditions or permission flags were altered. **Stop here; Prompts 7–10 remain blocked.**
+# Historical checkpoint snapshot note (2026-11-06)
+
+The report records an earlier CHECKPOINT 1 run. The present config still does **not** record CHECKPOINT 1 as passed and remains gated. The latest no-write audit counts and current blockers are summarized in [11_baseline_resolution.md](11_baseline_resolution.md). The user's later permission confirmation is recorded as `user_confirmed`; it does not pass CHECKPOINT 1.

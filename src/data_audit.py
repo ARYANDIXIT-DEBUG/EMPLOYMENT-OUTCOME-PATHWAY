@@ -282,6 +282,8 @@ def _person_frame(tables: dict[str, pd.DataFrame], cfg: Config, design: str | No
             "sex": df[sex_col].astype("string") if sex_col and sex_col in df.columns else pd.NA,
             "sector": df[sec_col].astype("string") if sec_col and sec_col in df.columns else pd.NA,
         })
+        for field in ("stratum", "sub_stratum", "sub_sample", "fod_sub_region"):
+            part[field] = df[field].astype("string") if field in df.columns else pd.Series(pd.NA, index=df.index, dtype="string")
         if quarter_col:
             if quarter_col in df.columns:
                 part["quarter"] = df[quarter_col].astype("string")
@@ -290,8 +292,95 @@ def _person_frame(tables: dict[str, pd.DataFrame], cfg: Config, design: str | No
                 part["quarter"] = pd.Series(pd.NA, index=df.index, dtype="string")
         parts.append(part)
     if not parts:
-        return pd.DataFrame(columns=["key", "t", "file_id", "age", "sex", "sector"]), issues
+        return pd.DataFrame(columns=["key", "t", "file_id", "age", "sex", "sector",
+                                     "stratum", "sub_stratum", "sub_sample", "fod_sub_region"]), issues
     return pd.concat(parts, ignore_index=True), issues
+
+
+_DESIGN_COMPARE_FIELDS = ("sector", "stratum", "sub_stratum", "sub_sample", "fod_sub_region")
+_AGE_SENSITIVITY_THRESHOLDS = (0, 1, 2, 5, 10)
+
+
+def _pairwise_link_checks(frame: pd.DataFrame) -> list[dict[str, Any]]:
+    """Count raw attribute/design differences for each cohort and visit pair.
+
+    These are candidate-key diagnostics. Threshold counts for age are labelled sensitivity values;
+    no official PLFS age tolerance or design-field invariance rule was found in P4.
+    """
+    if frame.empty or "cohort_quarter" not in frame:
+        return []
+    visits = [f"V{i}" for i in range(1, 5)]
+    rows: list[dict[str, Any]] = []
+    fields = tuple(dict.fromkeys((*_DESIGN_COMPARE_FIELDS, "sex")))
+    visit_groups: dict[tuple[str, str], pd.DataFrame] = {}
+    for cohort in ("Q1", "Q2", "Q3", "Q4"):
+        cohort_frame = frame[frame["cohort_quarter"].astype(str) == cohort]
+        for visit in visits:
+            subset = cohort_frame[cohort_frame["t"].astype(str) == visit]
+            if subset.empty:
+                empty_cols = ["key", *fields, *[f"{field}_nunique" for field in fields],
+                              "age_min", "age_max", "age_nunique"]
+                visit_groups[(cohort, visit)] = pd.DataFrame(columns=empty_cols)
+                continue
+
+            grouped = subset.groupby("key", sort=False)
+            summarized = grouped[list(fields)].first()
+            value_counts = grouped[list(fields)].nunique().add_suffix("_nunique")
+            age_bounds = grouped["age"].agg(age_min="min", age_max="max")
+            age_counts = grouped["age"].nunique().rename("age_nunique")
+            visit_groups[(cohort, visit)] = summarized.join(value_counts).join(age_bounds).join(age_counts).reset_index()
+
+    for cohort in ("Q1", "Q2", "Q3", "Q4"):
+        for i, left_visit in enumerate(visits):
+            for right_visit in visits[i + 1:]:
+                pair = visit_groups[(cohort, left_visit)].merge(
+                    visit_groups[(cohort, right_visit)], on="key", how="inner", suffixes=("_a", "_b"),
+                    validate="one_to_one",
+                )
+                field_mismatch: dict[str, int | None] = {}
+                field_assessment: dict[str, str] = {}
+                mismatch_masks: dict[str, pd.Series] = {}
+                for field in fields:
+                    va, vb = pair[f"{field}_a"], pair[f"{field}_b"]
+                    ca, cb = pair[f"{field}_nunique_a"], pair[f"{field}_nunique_b"]
+                    assessed = va.notna() & vb.notna() & ca.le(1) & cb.le(1)
+                    mismatch = assessed & va.ne(vb)
+                    mismatch_masks[field] = mismatch
+                    field_mismatch[field] = int(mismatch.sum()) if assessed.any() else None
+                    field_assessment[field] = "assessed_raw_difference" if assessed.any() else "unavailable_or_all_missing"
+                design_changed = pd.concat([mismatch_masks[f] for f in _DESIGN_COMPARE_FIELDS], axis=1).any(axis=1) \
+                    if len(pair) else pd.Series(dtype=bool)
+                age_a_min, age_a_max = pair.get("age_min_a", pd.Series(dtype=float)), pair.get("age_max_a", pd.Series(dtype=float))
+                age_b_min, age_b_max = pair.get("age_min_b", pd.Series(dtype=float)), pair.get("age_max_b", pd.Series(dtype=float))
+                age_ok = (age_a_min.notna() & age_a_max.notna() & age_b_min.notna() & age_b_max.notna() &
+                          pair["age_nunique_a"].le(1) & pair["age_nunique_b"].le(1))
+                age_delta = pd.Series(np.maximum((age_a_min - age_b_max).abs(), (age_a_max - age_b_min).abs()), index=pair.index)
+                age_delta = age_delta[age_ok]
+                signed_age_delta = (age_b_min - age_a_min)[age_ok]
+                rows.append({
+                    "cohort_quarter": cohort,
+                    "visit_pair": f"{left_visit}-{right_visit}",
+                    "candidate_keys_present_both_visits": len(pair),
+                    "sex_changes": field_mismatch["sex"],
+                    "sex_assessment": field_assessment["sex"],
+                    "design_mismatch_by_field": {field: field_mismatch[field] for field in _DESIGN_COMPARE_FIELDS},
+                    "design_assessment_by_field": {field: field_assessment[field] for field in _DESIGN_COMPARE_FIELDS},
+                    "design_mismatch_any": (int(design_changed.sum()) if any(
+                        field_mismatch[f] is not None for f in _DESIGN_COMPARE_FIELDS) else None),
+                    "raw_age_changes": int((age_delta > 0).sum()) if age_ok.any() else None,
+                    "age_delta_min": float(signed_age_delta.min()) if len(signed_age_delta) else None,
+                    "age_delta_median": float(signed_age_delta.median()) if len(signed_age_delta) else None,
+                    "age_delta_max": float(signed_age_delta.max()) if len(signed_age_delta) else None,
+                    "design_fields_checked": sum(field_mismatch[field] is not None
+                                                  for field in _DESIGN_COMPARE_FIELDS),
+                    "age_sensitivity_abs_delta_over_years": {
+                        str(limit): int((age_delta > limit).sum()) if age_ok.any() else None
+                        for limit in _AGE_SENSITIVITY_THRESHOLDS
+                    },
+                    "age_tolerance_status": "unresolved; thresholds are sensitivity-only, not official tolerances",
+                    "interpretation": "unresolved candidate-link differences; no records excluded",
+                })
+    return rows
 
 
 # ---------------------------------------------------------------------------------------------
@@ -326,9 +415,13 @@ def check_schema(tables: dict[str, pd.DataFrame], cfg: Config) -> list[str]:
     if not _as_list(schema.get("weight")):
         msgs.append("data.schema.weight is not set: prevalence will be unweighted only (set it only after you "
                     "verify which multiplier applies to revisit records)")
-    if not _as_list(schema.get("nonresponse_col")):
-        msgs.append("data.schema.nonresponse_col is not set: no record can be classified as lost to follow-up, "
-                    "so the LOST code will not be used")
+    lost_status = str(data.get("lost_codes_status", "unresolved")).lower()
+    if lost_status == "unresolved":
+        msgs.append("lost_codes_status is unresolved: confirm whether the release documents person-level lost codes")
+    elif lost_status == "documented" and not _as_list(schema.get("nonresponse_col")):
+        msgs.append("data.schema.nonresponse_col is not set: documented loss-to-follow-up records cannot be classified")
+    # For documented_unavailable, the absent field is an explicit source finding; no observation
+    # is labelled LOST, and missing/absent observations stay MISSING.
     all_cols = set().union(*[set(df.columns) for df in tables.values()]) if tables else set()
     for role, value in schema.items():
         for col in _as_list(value):
@@ -413,6 +506,7 @@ def _linkage(frame: pd.DataFrame, issues: list[str], cfg: Config) -> dict[str, A
         if collisions["quarter_link_issues"]:
             out["issues"].extend(collisions["quarter_link_issues"])
         out["quarter_aware_linking"] = True
+        f["cohort_quarter"] = f["_quarter_link_key"].astype("string").str.extract(r"\|cohort=(Q[1-4])$", expand=False)
         f["key"] = f["_quarter_link_key"]
         f = f[f["key"].notna()].copy()
     else:
@@ -454,6 +548,7 @@ def _linkage(frame: pd.DataFrame, issues: list[str], cfg: Config) -> dict[str, A
     out["retention_from_first_label"] = ret
     linked = per_key.index[per_key >= 2]
     lk = f[f["key"].isin(linked)]
+    out["pairwise_link_checks"] = _pairwise_link_checks(lk)
     checks: dict[str, Any] = {"n_linked_keys_checked": int(len(linked))}
     if lk["sex"].notna().any():
         checks["keys_with_changing_sex"] = int((lk.groupby("key")["sex"].nunique() > 1).sum())
@@ -462,7 +557,21 @@ def _linkage(frame: pd.DataFrame, issues: list[str], cfg: Config) -> dict[str, A
         checks["keys_with_any_age_change"] = int(((span["max"] - span["min"]) > 0).sum())
         checks["keys_with_age_span_over_limit"] = None
         checks["age_span_limit_years"] = None
-        checks["age_tolerance_status"] = "unconfirmed: official documentation unavailable"
+        checks["age_sensitivity_span_counts"] = {
+            str(limit): int(((span["max"] - span["min"]) > limit).sum())
+            for limit in _AGE_SENSITIVITY_THRESHOLDS
+        }
+        checks["age_tolerance_status"] = "unresolved: no official tolerance; counts are sensitivity-only"
+    design_by_key = pd.DataFrame({
+        field: lk.groupby("key")[field].nunique(dropna=True).gt(1)
+        for field in _DESIGN_COMPARE_FIELDS if field in lk and lk[field].notna().any()
+    })
+    if not design_by_key.empty:
+        checks["keys_with_changing_design_by_field"] = {
+            field: int(design_by_key[field].sum()) for field in design_by_key.columns
+        }
+        checks["keys_with_any_design_field_change"] = int(design_by_key.any(axis=1).sum())
+        checks["design_stability_status"] = "unresolved: documentation labels fields but gives no cross-visit invariance rule"
     if lk["sector"].notna().any():
         checks["keys_with_changing_sector"] = int((lk.groupby("key")["sector"].nunique() > 1).sum())
     out["link_validity"] = checks
@@ -890,6 +999,15 @@ def _fmt_linkage(add: Any, lk: dict[str, Any], pad: str = "") -> None:
     add(f"{pad}  retention from first label: "
         + ", ".join(f"{k}={_pct(v)}" for k, v in lk["retention_from_first_label"].items()))
     add(f"{pad}  link validity: {lk['link_validity']}")
+    pair_checks = lk.get("pairwise_link_checks") or []
+    if pair_checks:
+        add(f"{pad}  pairwise checks (design/age rules unresolved; age thresholds are sensitivity-only):")
+        for row in pair_checks:
+            sens = row["age_sensitivity_abs_delta_over_years"]
+            add(f"{pad}    {row['cohort_quarter']} {row['visit_pair']}: candidates="
+                f"{row['candidate_keys_present_both_visits']} sex_changes={row['sex_changes']} "
+                f"design_any={row['design_mismatch_any']} design_by_field={row['design_mismatch_by_field']} "
+                f"age_raw={row['raw_age_changes']} abs_delta>1={sens['1']} >2={sens['2']} >5={sens['5']}")
     for sec, v in (lk.get("linkage_by_first_sector") or {}).items():
         add(f"{pad}  sector {sec}: keys={v['n_keys']}  linked 2+={_pct(v['share_linked_2plus'])}")
 
@@ -1078,6 +1196,7 @@ def _demo() -> int:
         for st, code in zip(d["states"], "ABCDEF"):
             st["raw_codes"] = [code]
         d["unknown_codes"], d["lost_codes"] = ["X"], ["L"]
+        d["lost_codes_status"] = "documented"  # synthetic audit fixture only
         d["trainee"]["rules"] = {"ever_trained": {"variable": "trained", "codes_yes": ["Y"]},
                                  "recent_completion": {"variable": "trained_when", "codes_yes": ["R"]}}
         with open(root / "config.yaml", "w", encoding="utf-8") as fh:

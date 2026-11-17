@@ -149,10 +149,12 @@ def test_informative_attrition_missing_attribute_is_neutral_and_non_numeric_is_r
 # Censoring
 # ---------------------------------------------------------------------------------------------
 def _td(rows):
-    codes = [str(s["raw_codes"][0]) for s in D0["states"]]
+    codes = [str((s.get("raw_codes") or s.get("synthetic_codes"))[0]) for s in D0["states"]]
     recs = [{"person_id": f"p{i:03d}", "t": t, "raw_status": codes[v] if v >= 0 else str(D0["unknown_codes"][0])}
             for i, r in enumerate(rows) for t, v in enumerate(r)]
-    return build_trajectories(pd.DataFrame(recs), CFG)
+    df = pd.DataFrame(recs)
+    df.attrs["is_synthetic"] = True
+    return build_trajectories(df, CFG)
 
 
 def test_censoring_keeps_the_first_visits_and_records_it():
